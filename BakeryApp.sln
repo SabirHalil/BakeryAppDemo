@@ -15,7 +15,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleUI", "ConsoleUI\Cons
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csproj", "{72898A4B-F6E5-4356-8ECD-CA85AB788CCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BakeryAppUI", "BakeryAppUI\BakeryAppUI.csproj", "{00836AD8-6313-402A-BD2B-840E39FDB224}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BakeryAppUI", "BakeryAppUI\BakeryAppUI.csproj", "{00836AD8-6313-402A-BD2B-840E39FDB224}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{2D4A8F87-618F-4093-A147-61DEF5E8B6AC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{68B59005-90A5-4E9A-A1D1-13DD682254A7}"
+	ProjectSection(SolutionItems) = preProject
+		build.yml = build.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +61,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{68B59005-90A5-4E9A-A1D1-13DD682254A7} = {2D4A8F87-618F-4093-A147-61DEF5E8B6AC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9A7BB135-CBB3-435A-A2D9-9D17E682F859}
