@@ -1,0 +1,102 @@
+﻿<div class="container mt-5">
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="row">
+                <label for="inputDate" class="col-sm-2 col-form-label">Tarih</label>
+                <div class="col-sm-10">
+                    <input type="date" class="form-control"
+                           max="@DateTime.Now.ToString("yyyy-MM-dd")"
+                           value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <h5>Teslim Edilen Ürünler</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Market Adı</th>
+                        <th>1.Servis</th>
+                        <th>2.Servis</th>
+                        <th>3.Servis</th>
+                        <th>Toplam Verilen Ekmek</th>
+                        <th>Toplam Bayat Ekmek</th>
+                        <th>Net Ekmek</th>
+                        <th>Toplam Hesap</th>
+                        <th>Alınan Para</th>
+                        <th>Kalan Para</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>A 101</td>
+                        <td>10</td>
+                        <td>20</td>
+                        <td>30</td>
+                        <td>90</td>
+                        <td>10</td>
+                        <td>80</td>
+                        <td>2500</td>
+                        <td>1000</td>
+                        <td>500</td>
+                        <td>
+                            <button class="btn btn-primary">Düzenle</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger">Sil</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>BİM</td>
+                        <td>10</td>
+                        <td>20</td>
+                        <td>30</td>
+                        <td>90</td>
+                        <td>10</td>
+                        <td>80</td>
+                        <td>2500</td>
+                        <td>1000</td>
+                        <td>500</td>
+                        <td>
+                            <button class="btn btn-primary">Düzenle</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger">Sil</button>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    // Sayfanın en son kaydırma pozisyonunu bir cookie olarak sakla
+    window.onbeforeunload = function () {
+        document.cookie = "scrollPosition=" + window.scrollY;
+    };
+
+    // Sayfa yüklendiğinde en son kaydırma pozisyonuna geri dön
+    window.onload = function () {
+        var scrollPosition = getCookie("scrollPosition");
+        if (scrollPosition) {
+            window.scrollTo(0, parseInt(scrollPosition));
+        }
+    };
+
+    // Cookie değerini almak için yardımcı bir fonksiyon
+    function getCookie(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length === 2) return parts.pop().split(";").shift();
+    }
+</script>

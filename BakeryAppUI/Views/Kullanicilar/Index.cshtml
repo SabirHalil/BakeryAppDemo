@@ -1,0 +1,223 @@
+﻿@using static WebAppDemo.Controllers.KullanicilarController
+@model UserListViewModel
+
+<div class="container mt-5">
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <h1>Kullanıcılar</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Adı</th>
+                        <th>Soyadı</th>
+                        <th>Kullanıcı Adı</th>
+                        <th>Görevi</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.AllUsers)
+                    {
+                        <tr>
+                            <td>@user.Name</td>
+                            <td>@user.Surname</td>
+                            <td>@user.UserName</td>
+                            <td>@user.OperationClaim</td>
+                            <td>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editUserModal-@user.Id">
+                                    Düzenle
+                                </button>
+                            </td>
+
+
+                            <!-- Düzenleme Modal -->
+                            <div class="modal fade" id="editUserModal-@user.Id" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editUserModalLabel">Kullanıcıyı Düzenle</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- Kullanıcı Düzenleme Formu -->
+                                            @using (Html.BeginForm("UpdateUser", "Kullanicilar", FormMethod.Post))
+                                            {
+                                                @Html.AntiForgeryToken()
+
+                                                <div class="mb-3">
+                                                    <input type="hidden" id="editUserId" name="editUserId" />
+                                                    <label for="editUserName" class="form-label">Adı</label>
+                                                    <input type="text" class="form-control" id="editUserName" name="editUserName" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="editUserSurname" class="form-label">Soyadı</label>
+                                                    <input type="text" class="form-control" id="editUserSurname" name="editUserSurname" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="editUserUsername" class="form-label">Kullanıcı Adı</label>
+                                                    <input type="text" class="form-control" id="editUserUsername" name="editUserUsername" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="position" class="form-label">Görevi</label>
+                                                    <select class="form-control" id="OperationClaim" name="OperationClaim" required>
+                                                        <option value="Hamurkar">Hamurkar</option>
+                                                        <option value="Pastacı">Pastacı</option>
+                                                        <option value="Börekci">Börekci</option>
+                                                        <option value="Tezgahtar">Tezgahtar</option>
+                                                        <option value="Şoför">Şoför</option>
+                                                        <option value="Admin">Admin</option>
+                                                    </select>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+
+                            <td>
+                                <form method="post" action="/Kullanicilar/DeleteById">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@user.Id" />
+                                    <button type="submit" class="btn btn-danger">Sil</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+
+
+
+        </div>
+    </div>
+
+
+    <!-- Kullanıcı Ekleme Butonu -->
+    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">
+        Yeni Kullanıcı Ekle
+    </button>
+
+    <!-- Kullanıcı Ekleme Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addUserModalLabel">Yeni Kullanıcı Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Yeni Kullanıcı Ekleme Formu -->
+                    @using (Html.BeginForm("AddUser", "Kullanicilar", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Adı</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="surname" class="form-label">Soyadı</label>
+                            <input type="text" class="form-control" id="lastname" name="lastname" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Kullanıcı Adı</label>
+                            <input type="text" class="form-control" id="Username" name="Username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Şifre</label>
+                            <input type="password" class="form-control" id="password" name="Password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="position" class="form-label">Görevi</label>
+                            <select class="form-control" id="OperationClaim" name="OperationClaim" required>
+                                <option value="Hamurkar">Hamurkar</option>
+                                <option value="Pastacı">Pastacı</option>
+                                <option value="Börekci">Börekci</option>
+                                <option value="Tezgahtar">Tezgahtar</option>
+                                <option value="Şoför">Şoför</option>
+                                <option value="Admin">Admin</option>
+
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        // Kullanıcı ekleme butonu tıklandığında
+        $('#saveUserBtn').click(function () {
+            // Form verilerini al
+            var userData = {
+                firstName: $('#name').val(),
+                lastName: $('#surname').val(),
+                userName: $('#username').val(),
+                password: $('#password').val(),
+                operationClaim: $('#position').val()
+            };
+
+            // Burada kullanıcı ekleme işlemleri yapılacak
+            // Örneğin, API'ye AJAX isteği yapma
+            $.ajax({
+                type: 'POST',
+                url: 'https://localhost:7207/api/Auth/register',
+                contentType: 'application/json',
+                data: JSON.stringify(userData),
+                success: function (response) {
+                    // Başarılı olduğunda
+                    console.log('Başarıyla eklendi:', response);
+                },
+                error: function (error) {
+                    // Hata olduğunda
+                    console.error('Hata:', error);
+                }
+            });
+
+            // Modal'ı kapat
+            $('#addUserModal').modal('hide');
+        });
+    });
+</script>
+
+
+
+<script>
+    function editUser(userId, userName, userSurname, userUsername, userOperationClaim) {
+        // Düzenleme modalını aç
+        $('#editUserModal').modal('show');
+
+        // Modal içindeki alanları doldur
+        $('#editUserName').val(userName);
+        $('#editUserSurname').val(userSurname);
+        $('#editUserUsername').val(userUsername);
+        $('#editUserOperationClaim').val(userOperationClaim);
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-GLhlTQ8iK+U2r7XajaZf7BHQJeIwIIVl8Z+bc5DK9Ust /6 ZI" crossorigin="anonymous"></script>
