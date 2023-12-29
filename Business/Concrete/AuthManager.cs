@@ -31,7 +31,7 @@ namespace Business.Concrete
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 Status = true,
-                OperationClaim= userForRegisterDto.OperationClaim
+                OperationClaimId= userForRegisterDto.OperationClaimId
 
             };
             _userService.Add(user);

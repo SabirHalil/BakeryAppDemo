@@ -1,5 +1,5 @@
 ﻿using Business.Abstract;
-
+using Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -39,24 +39,14 @@ namespace WebAPI.Controllers
                 Name = u.FirstName,
                 Surname = u.LastName,
                 UserName = u.Email,
-                OperationClaim = u.OperationClaim,
+                OperationClaimId = u.OperationClaimId,
             })
             .ToList();
 
             return Ok(users);
 
-
         }
-        public class UserDto
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-            public string Surname { get; set; }
-            public string UserName { get; set; }
-            public string OperationClaim { get; set; }
-            
 
-        }
 
     }
 }
