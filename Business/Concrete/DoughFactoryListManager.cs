@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 
 namespace Business.Concrete
 {
@@ -30,9 +31,9 @@ namespace Business.Concrete
             return _doughFactoryListDal.GetAll();
         }
 
-        public List<DoughFactoryList> GetByDate(DateTime date)
+        public List<DoughFactoryListDto> GetByDate(DateTime date)
         {
-            return _doughFactoryListDal.GetAll(d => d.Date.Date == date.Date);
+            return _doughFactoryListDal.GetAllLists(date);
         }
 
         public DoughFactoryList GetById(int id)

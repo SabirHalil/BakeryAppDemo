@@ -1,4 +1,5 @@
 ﻿using Entities.Concrete;
+using Entities.DTOs;
 
 namespace Business.Abstract
 {
@@ -9,6 +10,6 @@ namespace Business.Abstract
         void Delete(DoughFactoryList doughFactoryList);
         void Update(DoughFactoryList doughFactoryList);
         DoughFactoryList GetById(int id);
-        List<DoughFactoryList> GetByDate(DateTime date);
+        List<DoughFactoryListDto> GetByDate(DateTime date);
     }
 }

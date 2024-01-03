@@ -18,9 +18,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("login")]
-        public ActionResult Login(UserForLoginDto userForLoginDto)
+        public ActionResult Login(string userName,string password )
         {
-            var userToLogin = _authService.Login(userForLoginDto);
+        
+            var userToLogin = _authService.Login(new UserForLoginDto { UserName= userName,Password= password });
             if (!userToLogin.Success)
             {
                 return BadRequest(userToLogin.Message);
