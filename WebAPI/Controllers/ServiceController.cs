@@ -146,44 +146,52 @@ namespace WebAPI.Controllers
 
             try
             {
-                if (listId == 0) {
+                List<GetServiceListDetailDto> serviceListDetailDto = new List<GetServiceListDetailDto>();
+                List<Market> allMarkets = _marketService.GetAll();
+                if (listId == 0)
+                {
 
-                    List<Market> allMarkets0 = _marketService.GetAll();
+                    //List<Market> allMarkets0 = _marketService.GetAll();
 
 
-                    List<GetServiceListDetailDto> serviceListDetailDto0 = new List<GetServiceListDetailDto>();
-                    for (int i = 0; i < allMarkets0.Count; i++)
+
+                    for (int i = 0; i < allMarkets.Count; i++)
                     {
                         GetServiceListDetailDto service = new GetServiceListDetailDto();
-                        service.MarketId = allMarkets0[i].Id;
-                        service.MarketName = allMarkets0[i].Name;
+                        service.MarketId = allMarkets[i].Id;
+                        service.MarketName = allMarkets[i].Name;
                         service.ServiceListId = listId;
+
+                        serviceListDetailDto.Add(service);
                     }
                 }
-
-                List<ServiceListDetail> serviceListDetail = _serviceListDetailService.GetByListId(listId);
-                List<int> MarketIds = new List<int>();
-
-                for (int i = 0; i < serviceListDetail.Count; i++)
+                else
                 {
-                    MarketIds.Add(_marketContractService.GetMarketIdById(serviceListDetail[i].MarketContractId));
+
+
+                    List<ServiceListDetail> serviceListDetail = _serviceListDetailService.GetByListId(listId);
+                    List<int> MarketIds = new List<int>();
+
+                    for (int i = 0; i < serviceListDetail.Count; i++)
+                    {
+                        MarketIds.Add(_marketContractService.GetMarketIdById(serviceListDetail[i].MarketContractId));
+                    }
+
+
+                    // LINQ kullanarak filtreleme
+                    List<Market> filteredMarkets = allMarkets.Where(m => !MarketIds.Contains(m.Id)).ToList();
+
+
+
+                    for (int i = 0; i < filteredMarkets.Count; i++)
+                    {
+                        GetServiceListDetailDto service = new GetServiceListDetailDto();
+                        service.MarketId = filteredMarkets[i].Id;
+                        service.MarketName = filteredMarkets[i].Name;
+                        service.ServiceListId = listId;
+                        serviceListDetailDto.Add(service);
+                    }
                 }
-
-                List<Market> allMarkets = _marketService.GetAll();
-                // LINQ kullanarak filtreleme
-                List<Market> filteredMarkets = allMarkets.Where(m => !MarketIds.Contains(m.Id)).ToList();
-
-
-                List<GetServiceListDetailDto> serviceListDetailDto = new List<GetServiceListDetailDto>();
-                for (int i = 0; i < filteredMarkets.Count; i++)
-                {
-                    GetServiceListDetailDto service = new GetServiceListDetailDto();
-                    service.MarketId = filteredMarkets[i].Id;
-                    service.MarketName = filteredMarkets[i].Name;
-                    service.ServiceListId = listId;
-                    serviceListDetailDto.Add(service);
-                }
-
 
                 return Ok(serviceListDetailDto);
             }
@@ -204,7 +212,7 @@ namespace WebAPI.Controllers
 
             try
             {
-                _serviceListDetailService.DeleteByServiceListIdAndMarketContracId(dataForDelete.ServiceListId, _marketContractService.GetIdByMarketId(dataForDelete.MarketId));               
+                _serviceListDetailService.DeleteByServiceListIdAndMarketContracId(dataForDelete.ServiceListId, _marketContractService.GetIdByMarketId(dataForDelete.MarketId));
                 return Ok();
             }
             catch (Exception e)
@@ -239,7 +247,8 @@ namespace WebAPI.Controllers
             }
         }
 
-        public class DataForDelete {
+        public class DataForDelete
+        {
 
             public int ServiceListId { get; set; }
             public int MarketId { get; set; }

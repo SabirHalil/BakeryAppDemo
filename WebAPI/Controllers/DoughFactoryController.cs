@@ -2,7 +2,7 @@
 using Business.Constants;
 using Castle.Core.Internal;
 using Entities.Concrete;
-using Microsoft.AspNetCore.Http;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -14,11 +14,13 @@ namespace WebAPI.Controllers
 
         private IDoughFactoryListService _doughFactoryListService;
         private IDoughFactoryListDetailService _doughFactoryListDetailService;
+        private IDoughFactoryProductService _doughFactoryProductService;
 
-        public DoughFactoryController(IDoughFactoryListService doughFactoryListService, IDoughFactoryListDetailService doughFactoryListDetailService)
+        public DoughFactoryController(IDoughFactoryProductService doughFactoryProductService, IDoughFactoryListService doughFactoryListService, IDoughFactoryListDetailService doughFactoryListDetailService)
         {
             _doughFactoryListService = doughFactoryListService;
             _doughFactoryListDetailService = doughFactoryListDetailService;
+            _doughFactoryProductService = doughFactoryProductService;
         }
 
         [HttpGet("GetByDateDoughFactoryList")]
@@ -99,13 +101,91 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("GetDoughFactoryListDetail")]
-        public ActionResult GetDoughFactoryListDetail(int doughFactoryList)
+        [HttpGet("GetAddedDoughFactoryListDetailByListId")]
+        public ActionResult GetDoughFactoryListDetail(int doughFactoryListId)
+        {
+
+            try
+            {
+
+                List<DoughFactoryListDetail> doughFactoryListDetails = _doughFactoryListDetailService.GetByDoughFactoryList(doughFactoryListId);
+
+                List<GetAddedDoughFactoryListDetailDto> List = new();
+
+                for (int i = 0; i < doughFactoryListDetails.Count; i++)
+                {
+                    GetAddedDoughFactoryListDetailDto addedDoughFactoryListDetailDto = new();
+                    addedDoughFactoryListDetailDto.Id = doughFactoryListDetails[i].Id;
+
+                    addedDoughFactoryListDetailDto.DoughFactoryProductId = doughFactoryListDetails[i].DoughFactoryProductId;
+                    addedDoughFactoryListDetailDto.DoughFactoryProductName = _doughFactoryProductService.GetById(doughFactoryListDetails[i].DoughFactoryProductId).Name;
+
+                    addedDoughFactoryListDetailDto.Quantity = doughFactoryListDetails[i].Quantity;
+                    addedDoughFactoryListDetailDto.DoughFactoryListId = doughFactoryListDetails[i].DoughFactoryListId;
+
+                    List.Add(addedDoughFactoryListDetailDto);
+                }
+
+                return Ok(List);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+        }
+
+
+        [HttpGet("GetNotAddedDoughFactoryListDetailByListId")]
+        public ActionResult GetMarketByServiceListId(int doughFactoryListId)
         {
             try
             {
-                var result = _doughFactoryListDetailService.GetByDoughFactoryList(doughFactoryList);
-                return Ok(result);
+                List<DoughFactoryProduct> allDoughFactoryProduct = _doughFactoryProductService.GetAll();
+
+                List<GetNotAddedDoughFactoryListDetailDto> getNotAddedDoughFactoryListDetailDto = new();
+
+                if (doughFactoryListId == 0)
+                {
+                    for (int i = 0; i < allDoughFactoryProduct.Count; i++)
+                    {
+                        GetNotAddedDoughFactoryListDetailDto Dto = new();
+                        Dto.DoughFactoryProductId = doughFactoryListId;
+                        Dto.DoughFactoryProductId = allDoughFactoryProduct[i].Id;
+                        Dto.DoughFactoryProductName = allDoughFactoryProduct[i].Name;
+
+                        getNotAddedDoughFactoryListDetailDto.Add(Dto);
+                    }
+                }
+                else
+                {
+
+
+                    List<DoughFactoryListDetail> doughFactoryListDetails = _doughFactoryListDetailService.GetByDoughFactoryList(doughFactoryListId);
+
+                    List<int> addedDoughFactoryProductIds = new List<int>();
+
+                    for (int i = 0; i < doughFactoryListDetails.Count; i++)
+                    {
+                        addedDoughFactoryProductIds.Add(doughFactoryListDetails[i].DoughFactoryProductId);
+                    }
+
+                    // LINQ kullanarak filtreleme
+                    List<DoughFactoryProduct> filteredDoughFactoryProducts = allDoughFactoryProduct.Where(m => !addedDoughFactoryProductIds.Contains(m.Id)).ToList();
+
+                    for (int i = 0; i < filteredDoughFactoryProducts.Count; i++)
+                    {
+                        GetNotAddedDoughFactoryListDetailDto Dto = new();
+
+                        Dto.DoughFactoryProductId = filteredDoughFactoryProducts[i].Id;
+                        Dto.DoughFactoryProductName = filteredDoughFactoryProducts[i].Name;
+
+                        getNotAddedDoughFactoryListDetailDto.Add(Dto);
+                    }
+                }
+
+                return Ok(getNotAddedDoughFactoryListDetailDto);
+
             }
             catch (Exception e)
             {
