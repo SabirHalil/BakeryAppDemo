@@ -34,10 +34,21 @@ namespace WebAPI.Controllers
 
 
         [HttpGet("GetMoneyReceivedFromMarketByMarketId")]
-        public ActionResult GetMoneyReceivedFromMarketByMarketId(int marketId)
+        public ActionResult GetMoneyReceivedFromMarketByMarketId(int marketId, DateTime date)
         {
-            var result = _moneyReceivedFromMarketService.GetByMarketId(marketId);
-            return Ok(result);
+
+            try
+            {
+                //var result = _moneyReceivedFromMarketService.GetByMarketId(marketId);
+                var result = _moneyReceivedFromMarketService.GetByMarketIdAndDate(marketId,date);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+
         }
 
         [HttpGet("GetMoneyReceivedMarketListByDate")]
@@ -57,7 +68,7 @@ namespace WebAPI.Controllers
                     paymentMarket.Amount = moneyReceivedFromMarkets[i].Amount;
                     paymentMarket.MarketName = _marketService.GetNameById(moneyReceivedFromMarkets[i].MarketId);
                     paymentMarket.TotalAmount = TotalAmout(date, moneyReceivedFromMarkets[i].MarketId);
-                    paymentMarket.StaleBread = _staleBreadReceivedFromMarketService.GetStaleBreadCountByMarketId(paymentMarket.MarketId);
+                    paymentMarket.StaleBread = _staleBreadReceivedFromMarketService.GetStaleBreadCountByMarketId(paymentMarket.MarketId, date);
                     paymentMarkets.Add(paymentMarket);
 
                 }
@@ -107,7 +118,7 @@ namespace WebAPI.Controllers
                     notPaymentMarket.MarketId = filteredMarkets[i];
                     notPaymentMarket.MarketName = _marketService.GetNameById(filteredMarkets[i]);
                     notPaymentMarket.TotalAmount = TotalAmout(date, filteredMarkets[i]);
-                    notPaymentMarket.StaleBread = _staleBreadReceivedFromMarketService.GetStaleBreadCountByMarketId(notPaymentMarket.MarketId);
+                    notPaymentMarket.StaleBread = _staleBreadReceivedFromMarketService.GetStaleBreadCountByMarketId(notPaymentMarket.MarketId, date);
                     NotPaymentMarkets.Add(notPaymentMarket);
                 }
 
@@ -260,7 +271,7 @@ namespace WebAPI.Controllers
                 }
             }
 
-            int StaleBreadCount = _staleBreadReceivedFromMarketService.GetStaleBreadCountByMarketId(marketId);
+            int StaleBreadCount = _staleBreadReceivedFromMarketService.GetStaleBreadCountByMarketId(marketId, date);
 
             decimal TotalAmount = (TotalBread - StaleBreadCount) * Price;
 
@@ -284,9 +295,9 @@ namespace WebAPI.Controllers
             public int StaleBread { get; set; }
         }
     }
-    
 
-    
+
+
 
 
 }

@@ -20,10 +20,10 @@ namespace WebAppDemo.Controllers
         
         public async Task<IActionResult> Index()
         {
-            
-            List<DoughFactoryListDto> doughFactoryListDto = 
+
+            List<DoughFactoryListDto> doughFactoryListDto =
                 await _apiService.GetApiResponse<List<DoughFactoryListDto>>
-                ("https://localhost:7207/api/DoughFactory/GetByDateDoughFactoryList?date="+ _date.date.ToString("yyyy-MM-dd"));           
+                ("https://localhost:7207/api/DoughFactory/GetByDateDoughFactoryList?date=" + _date.date.ToString("yyyy-MM-dd"));
 
             List<DoughFactoryListAndDetailDto> doughFactoryListAndDetailDtos = new();
 
@@ -32,7 +32,7 @@ namespace WebAppDemo.Controllers
                 List<GetAddedDoughFactoryListDetailDto> getAddedDoughFactoryListDetailDto
                     = await _apiService.GetApiResponse<List<GetAddedDoughFactoryListDetailDto>>
                     ("https://localhost:7207/api/DoughFactory/GetAddedDoughFactoryListDetailByListId?doughFactoryListId=" + doughFactoryListDto[i].Id);
-
+                      
                 DoughFactoryListAndDetailDto doughFactoryListAndDetailDto = new();
 
                 doughFactoryListAndDetailDto.getAddedDoughFactoryListDetailDto = getAddedDoughFactoryListDetailDto;

@@ -1,9 +1,12 @@
 ﻿using Business.Abstract;
 using Business.Constants;
 using Castle.Core.Internal;
+using Core.Entities;
 using Entities.Concrete;
 using Entities.DTOs;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace WebAPI.Controllers
 {
@@ -102,12 +105,13 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("GetAddedDoughFactoryListDetailByListId")]
-        public ActionResult GetDoughFactoryListDetail(int listId)
+        public ActionResult GetDoughFactoryListDetail(int doughFactoryListId)
         {
 
             try
             {
-                List<DoughFactoryListDetail> doughFactoryListDetails = _doughFactoryListDetailService.GetByDoughFactoryList(listId);
+
+                List<DoughFactoryListDetail> doughFactoryListDetails = _doughFactoryListDetailService.GetByDoughFactoryList(doughFactoryListId);
 
                 List<GetAddedDoughFactoryListDetailDto> List = new();
 
@@ -136,7 +140,7 @@ namespace WebAPI.Controllers
 
 
         [HttpGet("GetNotAddedDoughFactoryListDetailByListId")]
-        public ActionResult GetMarketByServiceListId(int listId)
+        public ActionResult GetMarketByServiceListId(int doughFactoryListId)
         {
             try
             {
@@ -144,14 +148,14 @@ namespace WebAPI.Controllers
 
                 List<GetNotAddedDoughFactoryListDetailDto> getNotAddedDoughFactoryListDetailDto = new();
 
-                if (listId == 0)
-                {
+                if (doughFactoryListId == 0)
+                {                 
                     for (int i = 0; i < allDoughFactoryProduct.Count; i++)
                     {
-                        GetNotAddedDoughFactoryListDetailDto Dto = new();
-                    
-                        Dto.Id = allDoughFactoryProduct[i].Id;
-                        Dto.Name = allDoughFactoryProduct[i].Name;
+                        GetNotAddedDoughFactoryListDetailDto Dto = new ();
+                        Dto.DoughFactoryProductId = doughFactoryListId;
+                        Dto.DoughFactoryProductId = allDoughFactoryProduct[i].Id;
+                        Dto.DoughFactoryProductName = allDoughFactoryProduct[i].Name;
 
                         getNotAddedDoughFactoryListDetailDto.Add(Dto);
                     }
@@ -159,28 +163,28 @@ namespace WebAPI.Controllers
                 else
                 {
 
+                
+                List<DoughFactoryListDetail> doughFactoryListDetails = _doughFactoryListDetailService.GetByDoughFactoryList(doughFactoryListId);
 
-                    List<DoughFactoryListDetail> doughFactoryListDetails = _doughFactoryListDetailService.GetByDoughFactoryList(listId);
+                List<int> addedDoughFactoryProductIds = new List<int>();
 
-                    List<int> addedDoughFactoryProductIds = new List<int>();
+                for (int i = 0; i < doughFactoryListDetails.Count; i++)
+                {
+                    addedDoughFactoryProductIds.Add(doughFactoryListDetails[i].DoughFactoryProductId);
+                }
+             
+                // LINQ kullanarak filtreleme
+                List<DoughFactoryProduct> filteredDoughFactoryProducts = allDoughFactoryProduct.Where(m => !addedDoughFactoryProductIds.Contains(m.Id)).ToList();
 
-                    for (int i = 0; i < doughFactoryListDetails.Count; i++)
-                    {
-                        addedDoughFactoryProductIds.Add(doughFactoryListDetails[i].DoughFactoryProductId);
-                    }
+                for (int i = 0; i < filteredDoughFactoryProducts.Count; i++)
+                {
+                    GetNotAddedDoughFactoryListDetailDto Dto = new();
+                    
+                    Dto.DoughFactoryProductId = filteredDoughFactoryProducts[i].Id;
+                    Dto.DoughFactoryProductName = filteredDoughFactoryProducts[i].Name;
 
-                    // LINQ kullanarak filtreleme
-                    List<DoughFactoryProduct> filteredDoughFactoryProducts = allDoughFactoryProduct.Where(m => !addedDoughFactoryProductIds.Contains(m.Id)).ToList();
-
-                    for (int i = 0; i < filteredDoughFactoryProducts.Count; i++)
-                    {
-                        GetNotAddedDoughFactoryListDetailDto Dto = new();
-
-                        Dto.Id = filteredDoughFactoryProducts[i].Id;
-                        Dto.Name = filteredDoughFactoryProducts[i].Name;
-
-                        getNotAddedDoughFactoryListDetailDto.Add(Dto);
-                    }
+                    getNotAddedDoughFactoryListDetailDto.Add(Dto);
+                }
                 }
 
                 return Ok(getNotAddedDoughFactoryListDetailDto);
@@ -194,18 +198,18 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("DeleteDoughFactoryListDetail")]
-        public ActionResult DeleteDoughFactoryListDetail(int id)
+        public ActionResult DeleteDoughFactoryListDetail(int detailId)
         {
-            if (id <= 0)
+            if (detailId <= 0)
             {
                 return BadRequest(Messages.WrongInput);
             }
 
             try
             {
-                _doughFactoryListDetailService.DeleteById(id);
+                _doughFactoryListDetailService.DeleteById(detailId);
                 return Ok();
-            }
+            } 
             catch (Exception e)
             {
 
@@ -232,6 +236,21 @@ namespace WebAPI.Controllers
             }
         }
 
+        private class GetAddedDoughFactoryListDetailDto
+        {
+            public int Id { get; set; }
+            public int DoughFactoryProductId { get; set; }
+            public string DoughFactoryProductName { get; set; }
+            public int Quantity { get; set; }
+            public int DoughFactoryListId { get; set; }
 
+        }
+
+        public class GetNotAddedDoughFactoryListDetailDto
+        {
+            public int DoughFactoryProductId { get; set; }            
+            public string DoughFactoryProductName { get; set; }
+            
+        }
     }
 }
