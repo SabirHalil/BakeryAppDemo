@@ -9,7 +9,7 @@ namespace Entities.DTOs
 {
     public class GetNotAddedDoughFactoryListDetailDto:IDto
     {
-        public int DoughFactoryProductId { get; set; }
-        public string DoughFactoryProductName { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

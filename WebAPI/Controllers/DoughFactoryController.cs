@@ -102,13 +102,12 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("GetAddedDoughFactoryListDetailByListId")]
-        public ActionResult GetDoughFactoryListDetail(int doughFactoryListId)
+        public ActionResult GetDoughFactoryListDetail(int listId)
         {
 
             try
             {
-
-                List<DoughFactoryListDetail> doughFactoryListDetails = _doughFactoryListDetailService.GetByDoughFactoryList(doughFactoryListId);
+                List<DoughFactoryListDetail> doughFactoryListDetails = _doughFactoryListDetailService.GetByDoughFactoryList(listId);
 
                 List<GetAddedDoughFactoryListDetailDto> List = new();
 
@@ -137,7 +136,7 @@ namespace WebAPI.Controllers
 
 
         [HttpGet("GetNotAddedDoughFactoryListDetailByListId")]
-        public ActionResult GetMarketByServiceListId(int doughFactoryListId)
+        public ActionResult GetMarketByServiceListId(int listId)
         {
             try
             {
@@ -145,14 +144,14 @@ namespace WebAPI.Controllers
 
                 List<GetNotAddedDoughFactoryListDetailDto> getNotAddedDoughFactoryListDetailDto = new();
 
-                if (doughFactoryListId == 0)
+                if (listId == 0)
                 {
                     for (int i = 0; i < allDoughFactoryProduct.Count; i++)
                     {
                         GetNotAddedDoughFactoryListDetailDto Dto = new();
-                        Dto.DoughFactoryProductId = doughFactoryListId;
-                        Dto.DoughFactoryProductId = allDoughFactoryProduct[i].Id;
-                        Dto.DoughFactoryProductName = allDoughFactoryProduct[i].Name;
+                    
+                        Dto.Id = allDoughFactoryProduct[i].Id;
+                        Dto.Name = allDoughFactoryProduct[i].Name;
 
                         getNotAddedDoughFactoryListDetailDto.Add(Dto);
                     }
@@ -161,7 +160,7 @@ namespace WebAPI.Controllers
                 {
 
 
-                    List<DoughFactoryListDetail> doughFactoryListDetails = _doughFactoryListDetailService.GetByDoughFactoryList(doughFactoryListId);
+                    List<DoughFactoryListDetail> doughFactoryListDetails = _doughFactoryListDetailService.GetByDoughFactoryList(listId);
 
                     List<int> addedDoughFactoryProductIds = new List<int>();
 
@@ -177,8 +176,8 @@ namespace WebAPI.Controllers
                     {
                         GetNotAddedDoughFactoryListDetailDto Dto = new();
 
-                        Dto.DoughFactoryProductId = filteredDoughFactoryProducts[i].Id;
-                        Dto.DoughFactoryProductName = filteredDoughFactoryProducts[i].Name;
+                        Dto.Id = filteredDoughFactoryProducts[i].Id;
+                        Dto.Name = filteredDoughFactoryProducts[i].Name;
 
                         getNotAddedDoughFactoryListDetailDto.Add(Dto);
                     }

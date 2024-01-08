@@ -19,13 +19,14 @@ namespace WebAPI.Controllers
             _productService = productService; 
         }
 
-   [HttpGet("GetAllProductBycategoryId")]
-        public ActionResult GetAllProductBycategoryId(int categoryId)
+        [HttpGet("GetAllProductsBycategoryId")]
+        public ActionResult GetAllProductsBycategoryId(int categoryId)
         {
             var result = _productService.GetAllByCategoryId(categoryId);
             return Ok(result);
         }
 
+        /*
         [HttpGet("GetByListIdProduct")]
         public ActionResult GetByIdProduct(int listId, int categoryId)
         {
@@ -36,7 +37,7 @@ namespace WebAPI.Controllers
             var result = _productService.GetProductsByListId(listId, categoryId);
             return Ok(result);
         }
-
+        */
         [HttpPost("AddProduct")]
         public ActionResult AddProduct(Product product)
         {
@@ -49,13 +50,13 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("DeleteProduct")]
-        public ActionResult DeleteProduct(Product product)
+        public ActionResult DeleteProduct(int id)
         {
-            if (product == null)
+            if (id == 0)
             {
                 return BadRequest("There is no data!");
             }
-            _productService.Delete(product);
+            _productService.DeleteById(id);
             return Ok();
         }
 

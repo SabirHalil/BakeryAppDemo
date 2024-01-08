@@ -46,9 +46,9 @@ namespace Business.Concrete
 
       
 
-        public List<Product> GetProductsByListId(int listId, int categoryId)
+        public List<Product> GetNotAddedProductsByListAndCategoryId(int listId, int categoryId)
         {
-            throw new NotImplementedException();
+            return _productDal.GetNotAddedProductsByListAndCategoryId(listId,categoryId);
         }
 
         public decimal GetPriceById(int id)

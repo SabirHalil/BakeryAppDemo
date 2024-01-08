@@ -13,7 +13,7 @@ namespace Business.Abstract
         void Update(Product product);
         Product GetById(int id);
 
-        List<Product> GetProductsByListId(int listId, int categoryId);
+        List<Product> GetNotAddedProductsByListAndCategoryId(int listId, int categoryId);
 
         decimal GetPriceById(int id);
     }

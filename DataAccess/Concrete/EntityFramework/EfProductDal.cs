@@ -19,7 +19,7 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
-        public List<Product> GetProductsByListId(int listId, int categoryId)
+        public List<Product> GetNotAddedProductsByListAndCategoryId(int listId, int categoryId)
         {
             using (BakeryAppContext context = new())
             {

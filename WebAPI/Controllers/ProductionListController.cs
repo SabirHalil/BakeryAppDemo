@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.Constants;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,15 +23,40 @@ namespace WebAPI.Controllers
 
         }
 
-        [HttpGet("GetByDateProductionList")]
-        public ActionResult GetByDateDoughFactoryList(DateTime date)
+        [HttpGet("GetAddedProductsByDateAndCategoryId")]
+        public ActionResult GetAddedProductsByDateAndCategoryId(DateTime date, int categoryId)
         {
-            var result = _productionListService.GetByDate(date);
-            return Ok(result);
+            if (categoryId == 0 || date.Date > DateTime.Now.Date)
+            {
+                return BadRequest(Messages.WrongInput);
+            }
+            var listId = _productionListService.GetByDateAndCategoryId(date, categoryId);
+            var productsList = _productionListDetailService.GetProductsByListId(listId);
+            return Ok(productsList);
+        }
+
+        [HttpGet("GetNotAddedProductsByListAndCategoryId")]
+        public ActionResult GetNotAddedProductsByListAndCategoryId(DateTime date, int categoryId)
+        {
+            if(categoryId == 0 || date.Date >  DateTime.Now.Date) {
+                return BadRequest(Messages.WrongInput);
+            }
+
+            var listId = _productionListService.GetByDateAndCategoryId(date,categoryId);
+         
+
+            if(listId == 0)
+            {
+                var productList = _productService.GetAllByCategoryId(categoryId);
+                return Ok(productList);
+            }
+            var productListNotAdded = _productService.GetNotAddedProductsByListAndCategoryId(listId,categoryId);
+            return Ok(productListNotAdded);
+
         }
 
         [HttpPost("AddProductionListAndDetail")]
-        public ActionResult AddProductionDetailList(List<ProductionListDetail> productionListDetail, int userId)
+        public ActionResult AddProductionDetailList(List<ProductionListDetail> productionListDetail, int userId, int categoryId)
         {
             if (productionListDetail == null || productionListDetail.Count == 0)
             {
@@ -40,7 +66,7 @@ namespace WebAPI.Controllers
             bool IsNewList = false;
             if (productionListDetail[0].ProductionListId == 0)
             {
-                id = _productionListService.Add(new ProductionList { Id = 0, UserId = userId, Date = DateTime.Now });
+                id = _productionListService.Add(new ProductionList { Id = 0, UserId = userId, Date = DateTime.Now , CategoryId= categoryId});
                 IsNewList = true;
             }
 
@@ -64,19 +90,6 @@ namespace WebAPI.Controllers
 
             _productionListDetailService.AddList(productionListDetail);
             return Ok();
-        }
-
-        [HttpGet("GetProductionListDetailByDate")]
-        public ActionResult GetDoughFactoryListDetail(DateTime date)
-        {
-            var result = _productionListService.GetByDate(date);
-            if(result == null || result == 0)
-            {
-                return NotFound();
-            }
-
-            
-            return Ok(_productionListDetailService.GetProductsByListId(result));
         }
 
         [HttpDelete("DeleteProductionListDetail")]

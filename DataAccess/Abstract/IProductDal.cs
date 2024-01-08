@@ -7,6 +7,6 @@ namespace DataAccess.Abstract
     {
         void DeleteById(int id);
 
-        List<Product> GetProductsByListId(int listId, int categoryId);
+        List<Product> GetNotAddedProductsByListAndCategoryId(int listId, int categoryId);
     }
 }
