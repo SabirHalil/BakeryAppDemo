@@ -45,9 +45,9 @@ namespace Business.Concrete
             _breadCountingDal.Update(breadCounting);
         }
 
-        public List<BreadCounting> GetBreadCountingByDate(DateTime date)
+        public BreadCounting GetBreadCountingByDate(DateTime date)
         {
-           return _breadCountingDal.GetAll(b=>b.Date.Date == date.Date);
+           return _breadCountingDal.Get(b=>b.Date.Date == date.Date);
         }
 
         public void AddList(List<BreadCounting> breadCounting)

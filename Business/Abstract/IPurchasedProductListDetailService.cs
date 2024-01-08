@@ -13,6 +13,7 @@ namespace Business.Abstract
         void Update(PurchasedProductListDetail purchasedProductListDetail);
         void UpdateList(List<PurchasedProductListDetail> purchasedProductListDetails);
         PurchasedProductListDetail GetById(int id);
+        PurchasedProductListDetail GetPurchasedProductListDetailByDateAndProductId(DateTime date, int productId);
         bool IsExist(int productId);
     }
 }

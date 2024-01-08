@@ -54,5 +54,11 @@ namespace Business.Concrete
         {
             return _staleProductDal.GetProductsNotAddedToStale(date, categoryId);
         }
+
+        public int  GetQuantityStaleBreadByDateAndProductId(DateTime date, int productId)
+        {
+            StaleProduct staleProduct=  _staleProductDal.Get(d => d.ProductId == productId && d.Date.Date == date.Date);
+            return staleProduct == null ? 0 : staleProduct.Quantity;
+        }
     }
 }

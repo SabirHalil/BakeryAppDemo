@@ -1,6 +1,8 @@
 ﻿using Business.Abstract;
 using DataAccess.Abstract;
+using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business.Concrete
 {
@@ -9,10 +11,12 @@ namespace Business.Concrete
 
 
         IProductionListDetailDal _productionListDetailDal;
+        IProductionListService _productionListService;
 
-        public ProductionListDetailManager(IProductionListDetailDal productionListDetailDal)
+        public ProductionListDetailManager(IProductionListService productionListService,IProductionListDetailDal productionListDetailDal)
         {
             _productionListDetailDal = productionListDetailDal;
+            _productionListService = productionListService;
         }
 
         public void Add(ProductionListDetail productionListDetail)
@@ -60,6 +64,14 @@ namespace Business.Concrete
 
         }
 
+        public ProductionListDetail GetProductionListDetailByDateAndProductId(DateTime date, int productId)
+        {
 
+            int productionListId = _productionListService.GetByDate(date);
+
+            ProductionListDetail productionListDetail = _productionListDetailDal.Get(d => d.ProductId == productId && d.ProductionListId == productionListId);
+
+            return productionListDetail == null ? new ProductionListDetail { Quantity = 0, Price=0} : productionListDetail;
+        }
     }
 }
