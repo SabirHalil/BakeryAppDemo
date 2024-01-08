@@ -1,4 +1,14 @@
+using BakeryAppUI.Controllers;
+
 var builder = WebApplication.CreateBuilder(args);
+
+
+//builder.Services.AddSingleton<ITakenCourseService, TakenCourseManager>();
+
+builder.Services.AddHttpClient<ApiService>();
+
+
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -22,7 +32,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    //pattern: "{controller=Home}/{action=Index}/{id?}");
-    pattern: "{controller=Login}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+//pattern: "{controller=Login}/{action=Index}/{id?}");
 
 app.Run();

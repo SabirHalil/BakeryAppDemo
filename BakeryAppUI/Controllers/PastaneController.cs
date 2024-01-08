@@ -1,29 +1,24 @@
-﻿using BakeryAppUI.Controllers;
-using BakeryAppUI.Models;
+﻿using BakeryAppUI.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using static WebAppDemo.Controllers.HamurhaneController;
 
-namespace WebAppDemo.Controllers
+namespace BakeryAppUI.Controllers
 {
-    public class HamurhaneController : Controller
+    public class PastaneController : Controller
     {
-
+                 
         private readonly ApiService _apiService;
         private static Date _date = new Date { date = DateTime.Now };
-        public HamurhaneController(ApiService apiService)
+        public PastaneController(ApiService apiService)
         {
             _apiService = apiService;
         }
 
-        
-        
         public async Task<IActionResult> Index()
         {
-            
-            List<DoughFactoryListDto> doughFactoryListDto = 
+
+            List<DoughFactoryListDto> doughFactoryListDto =
                 await _apiService.GetApiResponse<List<DoughFactoryListDto>>
-                ("https://localhost:7207/api/DoughFactory/GetByDateDoughFactoryList?date="+ _date.date.ToString("yyyy-MM-dd"));           
+                ("https://localhost:7207/api/DoughFactory/GetByDateDoughFactoryList?date=" + _date.date.ToString("yyyy-MM-dd"));
 
             List<DoughFactoryListAndDetailDto> doughFactoryListAndDetailDtos = new();
 
@@ -48,9 +43,6 @@ namespace WebAppDemo.Controllers
             return View();
         }
 
-
-
-        
         [HttpPost]
         public async Task<ActionResult> PostDate(Date adate)
         {
@@ -61,20 +53,14 @@ namespace WebAppDemo.Controllers
             return RedirectToAction("Index"); // İsteğe bağlı olarak başka bir sayfaya yönlendirme yapabilirsiniz.
         }
 
-
-
-
-
-
-
-
-
-
         public class DoughFactoryListAndDetailDto
         {
             public List<GetAddedDoughFactoryListDetailDto> getAddedDoughFactoryListDetailDto { get; set; }
             public string Name { get; set; }
 
         }
+
+
+
     }
 }

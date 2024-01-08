@@ -54,5 +54,10 @@ namespace Business.Concrete
         {
             return _moneyReceivedFromMarketDal.GetAll(d => d.Date.Date == date.Date);
         }
+
+        public MoneyReceivedFromMarket GetByMarketIdAndDate(int id, DateTime date)
+        {
+            return _moneyReceivedFromMarketDal.Get(s => s.MarketId == id &&s.Date.Date == date.Date);
+        }
     }
 }

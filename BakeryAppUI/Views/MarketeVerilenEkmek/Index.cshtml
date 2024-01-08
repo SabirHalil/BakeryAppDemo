@@ -3,7 +3,7 @@
 
 <div class="container mt-5">
 
-    <div class="row mb-3">
+    <div class="row mt-5">
         <div class="col-md-4">
             <div class="row">
                 <label for="inputDate" class="col-sm-2 col-form-label font-weight-bold fs-5">Tarih</label>
@@ -20,7 +20,7 @@
     </div>
 
 
-    @using (Html.BeginForm("PostDate", "Hamurhane", FormMethod.Post, new { id = "myForm" }))
+    @using (Html.BeginForm("PostDate", "MarketeVerilenEkmek", FormMethod.Post, new { id = "myForm" }))
     {
         <input type="hidden" id="dateHidden" name="date" />
     }
@@ -34,82 +34,11 @@
     </script>
 
 
-    @*
-    <div class="row mb-3">
-    <div class="col-md-12">
-    <h5>İmal Edilen Ürünler</h5>
-    <table class="table">
-    <thead>
-    <tr>
-    <th>Ürün Adı</th>
-    <th>1.Hamur</th>
-    <th>2.Hamur</th>
-    <th>3.Hamur</th>
-    <th>Toplam</th>
-    <th></th>
-    <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-    <td>Ürün 1</td>
-    <td>10</td>
-    <td>20</td>
-    <td>30</td>
-    <td>90</td>
-    <td>
-    <button class="btn btn-primary">Düzenle</button>
-    <button class="btn btn-danger">Sil</button>
-    </td>
-
-    </tr>
-    <tr>
-    <td>Ürün 2</td>
-    <td>10</td>
-    <td>20</td>
-    <td>30</td>
-    <td>75</td>
-    <td>
-    <button class="btn btn-primary">Düzenle</button>
-    <button class="btn btn-danger">Sil</button>
-    </td>
-
-    </tr>
-
-    </tbody>
-    </table>
-    </div>
-    </div>
-    <div class="row mb-3">
-    <div class="col-md-12">
-    <h5>Ürünler</h5>
-    <table class="table">
-    <thead>
-    <tr>
-    <th>Ürün Adı</th>
-    <th>Ürün Adedi</th>
-    <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-    <td>Ürün 1</td>
-    <td><input type="number" class="form-control col-auto" placeholder="Ürün Adedi"></td>
-    <td>
-    <button class="btn btn-success">Ekle</button>
-    </td>
-    </tr>
-
-    </tbody>
-    </table>
-    </div>
-    </div>
-    *@
-    <div class="row">
+    <div class="row mt-5">
         @{
             int i = 0;
         }
-        @foreach (var item in ViewBag.doughFactoryListAndDetailDtos)
+        @foreach (var item in ViewBag.serviceListAndDetailDtos)
         {
 
             i++;
@@ -125,7 +54,9 @@
 
                     <div class="card-body text-center">
                         <p class="fs-4">
-                            <span class="iconify" data-icon="mdi-chef-hat" style="font-size: 36px;"></span>
+                            @*  <span class="iconify" data-icon="mdi-car" style="font-size: 36px;"></span> *@
+                            <!-- Özel ekmek dağıtan araba ikonu örneği (internetten çekme) -->
+                            <img src="https://www.svgrepo.com/show/308193/bread-truck-truck.svg" style="width: 40px; height: 40px;">
                             @item.Name
                         </p>
                         <!-- Button trigger for basic modal -->
@@ -150,7 +81,7 @@
                                     <div class="modal-body">
                                         <div class="row mb-3">
                                             <div class="col-md-12">
-                                                <h5>İmal Edilen Ürünler</h5>
+                                                <h5>Teslim Edilen Ürünler</h5>
                                                 <table class="table">
                                                     <thead>
                                                         <tr>
@@ -162,11 +93,11 @@
 
                                                     <tbody>
 
-                                                        @foreach (var product in item.getAddedDoughFactoryListDetailDto)
+                                                        @foreach (var m in item.serviceListDetail)
                                                         {
                                                             <tr>
-                                                                <td>@product.DoughFactoryProductName</td>
-                                                                <td>@product.Quantity</td>
+                                                                <td>@m.MarketName</td>
+                                                                <td>@m.Quantity</td>
                                                             </tr>
                                                         }
                                                     </tbody>
@@ -184,31 +115,41 @@
         }
 
     </div>
+
+
+    <div class="row mt-5">
+
+
+        <h5>Gün Özeti</h5>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Market Adı</th>
+                    <th>Toplam Tutar</th>
+                    <th>Ödenen Ücret</th>
+                    <th>Bayat Ekmek</th>
+                </tr>
+
+            </thead>
+            <tbody>
+                @foreach (var item in ViewBag.paymentMarket)
+                {
+                    <tr>
+                        <td>@item.MarketName</td>
+                        <td>@item.TotalAmount</td>
+                        <td>@item.Amount</td>
+                        <td>@item.StaleBread</td>
+                    </tr>
+                }
+
+
+            </tbody>
+        </table>
+
+    </div>
+
+
 </div>
 
 
 
-@* 
-
-<script>
-    // Sayfanın en son kaydırma pozisyonunu bir cookie olarak sakla
-    window.onbeforeunload = function () {
-        document.cookie = "scrollPosition=" + window.scrollY;
-    };
-
-    // Sayfa yüklendiğinde en son kaydırma pozisyonuna geri dön
-    window.onload = function () {
-        var scrollPosition = getCookie("scrollPosition");
-        if (scrollPosition) {
-            window.scrollTo(0, parseInt(scrollPosition));
-        }
-    };
-
-    // Cookie değerini almak için yardımcı bir fonksiyon
-    function getCookie(name) {
-        var value = "; " + document.cookie;
-        var parts = value.split("; " + name + "=");
-        if (parts.length === 2) return parts.pop().split(";").shift();
-    } 
-</script>
-*@
