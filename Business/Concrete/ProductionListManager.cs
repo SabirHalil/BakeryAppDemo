@@ -52,5 +52,11 @@ namespace Business.Concrete
             ProductionList productList = _productionListDal.Get(p => p.Date.Date == date.Date && p.CategoryId == categoryId);
             return productList == null ? 0 : productList.Id;
         }
+
+        public int GetByDate(DateTime date)
+        {
+            ProductionList productList = _productionListDal.Get(p => p.Date.Date == date.Date);
+            return productList == null ? 0 : productList.Id;
+        }
     }
 }
