@@ -44,9 +44,9 @@ namespace Business.Concrete
             _staleBreadReceivedFromMarketDal.Update(staleBreadReceivedFromMarket);
         }
 
-        public StaleBreadReceivedFromMarket GetByMarketId(int id)
+        public StaleBreadReceivedFromMarket GetByMarketId(int id, DateTime date)
         {
-            return _staleBreadReceivedFromMarketDal.Get(s=>s.MarketId == id);
+            return _staleBreadReceivedFromMarketDal.Get(s=>s.MarketId == id && s.Date.Date == date.Date);
         }
 
         public void DeleteByDateAndMarketId(DateTime date, int marketId)
@@ -54,9 +54,10 @@ namespace Business.Concrete
              _staleBreadReceivedFromMarketDal.DeleteByDateAndMarketId(date, marketId);
         }
 
-        public int GetStaleBreadCountByMarketId(int MarketId)
+        public int GetStaleBreadCountByMarketId(int MarketId, DateTime date)
         {
-            StaleBreadReceivedFromMarket staleBreadReceivedFromMarket = _staleBreadReceivedFromMarketDal.Get(s => s.MarketId == MarketId);
+            StaleBreadReceivedFromMarket staleBreadReceivedFromMarket = _staleBreadReceivedFromMarketDal.Get(s => s.MarketId == MarketId && s.Date.Date == date.Date);
+
 
             return staleBreadReceivedFromMarket == null ? 0 : staleBreadReceivedFromMarket.Quantity;
         }

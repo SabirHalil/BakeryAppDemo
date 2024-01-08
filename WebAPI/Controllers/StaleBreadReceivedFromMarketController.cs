@@ -22,11 +22,11 @@ namespace WebAPI.Controllers
 
 
         [HttpGet("GetStaleBreadReceivedFromMarketByMarketId")]
-        public ActionResult GetStaleBreadReceivedFromMarket(int marketId)
+        public ActionResult GetStaleBreadReceivedFromMarket(int marketId, DateTime date)
         {
             try
             {
-                var result = _staleBreadReceivedFromMarketService.GetByMarketId(marketId);
+                var result = _staleBreadReceivedFromMarketService.GetByMarketId(marketId, date);
                 return Ok(result);
             }
             catch (Exception e)
