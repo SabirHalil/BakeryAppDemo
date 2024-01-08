@@ -6,6 +6,7 @@ namespace Business.Abstract
     {
         List<MoneyReceivedFromMarket> GetAll();
         List<MoneyReceivedFromMarket> GetByMarketId(int id);
+        MoneyReceivedFromMarket GetByMarketIdAndDate(int id, DateTime date);
         List<MoneyReceivedFromMarket> GetByDate(DateTime date);
         void Add(MoneyReceivedFromMarket moneyReceivedFromMarket);
         void DeleteById(int id);

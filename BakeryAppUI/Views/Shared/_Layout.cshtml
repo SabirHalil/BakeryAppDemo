@@ -24,7 +24,23 @@
                                max="@DateTime.Now.ToString("yyyy-MM-dd")"
                                value="@DateTime.Now.ToString("yyyy-MM-dd")">                
             </div>
-        
+
+
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var dateInput = document.querySelector('.form-control');
+
+                window.anlikSecilenTarih = dateInput.value;
+
+                dateInput.addEventListener('change', function () {
+                    window.anlikSecilenTarih = dateInput.value;
+                    console.log(window.anlikSecilenTarih);
+                });
+            });
+        </script>
+
+
         <!-- Navbar-->
         <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
             <li class="nav-item dropdown">
@@ -146,6 +162,7 @@
                         <div class="collapse" id="Servis" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a class="nav-link" href="@Url.Action("Index", "Sofor")">Şoför</a>
+                                <a class="nav-link" href="@Url.Action("Index", "MarketeVerilenEkmek")">Market V. Ekmek</a>
 
                             </nav>
                         </div>
