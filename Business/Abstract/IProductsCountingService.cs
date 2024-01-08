@@ -12,6 +12,7 @@ namespace Business.Abstract
         void Delete(ProductsCounting productsCounting);
         void Update(ProductsCounting productsCounting);
         ProductsCounting GetById(int id);
+        int GetQuantityProductsCountingByDateAndProductId(DateTime date,int productId);
         bool IsExist(int productId);
     }
 }

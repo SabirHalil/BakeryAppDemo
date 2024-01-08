@@ -5,7 +5,7 @@ namespace Business.Abstract
     public interface IBreadCountingService
     {
         List<BreadCounting> GetAll();
-        List<BreadCounting> GetBreadCountingByDate(DateTime date);
+        BreadCounting GetBreadCountingByDate(DateTime date);
         void Add(BreadCounting breadCounting);
         void AddList(List<BreadCounting> breadCounting);
         void DeleteById(int id);

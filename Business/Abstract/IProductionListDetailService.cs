@@ -13,5 +13,6 @@ namespace Business.Abstract
         void Delete(ProductionListDetail productionListDetail);
         void Update(ProductionListDetail productionListDetail);
         ProductionListDetail GetById(int id);
+        ProductionListDetail GetProductionListDetailByDateAndProductId(DateTime date, int productId);
     }
 }

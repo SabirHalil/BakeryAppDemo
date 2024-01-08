@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using DataAccess.Abstract;
+using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
 
 namespace Business.Concrete
@@ -52,6 +53,12 @@ namespace Business.Concrete
         public bool IsExist(int productId)
         {
             return _productsCountingDal.Get(d => d.ProductId == productId) == null ? false : true;
+        }
+
+        public int GetQuantityProductsCountingByDateAndProductId(DateTime date, int productId)
+        {
+            ProductsCounting productsCounting = _productsCountingDal.Get(p => p.Date.Date == date.Date && p.ProductId == productId);
+            return productsCounting == null ? 0 : productsCounting.Quantity;
         }
     }
 }

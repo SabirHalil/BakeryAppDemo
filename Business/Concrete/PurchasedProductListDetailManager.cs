@@ -70,5 +70,11 @@ namespace Business.Concrete
                 _purchasedProductListDetailDal.Add(purchasedProductListDetails[i]);
             }
         }
+
+        public PurchasedProductListDetail GetPurchasedProductListDetailByDateAndProductId(DateTime date, int productId)
+        {
+            PurchasedProductListDetail purchasedProductListDetail = _purchasedProductListDetailDal.Get(d => d.ProductId == productId && d.Date.Date == date);
+            return purchasedProductListDetail == null ? new PurchasedProductListDetail { Price =0, Quantity =0} : purchasedProductListDetail;
+        }
     }
 }
