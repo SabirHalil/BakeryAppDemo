@@ -26,5 +26,7 @@ namespace Business.Constants
         public static string Created = "Created successfully!";
         public static string InvalidAmount = "Invalid amount!";
         public static string OncePerDay = "You can only enter data once per day!";
+        public static string InvalidToken = "Your token is not valied or has beed expired!";
+
     }
 }
