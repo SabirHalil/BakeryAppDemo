@@ -11,6 +11,6 @@ namespace Business.Abstract
         void DeleteById(int id);
         void Update(DoughFactoryListDetail doughFactoryListDetail);
         DoughFactoryListDetail GetById(int id);
-        bool IsExist(int id);
+        bool IsExist(int id, int listId);
     }
 }
