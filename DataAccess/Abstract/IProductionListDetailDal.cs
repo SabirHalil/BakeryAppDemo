@@ -7,7 +7,7 @@ namespace DataAccess.Abstract
     {
         void DeleteById(int id);
 
-        bool IsExist(int id);
+        bool IsExist(int id, int listId);
         void AddList(List<ProductionListDetail> productionListDetail);
     }
 }

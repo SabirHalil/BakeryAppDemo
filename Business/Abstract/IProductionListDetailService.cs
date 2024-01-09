@@ -6,7 +6,7 @@ namespace Business.Abstract
     {
         List<ProductionListDetail> GetAll();
         List<ProductionListDetail> GetProductsByListId(int id);
-        bool IsExist(int id);
+        bool IsExist(int id, int listId);
         void Add(ProductionListDetail productionListDetail);
         void AddList(List<ProductionListDetail> productionListDetail);
         void DeleteById(int id);

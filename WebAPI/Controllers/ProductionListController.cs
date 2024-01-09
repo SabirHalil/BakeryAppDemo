@@ -80,7 +80,7 @@ namespace WebAPI.Controllers
                 }
                 else
                 {
-                    if (_productionListDetailService.IsExist(productionListDetail[i].ProductId))
+                    if (_productionListDetailService.IsExist(productionListDetail[i].ProductId, productionListDetail[i].ProductionListId))
                     {
                         return Conflict("A product already exist in the list.");
                     }

@@ -48,9 +48,9 @@ namespace Business.Concrete
             _productionListDetailDal.Update(productionListDetail);
         }
 
-        public bool IsExist(int id)
+        public bool IsExist(int id, int listId)
         {
-            return _productionListDetailDal.IsExist(id);
+            return _productionListDetailDal.IsExist(id, listId);
         }
 
         public void AddList(List<ProductionListDetail> productionListDetail)
