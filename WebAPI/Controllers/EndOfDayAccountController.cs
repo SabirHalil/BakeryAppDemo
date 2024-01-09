@@ -4,6 +4,7 @@ using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace WebAPI.Controllers
 {
@@ -14,13 +15,25 @@ namespace WebAPI.Controllers
         private IPurchasedProductListDetailService _purchasedProductListDetailService;
         private IProductService _productService;
         private IProductionListDetailService _productionListDetailService;
-        private IProductsCountingService _productsCountingService;     
+        private IProductsCountingService _productsCountingService;
         private IStaleProductService _staleProductService;
 
         private IBreadCountingService _breadCountingService;
 
         private IGivenProductsToServiceService _givenProductsToServiceService;
-        public EndOfDayAccountController(IGivenProductsToServiceService givenProductsToServiceService, IBreadCountingService breadCountingService,IPurchasedProductListDetailService purchasedProductListDetailService, IStaleProductService staleProductService, IProductsCountingService productsCountingService, IProductService productService, IProductionListDetailService productionListDetailService)
+
+        private IDoughFactoryListService _doughFactoryListService;
+        private IDoughFactoryListDetailService _doughFactoryListDetailService;
+        private IDoughFactoryProductService _doughFactoryProductService;
+
+        private IBreadPriceService _breadPriceService;
+
+        private IStaleBreadService _staleBreadService;
+        public EndOfDayAccountController(IStaleBreadService staleBreadService, IDoughFactoryListService doughFactoryListService, IDoughFactoryListDetailService doughFactoryListDetailService, IDoughFactoryProductService doughFactoryProductService,
+            IGivenProductsToServiceService givenProductsToServiceService, IBreadCountingService breadCountingService,
+            IPurchasedProductListDetailService purchasedProductListDetailService, IStaleProductService staleProductService,
+            IProductsCountingService productsCountingService, IProductService productService, IProductionListDetailService productionListDetailService,
+            IBreadPriceService breadPriceService)
         {
             _purchasedProductListDetailService = purchasedProductListDetailService;
             _productService = productService;
@@ -30,6 +43,12 @@ namespace WebAPI.Controllers
             _breadCountingService = breadCountingService;
             _givenProductsToServiceService = givenProductsToServiceService;
 
+            _doughFactoryProductService = doughFactoryProductService;
+            _doughFactoryListService = doughFactoryListService;
+            _doughFactoryListDetailService = doughFactoryListDetailService;
+
+            _staleBreadService = staleBreadService;
+            _breadPriceService = breadPriceService;
         }
 
 
@@ -37,8 +56,12 @@ namespace WebAPI.Controllers
         [HttpGet("GetProductsSoldInTheBakery")]
         public ActionResult GetProductsSoldInTheBakery(DateTime date)
         {
-            List<Product> products = _productService.GetAllByCategoryId(2);
-            List < ProductSoldInTheBakery> productsSoldInTheBakery = new();
+            List<Product> products = _productService.GetAllByCategoryId(2);         
+            List<Product> products2 = _productService.GetAllByCategoryId(1);
+
+            products.AddRange(products2);
+
+            List<ProductSoldInTheBakery> productsSoldInTheBakery = new();
             for (int i = 0; i < products.Count; i++)
             {
                 ProductSoldInTheBakery productSoldInTheBakery = new();
@@ -51,9 +74,9 @@ namespace WebAPI.Controllers
 
                 productSoldInTheBakery.StaleProductToday = _staleProductService.GetQuantityStaleBreadByDateAndProductId((date.Date), products[i].Id);
 
-                productSoldInTheBakery.ProducedToday = _productionListDetailService.GetProductionListDetailByDateAndProductId((date.Date), products[i].Id).Quantity;
+                productSoldInTheBakery.ProductedToday = _productionListDetailService.GetProductionListDetailByDateAndProductId((date.Date), products[i].Id).Quantity;
 
-                productSoldInTheBakery.Revenue = productSoldInTheBakery.Price * (productSoldInTheBakery.RemainingYesterday + productSoldInTheBakery.ProducedToday - productSoldInTheBakery.RemainingToday - productSoldInTheBakery.StaleProductToday);
+                productSoldInTheBakery.Revenue = productSoldInTheBakery.Price * (productSoldInTheBakery.RemainingYesterday + productSoldInTheBakery.ProductedToday - productSoldInTheBakery.RemainingToday - productSoldInTheBakery.StaleProductToday);
 
                 productsSoldInTheBakery.Add(productSoldInTheBakery);
             }
@@ -91,38 +114,43 @@ namespace WebAPI.Controllers
         [HttpGet("GetBreadSold")]
         public ActionResult GetBreadSold(DateTime date)
         {
-            List<Product> products = _productService.GetAllByCategoryId(2);
-            List<ProductSoldInTheBakery> productsSoldInTheBakery = new();
-            for (int i = 0; i < products.Count; i++)
-            {
-                BreadSold breadSold = new();
+            double AllBreadProduced = 0;
 
-                //productSoldInTheBakery.ProductId = products[i].Id;
-                //productSoldInTheBakery.ProductName = products[i].Name;
-                //productSoldInTheBakery.Price = _productionListDetailService.GetProductionListDetailByDateAndProductId((DateTime.Now), products[i].Id).Price;
+           
+            List<DoughFactoryListDto> doughFactoryListDto = _doughFactoryListService.GetByDate(date.Date);
 
-
-                breadSold.RemainingYesterday = _breadCountingService.GetBreadCountingByDate(DateTime.Now.AddDays(-1)).Quantity;
-                breadSold.RemainingToday = _breadCountingService.GetBreadCountingByDate(DateTime.Now).Quantity;
-
-                //breadSold.StaleProductToday = _staleProductService.GetQuantityStaleBreadByDateAndProductId((DateTime.Now), products[i].Id);
-
-                //breadSold.ProducedToday = _productionListDetailService.GetProductionListDetailByDateAndProductId((DateTime.Now), products[i].Id).Quantity;
-
-                //productSoldInTheBakery.Revenue = productSoldInTheBakery.Price * (productSoldInTheBakery.RemainingYesterday + productSoldInTheBakery.ProducedToday - productSoldInTheBakery.RemainingToday - productSoldInTheBakery.StaleProductToday);
-
-                //productsSoldInTheBakery.Add(productSoldInTheBakery);
-            }
-
-            List<GivenProductsToServiceTotalResultDto> givenProductsToServiceTotalResultDto = _givenProductsToServiceService.GetTotalQuantityByDate(date);
-            for (int i = 0; i< givenProductsToServiceTotalResultDto.Count; i++)
+            for (int i = 0; i < doughFactoryListDto.Count; i++)
             {
 
+                List<DoughFactoryListDetail> doughFactoryListDetails = _doughFactoryListDetailService.GetByDoughFactoryList(doughFactoryListDto[i].Id);
+
+                for (int j = 0; j < doughFactoryListDetails.Count; j++)
+                {
+                    DoughFactoryProduct doughFactoryProduct = _doughFactoryProductService.GetById(doughFactoryListDetails[j].DoughFactoryProductId);
+                    AllBreadProduced += doughFactoryProduct.BreadEquivalent * doughFactoryListDetails[j].Quantity;
+                }
             }
 
+            List<StaleBreadDto> staleBreadDtos = _staleBreadService.GetAllByDate(date);
+            double StaleBread = 0;
 
+            for (int i = 0; i < staleBreadDtos.Count; i++)
+            {              
+                    DoughFactoryProduct doughFactoryProduct = _doughFactoryProductService.GetById(staleBreadDtos[i].DoughFactoryProductId);
+                    StaleBread += doughFactoryProduct.BreadEquivalent * staleBreadDtos[i].Quantity;             
+            }
 
-            return Ok(productsSoldInTheBakery);
+            BreadSold breadSold = new();
+            breadSold.RemainingYesterday = _breadCountingService.GetBreadCountingByDate(DateTime.Now.AddDays(-1)).Quantity;
+            breadSold.RemainingToday = _breadCountingService.GetBreadCountingByDate(DateTime.Now).Quantity;
+            breadSold.ProductedToday = AllBreadProduced;
+            breadSold.StaleProductToday = StaleBread;
+            breadSold.ProductName = "Ekmek";
+            breadSold.Price = 5;
+
+            breadSold.Revenue = breadSold.Price * (breadSold.RemainingYesterday - breadSold.RemainingToday + breadSold.ProductedToday - breadSold.StaleProductToday);
+            return Ok(breadSold);
+            
         }
 
 
@@ -135,36 +163,38 @@ namespace WebAPI.Controllers
             public decimal Price { get; set; }
             public decimal Revenue { get; set; }
             public int RemainingYesterday { get; set; }
-            public int ProducedToday { get; set; }
+            public int ProductedToday { get; set; }
             public int RemainingToday { get; set; }
             public int StaleProductToday { get; set; }
-            
+
         }
         private class PurchasedProductSoldInTheBakery
-        {            
-            public int ProductId { get; set; }
-            public string ProductName { get; set; }
-            public decimal Price { get; set; }
-            public decimal Revenue { get; set; }
-            public int RemainingYesterday { get; set; }          
-            public int PurchasedToday { get; set; }
-            public int RemainingToday { get; set; }
-            public int StaleProductToday { get; set; }
-            
-        }
-        private class BreadSold
-        {            
+        {
             public int ProductId { get; set; }
             public string ProductName { get; set; }
             public decimal Price { get; set; }
             public decimal Revenue { get; set; }
             public int RemainingYesterday { get; set; }
-            public int ProducedToday { get; set; }
+            public int PurchasedToday { get; set; }
             public int RemainingToday { get; set; }
             public int StaleProductToday { get; set; }
-            public int GivenBreadsToServiceTotal { get; set; }
 
-            
+        }
+        private class BreadSold
+        {
+            //public int ProductId { get; set; }
+            public string ProductName { get; set; }
+            //public decimal Price { get; set; }
+            public double Price { get; set; }
+            public double Revenue { get; set; }
+          //  public decimal Revenue { get; set; }
+            public int RemainingYesterday { get; set; }
+            public double ProductedToday { get; set; }
+            public int RemainingToday { get; set; }
+            public double StaleProductToday { get; set; }
+          //  public int GivenBreadsToServiceTotal { get; set; }
+
+
         }
     }
 }
