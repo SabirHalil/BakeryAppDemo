@@ -80,7 +80,7 @@ namespace WebAPI.Controllers
                     }
                     else
                     {
-                        if (_doughFactoryListDetailService.IsExist(doughFactoryListDetail[i].DoughFactoryProductId))
+                        if (_doughFactoryListDetailService.IsExist(doughFactoryListDetail[i].DoughFactoryProductId, doughFactoryListDetail[i].DoughFactoryListId ))
                         {
                             return Conflict(Messages.Conflict);
                         }

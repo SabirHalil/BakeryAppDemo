@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using System.Collections.Generic;
 
 namespace Business.Concrete
 {
@@ -43,9 +44,9 @@ namespace Business.Concrete
             return _doughFactoryListDetailDal.Get(d => d.Id == id);
         }
         
-        public bool IsExist(int id)
+        public bool IsExist(int id, int listId)
         {
-            return _doughFactoryListDetailDal.IsExist(id);
+            return _doughFactoryListDetailDal.IsExist(id,  listId);
         }
 
         public void Update(DoughFactoryListDetail doughFactoryListDetail)

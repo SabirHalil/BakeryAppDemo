@@ -25,15 +25,12 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
-        public bool IsExist(int id)
+        public bool IsExist(int id, int listId)
         {
             using (var context = new BakeryAppContext())
             {
-                var entity = context.DoughFactoryListDetails.Where(p=>p.DoughFactoryProductId == id); 
-                return entity != null;
+                return (context.DoughFactoryListDetails?.Any(p => p.DoughFactoryProductId == id && p.DoughFactoryListId == listId)).GetValueOrDefault();
             }
-
-            
         }
     }
 }
