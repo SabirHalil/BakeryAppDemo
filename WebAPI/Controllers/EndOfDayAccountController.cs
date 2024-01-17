@@ -162,8 +162,8 @@ namespace WebAPI.Controllers
                 }
 
                 BreadSold breadSold = new();
-                breadSold.RemainingYesterday = _breadCountingService.GetBreadCountingByDate(DateTime.Now.AddDays(-1)).Quantity;
-                breadSold.RemainingToday = _breadCountingService.GetBreadCountingByDate(DateTime.Now).Quantity;
+                breadSold.RemainingYesterday = _breadCountingService.GetBreadCountingByDate(date.Date.AddDays(-1)).Quantity;
+                breadSold.RemainingToday = _breadCountingService.GetBreadCountingByDate(date.Date).Quantity;
                 breadSold.ProductedToday = AllBreadProduced;
                 breadSold.StaleProductToday = StaleBread;
                 breadSold.ProductName = "Ekmek";
