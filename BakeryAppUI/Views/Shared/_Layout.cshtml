@@ -19,12 +19,12 @@
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
       
         
-            <div class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+            @* <div class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
                 <input type="date" class="form-control"
                                max="@DateTime.Now.ToString("yyyy-MM-dd")"
                                value="@DateTime.Now.ToString("yyyy-MM-dd")">                
             </div>
-
+ *@
 
 
         <script>
@@ -137,6 +137,12 @@
                             <div class="collapse" id="tezgah" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="@Url.Action("Index", "KalanUrunSayimi")"> Kalan Ürün Sayımı</a>
+                                </nav>
+                            </div> 
+                            
+                            <div class="collapse" id="tezgah" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="@Url.Action("Index", "StaleProduct")"> Bayat Ürün Sayımı</a>
                                 </nav>
                             </div>
                             

@@ -31,7 +31,7 @@
     </div>
 
 
-    @using (Html.BeginForm("PostDate", "Hamurhane", FormMethod.Post, new { id = "myForm" }))
+    @using (Html.BeginForm("PostDate", "Borek", FormMethod.Post, new { id = "myForm" }))
     {
         <input type="hidden" id="dateHidden" name="date" />
     }
@@ -47,10 +47,10 @@
 
 
     <div class="container">
-        @*  <div class="text-center">
-        <h3>AntiReflü Listesi</h3>
+         <div class="text-center">
+        <h3>Börek Çeşitler</h3>
         </div>
-        <div class="mb-3">
+       @*  <div class="mb-3">
         <a href="@Url.Action("Add")" class="btn btn-success">
         Yeni Kayıt
         </a>
@@ -69,6 +69,10 @@
                     </th>
                     <th class="th-sm">
                         Adedi
+                    </th> 
+                    
+                    <th class="th-sm">
+                        Fiyatı
                     </th>
 
                     <th class="th-sm">
@@ -80,98 +84,24 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Ahmet Yılmaz</td>
-                    <td>Ekmek</td>
-                    <td>100</td>
 
-                    @*  <td><button class="edit">Düzenle</button></td>
-                    <td><button class="edit">Sil</button></td> *@
-                    <td> <a asp-action="Edit" asp-route-id="2" class="btn btn-info btn-sm"><i class="bi bi-pencil"></i> Düzenle</a></td>
-                    <td>
-                        <a asp-action="Delete" asp-route-id="3"
-                           onclick="return confirm('Are you sure you want to delete this Surgery: 3?')"
-                           class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Sil</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Ahmet Yılmaz</td>
-                    <td>Çavdar</td>
-                    <td>50</td>
-
-                    <td> <a asp-action="Edit" asp-route-id="2" class="btn btn-info btn-sm"><i class="bi bi-pencil"></i> Düzenle</a></td>
-                    <td>
-                        <a asp-action="Delete" asp-route-id="3"
-                           onclick="return confirm('Are you sure you want to delete this Surgery: 3?')"
-                           class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Sil</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Ahmet Yılmaz</td>
-                    <td>Kepeli</td>
-                    <td>100</td>
-
-                    <td> <a asp-action="Edit" asp-route-id="2" class="btn btn-info btn-sm"><i class="bi bi-pencil"></i> Düzenle</a></td>
-                    <td>
-                        <a asp-action="Delete" asp-route-id="3"
-                           onclick="return confirm('Are you sure you want to delete this Surgery: 3?')"
-                           class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Sil</a>
-                    </td>
-                    @* <td>
-                    <a href="@Url.Action("TekilAntiReflu", "AntiReflu", new { id = 1 })" class="btn btn-primary btn-sm"><i class="bi bi-eye"></i> Detay</a>
-                    <a asp-action="Edit" asp-route-id="2" class="btn btn-info btn-sm"><i class="bi bi-pencil"></i> Düzenle</a>
-                    <a asp-action="Delete" asp-route-id="3"
-                    onclick="return confirm('Are you sure you want to delete this Surgery: 3?')"
-                    class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Sil</a>
-                    </td> *@
-                </tr>
-                <tr>
-                    <td>Yalçın Kaya</td>
-                    <td>Ekmek</td>
-                    <td>200</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="2" class="btn btn-info btn-sm"><i class="bi bi-pencil"></i> Düzenle</a>
-                    </td>
-                    <td>
-
-                        <a asp-action="Delete" asp-route-id="3"
-                           onclick="return confirm('Are you sure you want to delete this Surgery: 3?')"
-                           class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Sil</a>
-                    </td>
-                    @* <td>
-                    <a href="@Url.Action("TekilAntiReflu", "AntiReflu", new { id = 1 })" class="btn btn-primary btn-sm"><i class="bi bi-eye"></i> Detay</a>
-                    <a asp-action="Edit" asp-route-id="2" class="btn btn-info btn-sm"><i class="bi bi-pencil"></i> Düzenle</a>
-                    <a asp-action="Delete" asp-route-id="3"
-                    onclick="return confirm('Are you sure you want to delete this Surgery: 3?')"
-                    class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Sil</a>
-                    </td> *@
-                </tr>
-                <tr>
-                    <td>Yalçın Kaya</td>
-                    <td>Kepekli</td>
-                    <td>100</td>
-
-                    <td>
-                        <a asp-action="Edit" asp-route-id="2" class="btn btn-info btn-sm"><i class="bi bi-pencil"></i> Düzenle</a>
-                    </td>
-
-                    <td>
-                        <a asp-action="Delete" asp-route-id="3"
-                           onclick="return confirm('Are you sure you want to delete this Surgery: 3?')"
-                           class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Sil</a>
-                    </td>
-
-
-
-                    @* <td>
-                    <a href="@Url.Action("TekilAntiReflu", "AntiReflu", new { id = 1 })" class="btn btn-primary btn-sm"><i class="bi bi-eye"></i> Detay</a>
-                    <a asp-action="Edit" asp-route-id="2" class="btn btn-info btn-sm"><i class="bi bi-pencil"></i> Düzenle</a>
-                    <a asp-action="Delete" asp-route-id="3"
-                    onclick="return confirm('Are you sure you want to delete this Surgery: 3?')"
-                    class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Sil</a>
-                    </td> *@
-                </tr>
-
+                @foreach (var liste in ViewBag.productionListDetail)
+                {
+                    <tr>
+                        <td>@ViewBag.MakerName</td>
+                        <td>@liste.ProductId</td>
+                        <td>@liste.Quantity</td>
+                        <td>@liste.Price</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@liste.Id" class="btn btn-info btn-sm"><i class="bi bi-pencil"></i> Düzenle</a>
+                        </td>
+                        <td>
+                            <a asp-action="Delete" asp-route-id="@liste.Id"
+                               onclick="return confirm('Are you sure you want to delete this record?')"
+                               class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Sil</a>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
