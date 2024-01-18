@@ -1,14 +1,9 @@
 ﻿namespace BakeryAppUI.Models
 {
-    public class DoughFactoryListDto
+    public class BreadCounting
     {
-
-
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public string UserName { get; set; }
+        public int Quantity { get; set; }
         public DateTime Date { get; set; }
-
     }
-
 }

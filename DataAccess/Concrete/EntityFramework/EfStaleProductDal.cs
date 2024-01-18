@@ -58,5 +58,16 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
+        public bool IsExist(int productId, DateTime date)
+        {
+            using (BakeryAppContext context = new BakeryAppContext())
+            {
+               
+                bool exists = context.StaleProducts
+                    .Any(sp => sp.Date.Date == date.Date && sp.ProductId == productId);
+
+                return exists;
+            }
+        }
     }
 }

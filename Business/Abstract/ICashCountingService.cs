@@ -6,6 +6,7 @@ namespace Business.Abstract
     {
         List<CashCounting> GetAll();
         List<CashCounting> GetCashCountingByDate(DateTime date);
+        CashCounting GetOneCashCountingByDate(DateTime date);
         void Add(CashCounting cashCounting);
         void DeleteById(int id);
         void Delete(CashCounting cashCounting);

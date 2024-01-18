@@ -13,8 +13,7 @@ namespace Business.Abstract
         void Update(StaleBread staleBread);
         StaleBread GetById(int id);
         double GetStaleBreadDailyReport(DateTime date);
-
-
         List<DoughFactoryProduct> GetDoughFactoryProducts(DateTime date);
+        bool IsExist(int doughFactoryProductId, DateTime date);
     }
 }

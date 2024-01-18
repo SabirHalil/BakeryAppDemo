@@ -14,5 +14,7 @@ namespace Business.Abstract
         int GetQuantityStaleBreadByDateAndProductId(DateTime date, int productId);
         List<StaleProductDto> GetByDateAndCategory(DateTime date, int categoryId);
         List<Product> GetProductsNotAddedToStale(DateTime date, int categoryId);
+
+        bool IsExist(int productId, DateTime date);
     }
 }

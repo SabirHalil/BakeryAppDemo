@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.Constants;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,45 +22,80 @@ namespace WebAPI.Controllers
         [HttpGet("GetExpensesByDate")]
         public ActionResult GetExpense(DateTime date)
         {
-            if(date.Date > DateTime.Now.Date)
+            try
             {
-                return BadRequest("Invalid date!");
+                if (date.Date > DateTime.Now.Date)
+                {
+                    return BadRequest("Invalid date!");
+                }
+                var result = _expenseService.GetExpensesByDate(date);
+                return Ok(result);
             }
-            var result = _expenseService.GetExpensesByDate(date);
-            return Ok(result);
+            catch (Exception e)
+            {
+
+                return StatusCode(500, "Daha sonra tekrar deneyin...");
+            }
+
         }
 
         [HttpPost("AddExpense")]
         public ActionResult AddExpense(Expense expense)
         {
-            if (expense == null)
+            try
             {
-                return BadRequest("There is no data!");
+                if (expense == null)
+                {
+                    return BadRequest("There is no data!");
+                }
+                _expenseService.Add(expense);
+                return Ok();
             }
-            _expenseService.Add(expense);
-            return Ok();
+            catch (Exception e)
+            {
+
+                return StatusCode(500, "Daha sonra tekrar deneyin...");
+            }
+
         }
 
         [HttpDelete("DeleteExpense")]
-        public ActionResult DeleteExpense(Expense expense)
+        public ActionResult DeleteExpense(int  id)
         {
-            if (expense == null)
+            try
             {
-                return BadRequest("There is no data!");
+                if (id <= 0)
+                {
+                    return BadRequest(Messages.WrongInput);
+                }
+                _expenseService.DeleteById(id);
+                return Ok();
             }
-            _expenseService.Delete(expense);
-            return Ok();
+            catch (Exception e)
+            {
+
+                return StatusCode(500, "Daha sonra tekrar deneyin...");
+            }
+
         }
 
         [HttpPut("UpdateExpense")]
         public ActionResult UpdateExpense(Expense expense)
         {
-            if (expense == null)
+            try
             {
-                return BadRequest("There is no data!");
+                if (expense == null)
+                {
+                    return BadRequest("There is no data!");
+                }
+                _expenseService.Update(expense);
+                return Ok();
             }
-            _expenseService.Update(expense);
-            return Ok();
+            catch (Exception e)
+            {
+                return StatusCode(500, "Daha sonra tekrar deneyin...");
+            }
+
         }
     }
 }

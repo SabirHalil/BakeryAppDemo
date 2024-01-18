@@ -60,5 +60,10 @@ namespace Business.Concrete
             StaleProduct staleProduct=  _staleProductDal.Get(d => d.ProductId == productId && d.Date.Date == date.Date);
             return staleProduct == null ? 0 : staleProduct.Quantity;
         }
+
+        public bool IsExist(int productId, DateTime date)
+        {
+           return _staleProductDal.IsExist(productId, date);
+        }
     }
 }

@@ -14,6 +14,6 @@ namespace Business.Abstract
         void UpdateList(List<PurchasedProductListDetail> purchasedProductListDetails);
         PurchasedProductListDetail GetById(int id);
         PurchasedProductListDetail GetPurchasedProductListDetailByDateAndProductId(DateTime date, int productId);
-        bool IsExist(int productId);
+        bool IsExist(int productId, DateTime date);
     }
 }

@@ -26,6 +26,14 @@ namespace WebAPI.Controllers
             try
             {
                 var result = _breadCountingService.GetBreadCountingByDate(date);
+                if(result == null)
+                {
+                    BreadCounting b = new BreadCounting() { 
+                    Quantity=0
+                    };
+
+                    result = b;
+                }
                 return Ok(result);
             }
             catch (Exception e)
@@ -44,7 +52,7 @@ namespace WebAPI.Controllers
 
             try
             {
-                if (_breadCountingService.GetAll().Any())
+                if (_breadCountingService.GetBreadCountingByDate(breadCounting.Date) != null)
                 {
                     return BadRequest(Messages.OncePerDay);
                 }
