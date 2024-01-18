@@ -2,6 +2,7 @@
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace Business.Concrete
@@ -58,9 +59,9 @@ namespace Business.Concrete
             _productionListDetailDal.AddList(productionListDetail);
         }
 
-        public List<ProductionListDetail> GetProductsByListId(int id)
+        public List<GetAddedProductsDto> GetProductsByListId(int id)
         {
-            return _productionListDetailDal.GetAll(p => p.ProductionListId == id);
+            return _productionListDetailDal.GetAddedProducts(id);
 
         }
 

@@ -1,11 +1,12 @@
 ﻿using Entities.Concrete;
+using Entities.DTOs;
 
 namespace Business.Abstract
 {
     public interface IProductionListDetailService
     {
         List<ProductionListDetail> GetAll();
-        List<ProductionListDetail> GetProductsByListId(int id);
+        List<GetAddedProductsDto > GetProductsByListId(int id);
         bool IsExist(int id, int listId);
         void Add(ProductionListDetail productionListDetail);
         void AddList(List<ProductionListDetail> productionListDetail);

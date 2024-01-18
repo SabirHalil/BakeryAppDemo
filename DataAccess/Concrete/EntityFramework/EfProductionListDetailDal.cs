@@ -1,6 +1,7 @@
 ﻿using Core.DataAccess.EntityFramework;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Concrete.EntityFramework
@@ -30,6 +31,26 @@ namespace DataAccess.Concrete.EntityFramework
                 deletedEntity.State = EntityState.Deleted;
                 context.SaveChanges();
 
+            }
+        }
+
+        public List<GetAddedProductsDto> GetAddedProducts(int id)
+        {
+            using(BakeryAppContext context = new())
+            {
+                var addedProducts = (from plDetail in context.Set<ProductionListDetail>()
+                                     join product in context.Set<Product>() on plDetail.ProductId equals product.Id
+                                     where plDetail.ProductionListId == id
+                                     select new GetAddedProductsDto
+                                     {
+                                         Id = plDetail.Id,
+                                         ProductId = plDetail.ProductId,
+                                         ProductName = product.Name, // Assuming you want the product name
+                                         Price = plDetail.Price,
+                                         ProductionListId = plDetail.ProductionListId,
+                                         Quantity = plDetail.Quantity
+                                     }).ToList();
+                return addedProducts;
             }
         }
 

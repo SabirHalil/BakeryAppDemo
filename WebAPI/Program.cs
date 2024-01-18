@@ -105,7 +105,7 @@ app.MapControllers();
 //app.urls.add("https://192.168.1.106:7207");
 
 app.Urls.Add("https://localhost:7207");
-app.Urls.Add("https://192.168.1.3:7207");
+app.Urls.Add("https://192.168.1.4:7207");
 //app.Urls.Add("https://192.168.1.8:7207");
 
 //app.Run("https://192.168.218.177:7207", https://localhost:7207");
