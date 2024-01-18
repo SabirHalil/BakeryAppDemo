@@ -5,7 +5,7 @@ namespace BakeryAppUI.Controllers
 {
     public class PastaneController : Controller
     {
-                 
+
         private readonly ApiService _apiService;
         private static Date _date = new Date { date = DateTime.Now };
         public PastaneController(ApiService apiService)
@@ -16,28 +16,13 @@ namespace BakeryAppUI.Controllers
         public async Task<IActionResult> Index()
         {
 
-            List<DoughFactoryListDto> doughFactoryListDto =
-                await _apiService.GetApiResponse<List<DoughFactoryListDto>>
-                ("https://localhost:7207/api/DoughFactory/GetByDateDoughFactoryList?date=" + _date.date.ToString("yyyy-MM-dd"));
+            List<ProductionListDetail> productionListDetail =
+                await _apiService.GetApiResponse<List<ProductionListDetail>>
+                ("https://localhost:7207/api/ProductionList/GetAddedProductsByDateAndCategoryId?date=" + _date.date.ToString("yyyy-MM-dd") + "&categoryId=1");
 
-            List<DoughFactoryListAndDetailDto> doughFactoryListAndDetailDtos = new();
 
-            for (int i = 0; i < doughFactoryListDto.Count; i++)
-            {
-                List<GetAddedDoughFactoryListDetailDto> getAddedDoughFactoryListDetailDto
-                    = await _apiService.GetApiResponse<List<GetAddedDoughFactoryListDetailDto>>
-                    ("https://localhost:7207/api/DoughFactory/GetAddedDoughFactoryListDetailByListId?doughFactoryListId=" + doughFactoryListDto[i].Id);
-
-                DoughFactoryListAndDetailDto doughFactoryListAndDetailDto = new();
-
-                doughFactoryListAndDetailDto.getAddedDoughFactoryListDetailDto = getAddedDoughFactoryListDetailDto;
-                doughFactoryListAndDetailDto.Name = doughFactoryListDto[i].UserName;
-
-                doughFactoryListAndDetailDtos.Add(doughFactoryListAndDetailDto);
-
-            }
-
-            ViewBag.doughFactoryListAndDetailDtos = doughFactoryListAndDetailDtos;
+            ViewBag.productionListDetail = productionListDetail;
+            ViewBag.MakerName = "Ahmet Yerli";
             ViewBag.date = _date.date;
 
             return View();
@@ -53,12 +38,12 @@ namespace BakeryAppUI.Controllers
             return RedirectToAction("Index"); // İsteğe bağlı olarak başka bir sayfaya yönlendirme yapabilirsiniz.
         }
 
-        public class DoughFactoryListAndDetailDto
-        {
-            public List<GetAddedDoughFactoryListDetailDto> getAddedDoughFactoryListDetailDto { get; set; }
-            public string Name { get; set; }
-
-        }
+        //public class ProductionListDetailDto
+        //{
+        //    public ProductionListDetail productionListDetail { get; set; }
+        //    public string ProductName { get; set; }
+            
+        //}
 
 
 

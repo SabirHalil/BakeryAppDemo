@@ -24,6 +24,7 @@ namespace WebAppDemo.Controllers
             
 
             ViewBag.purchasedProduct = purchasedProduct;
+            ViewBag.Tezgahtar = "Ahmet Yıldız";
             ViewBag.date = _date.date;
 
             return View();
