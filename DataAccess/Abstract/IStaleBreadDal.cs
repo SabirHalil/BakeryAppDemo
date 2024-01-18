@@ -10,5 +10,6 @@ namespace DataAccess.Abstract
         List<DoughFactoryProduct> GetDoughFactoryProductsByDate(DateTime date);
         double GetReport(DateTime date);
         List<StaleBreadDto> GetAllByDate(DateTime date);
+        bool IsExist(int doughFactoryProductId, DateTime date);
     }
 }
