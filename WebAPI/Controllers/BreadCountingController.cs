@@ -44,7 +44,7 @@ namespace WebAPI.Controllers
 
             try
             {
-                if (_breadCountingService.GetAll().Any())
+                if (_breadCountingService.GetBreadCountingByDate(breadCounting.Date) != null)
                 {
                     return BadRequest(Messages.OncePerDay);
                 }

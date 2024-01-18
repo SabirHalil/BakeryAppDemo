@@ -103,7 +103,7 @@ namespace WebAPI.Controllers
             }
             try
             {
-                if (_productsCountingService.IsExist(productsCounting.ProductId))
+                if (_productsCountingService.IsExist(productsCounting.ProductId ,productsCounting.Date))
                 {
                     return BadRequest(Messages.OncePerDay);
                 }

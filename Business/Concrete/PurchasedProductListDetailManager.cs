@@ -58,9 +58,9 @@ namespace Business.Concrete
             }
         }
 
-        public bool IsExist(int productId)
+        public bool IsExist(int productId, DateTime date)
         {
-            return _purchasedProductListDetailDal.Get(d => d.ProductId == productId) == null ? false : true;
+            return _purchasedProductListDetailDal.Get(d => d.ProductId == productId && d.Date.Date == date.Date) == null ? false : true;
         }
 
         public void UpdateList(List<PurchasedProductListDetail> purchasedProductListDetails)

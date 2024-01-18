@@ -22,6 +22,18 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
+        public bool IsExist(int doughFactoryProductId, DateTime date)
+        {
+            using (BakeryAppContext context = new BakeryAppContext())
+            {
+
+                bool exists = context.StaleBread
+                    .Any(sp => sp.Date.Date == date.Date && sp.DoughFactoryProductId == doughFactoryProductId);
+
+                return exists;
+            }
+        }
+
         public List<StaleBreadDto> GetAllByDate(DateTime date)
         {
             using (BakeryAppContext context = new())

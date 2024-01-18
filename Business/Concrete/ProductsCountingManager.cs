@@ -50,15 +50,20 @@ namespace Business.Concrete
             return _productsCountingDal.GetAll(p=>p.Date.Date == date.Date);
         }
 
-        public bool IsExist(int productId)
+        public bool IsExist(int productId, DateTime date)
         {
-            return _productsCountingDal.Get(d => d.ProductId == productId) == null ? false : true;
+            return _productsCountingDal.Get(d => d.ProductId == productId && d.Date.Date == date.Date) == null ? false : true;
         }
 
         public int GetQuantityProductsCountingByDateAndProductId(DateTime date, int productId)
         {
             ProductsCounting productsCounting = _productsCountingDal.Get(p => p.Date.Date == date.Date && p.ProductId == productId);
             return productsCounting == null ? 0 : productsCounting.Quantity;
+        }
+
+        public void AddList(List<ProductsCounting> productsCountings)
+        {
+            _productsCountingDal.AddList(productsCountings);
         }
     }
 }

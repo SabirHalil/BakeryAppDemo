@@ -59,5 +59,10 @@ namespace Business.Concrete
         {
             return _staleBreadDal.GetAllByDate(date);
         }
+
+        public bool IsExist(int doughFactoryProductId, DateTime date)
+        {
+            return _staleBreadDal.IsExist(doughFactoryProductId, date);
+        }
     }
 }
