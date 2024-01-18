@@ -116,7 +116,7 @@ namespace WebAPI.Controllers
                     {
                         return BadRequest(Messages.WrongInput);
                     }
-                    if (_purchasedProductListDetailService.IsExist(purchasedProductListDetail[i].ProductId))
+                    if (_purchasedProductListDetailService.IsExist(purchasedProductListDetail[i].ProductId, purchasedProductListDetail[i].Date))
                     {
                         return BadRequest(Messages.OncePerDay);
                     }

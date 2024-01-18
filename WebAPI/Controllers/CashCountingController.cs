@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                var result = _cashCountingService.GetCashCountingByDate(date);
+                var result = _cashCountingService.GetOneCashCountingByDate(date);
                 return Ok(result);
             }
             catch (Exception e)
@@ -48,7 +48,7 @@ namespace WebAPI.Controllers
 
             try
             {
-                if (_cashCountingService.GetAll().Any())
+                if (_cashCountingService.GetOneCashCountingByDate(cashCounting.Date) != null)
                 {
                     return BadRequest(Messages.OncePerDay);
                 }

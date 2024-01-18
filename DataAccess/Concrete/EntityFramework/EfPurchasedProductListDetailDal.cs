@@ -10,13 +10,16 @@ namespace DataAccess.Concrete.EntityFramework
 
         public void DeleteById(int id, int userId)
         {
-            //using (BakeryAppContext context = new())
-            //{
-            //    var deletedEntity = context.Entry(context.Set<PurchasedProductListDetail>().Where(p=>p.Id==id &&p.UserId==userId));
-            //    deletedEntity.State = EntityState.Deleted;
-            //    context.SaveChanges();
+            using (BakeryAppContext context = new BakeryAppContext())
+            {              
+                var entityToDelete = context.Set<PurchasedProductListDetail>().FirstOrDefault(p => p.Id == id && p.UserId == userId);
 
-            //}
+                if (entityToDelete != null)
+                {                
+                    context.Entry(entityToDelete).State = EntityState.Deleted;
+                    context.SaveChanges();
+                }             
+            }
         }
 
     }

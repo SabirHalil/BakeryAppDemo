@@ -48,5 +48,10 @@ namespace Business.Concrete
         {
             return _cashCountingDal.GetAll(c=>c.Date.Date == date.Date);
         }
+
+        public CashCounting GetOneCashCountingByDate(DateTime date)
+        {
+            return _cashCountingDal.Get(c => c.Date.Date == date.Date);
+        }
     }
 }
