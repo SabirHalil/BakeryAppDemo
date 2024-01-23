@@ -65,10 +65,10 @@ namespace Business.Concrete
 
         }
 
-        public ProductionListDetail GetProductionListDetailByDateAndProductId(DateTime date, int productId)
+        public ProductionListDetail GetProductionListDetailByDateAndProductId(DateTime date, int productId,int c)
         {
 
-            int productionListId = _productionListService.GetByDate(date);
+            int productionListId = _productionListService.GetByDateAndCategoryId(date,c);
 
             ProductionListDetail productionListDetail = _productionListDetailDal.Get(d => d.ProductId == productId && d.ProductionListId == productionListId);
 

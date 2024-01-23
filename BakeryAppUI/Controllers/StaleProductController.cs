@@ -17,19 +17,19 @@ namespace BakeryAppUI.Controllers
 
             List<StaleBread> staleBread =
                 await _apiService.GetApiResponse<List<StaleBread>>
-                ("https://localhost:7207/api/StaleBread/GetStaleBreadListByDate?date=" + _date.date.ToString("yyyy-MM-dd"));
+                (ApiUrl.url + "/api/StaleBread/GetStaleBreadListByDate?date=" + _date.date.ToString("yyyy-MM-dd"));
             
             List<StaleProduct> staleBorek =
                 await _apiService.GetApiResponse<List<StaleProduct>>
-                ("https://localhost:7207/api/StaleProduct/GetByDateAndCategory?date=" + _date.date.ToString("yyyy-MM-dd") + "&categoryId=2");
+                (ApiUrl.url + "/api/StaleProduct/GetByDateAndCategory?date=" + _date.date.ToString("yyyy-MM-dd") + "&categoryId=2");
             
             List<StaleProduct> stalePurchasedProduct =
                 await _apiService.GetApiResponse<List<StaleProduct>>
-                ("https://localhost:7207/api/StaleProduct/GetByDateAndCategory?date=" + _date.date.ToString("yyyy-MM-dd") + "&categoryId=3");
+                (ApiUrl.url + "/api/StaleProduct/GetByDateAndCategory?date=" + _date.date.ToString("yyyy-MM-dd") + "&categoryId=3");
                 
             List<StaleProduct> stalePasta =
                 await _apiService.GetApiResponse<List<StaleProduct>>
-                ("https://localhost:7207/api/StaleProduct/GetByDateAndCategory?date=" + _date.date.ToString("yyyy-MM-dd") + "&categoryId=1");
+                (ApiUrl.url + "/api/StaleProduct/GetByDateAndCategory?date=" + _date.date.ToString("yyyy-MM-dd") + "&categoryId=1");
 
           
 

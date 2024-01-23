@@ -59,5 +59,10 @@ namespace Business.Concrete
         {
             return _moneyReceivedFromMarketDal.Get(s => s.MarketId == id &&s.Date.Date == date.Date);
         }
+
+        public bool IsExist(int marketId, DateTime date)
+        {
+            return _moneyReceivedFromMarketDal.IsExist(marketId, date); 
+        }
     }
 }

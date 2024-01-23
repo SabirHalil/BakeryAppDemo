@@ -13,24 +13,53 @@ namespace WebAppNew.Controllers
             _apiService = apiService;
         }
 
-       static decimal purchasedProductRevenue;
+       // static decimal purchasedProductRevenue;
 
         public async Task<IActionResult> Index()
         {
+             decimal purchasedProductRevenue =0;
             try
             {
+                decimal totalExpenseAmount = 0;
+                List<Expense> expense =
+                await _apiService.GetApiResponse<List<Expense>>
+                (ApiUrl.url + "/api/Expense/GetExpensesByDate?date=" + _date.date.ToString("yyyy-MM-dd"));
+                foreach (var item in expense)
+                {
+                    totalExpenseAmount += item.Amount;
+                }
+
+                try
+                {
+                    CashCounting CashCounting =
+                                                    await _apiService.GetApiResponse<CashCounting>
+                                                    (ApiUrl.url + "/api/CashCounting/GetCashCountingByDate?date=" + _date.date.ToString("yyyy-MM-dd"));
+
+                    ViewBag.CashCounting = CashCounting;
+                }
+                catch (Exception)
+                {
+                    CashCounting c = new() { TotalMoney=0};
+
+                    ViewBag.CashCounting = c;
+                }
+
+
+                
+
+
                 BreadSold breadSold =
                                 await _apiService.GetApiResponse<BreadSold>
-                                ("https://localhost:7207/api/EndOfDayAccount/GetBreadSold?date=" + _date.date.ToString("yyyy-MM-dd"));
+                                (ApiUrl.url + "/api/EndOfDayAccount/GetBreadSold?date=" + _date.date.ToString("yyyy-MM-dd"));
 
 
                 List<PurchasedProductSoldInTheBakery> purchasedProductSoldInTheBakerys =
                     await _apiService.GetApiResponse<List<PurchasedProductSoldInTheBakery>>
-                    ("https://localhost:7207/api/EndOfDayAccount/GetPurchasedProductsSoldInTheBakery?date=" + _date.date.ToString("yyyy-MM-dd"));
+                    (ApiUrl.url + "/api/EndOfDayAccount/GetPurchasedProductsSoldInTheBakery?date=" + _date.date.ToString("yyyy-MM-dd"));
 
                 //ProductSoldInTheBakery productSoldInTheBakery =
                 //    await _apiService.GetApiResponse<ProductSoldInTheBakery>
-                //    ("https://localhost:7207/api/EndOfDayAccount/GetProductsSoldInTheBakery?date=" + _date.date.ToString("yyyy-MM-dd"));
+                //    (ApiUrl.url + "/api/EndOfDayAccount/GetProductsSoldInTheBakery?date=" + _date.date.ToString("yyyy-MM-dd"));
 
 
                 foreach (var item in purchasedProductSoldInTheBakerys)
@@ -45,9 +74,13 @@ namespace WebAppNew.Controllers
                 ViewBag.purchasedProductSoldInTheBakery = purchasedProductSoldInTheBakerys;
                 ViewBag.purchasedProductRevenue = purchasedProductRevenue;
 
+                ViewBag.expense = expense;
+                ViewBag.totalExpenseAmount = totalExpenseAmount;
 
-                
-              
+                ViewBag.NetKazanc = (((decimal)breadSold.Revenue) + purchasedProductRevenue - totalExpenseAmount);
+
+               
+
                 //ViewBag.productSoldInTheBakery = productSoldInTheBakery;
 
                 return View();
@@ -55,7 +88,7 @@ namespace WebAppNew.Controllers
             catch (Exception e)
             {
                 return StatusCode(500, "Daha sonra tekrar deneyin...");
-            }            
+            }
         }
 
 

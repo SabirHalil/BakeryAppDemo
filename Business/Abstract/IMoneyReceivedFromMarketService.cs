@@ -13,5 +13,6 @@ namespace Business.Abstract
         void Delete(MoneyReceivedFromMarket moneyReceivedFromMarket);
         void Update(MoneyReceivedFromMarket moneyReceivedFromMarket);
         MoneyReceivedFromMarket GetById(int id);
+        bool IsExist(int marketId, DateTime date);
     }
 }

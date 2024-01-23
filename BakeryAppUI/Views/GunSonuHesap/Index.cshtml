@@ -20,7 +20,7 @@
     </div>
 
 
-    @using (Html.BeginForm("PostDate", "Hamurhane", FormMethod.Post, new { id = "myForm" }))
+    @using (Html.BeginForm("PostDate", "GunSonuHesap", FormMethod.Post, new { id = "myForm" }))
     {
         <input type="hidden" id="dateHidden" name="date" />
     }
@@ -97,7 +97,7 @@
                                                 <td>@ViewBag.breadSold.ProductedToday</td>
                                                 <td>@ViewBag.breadSold.StaleProductToday</td>
                                             </tr>
-                                            
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -187,7 +187,7 @@
                     <div class="card-body">
                         @* <i class="fas fa-car fa-3x"></i> *@
                         <i class="fas fa-pie-chart fa-3x"></i>
-                       @*  <h5 class="card-title">Servis Gelir</h5> *@
+                        @*  <h5 class="card-title">Servis Gelir</h5> *@
                         <h5 class="card-title">Pasta/Börek Gelir</h5>
                         <div class="display-5">₺2000</div>
                     </div>
@@ -205,7 +205,7 @@
                 <div class="modal-dialog modal-dialog-scrollable" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="myModalLabel1">Ek Ürün Gelir Detay</h5>
+                            <h5 class="modal-title" id="myModalLabel1">Pasta/Börek Detay</h5>
                             <button type="button" class="close rounded-pill" data-bs-dismiss="modal"
                                     aria-label="Kapat">
                                 <i data-feather="x"></i>
@@ -215,7 +215,7 @@
                         <div class="modal-body">
                             <div class="row mb-3">
                                 <div class="col-md-12">
-                                    @* <h5>Ek Ürün Gelir Detay</h5> *@
+                                    @* <h5>Detay</h5> *@
                                     <table class="table">
                                         <thead>
                                             <tr>
@@ -242,7 +242,7 @@
                                                 <td>@ViewBag.breadSold.ProductedToday</td>
                                                 <td>@ViewBag.breadSold.StaleProductToday</td>
                                             </tr>
-                                            
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -260,7 +260,7 @@
                     <div class="card-body">
                         <i class="fas fa-money-bill-wave fa-3x"></i>
                         <h5 class="card-title">Giderler</h5>
-                        <div class="display-5">₺1000</div>
+                        <div class="display-5">₺@ViewBag.totalExpenseAmount</div>
                     </div>
                     <div class="card-footer">
                         <a href="#" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#Gider">
@@ -276,7 +276,7 @@
                 <div class="modal-dialog modal-dialog-scrollable" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="myModalLabel1">Ek Ürün Gelir Detay</h5>
+                            <h5 class="modal-title" id="myModalLabel1">Gider Detay</h5>
                             <button type="button" class="close rounded-pill" data-bs-dismiss="modal"
                                     aria-label="Kapat">
                                 <i data-feather="x"></i>
@@ -286,34 +286,47 @@
                         <div class="modal-body">
                             <div class="row mb-3">
                                 <div class="col-md-12">
-                                   @*  <h5>Ek Ürün Gelir Detay</h5> *@
+                                    @*  <h5>Detay</h5> *@
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th>Ürün Adı</th>
-                                                <th>Ürün Fiyatı</th>
-                                                <th>Gelir</th>
-                                                <th>Dünden Kalan</th>
-                                                <th>Bugün Kalan</th>
-                                                <th>Bugün Alınan</th>
-                                                <th>Bayat</th>
+                                                <th class="th-sm">
+                                                    Açıklama
+                                                </th>
+                                                <th class="th-sm">
+                                                    Tutar
+                                                </th>
+
+                                                <th class="th-sm">
+                                                    Düzenle
+                                                </th>
+                                                <th class="th-sm">
+                                                    Sil
+                                                </th>
 
                                             </tr>
                                         </thead>
 
                                         <tbody>
 
+                                            @foreach (var liste in ViewBag.expense)
+                                            {
+                                                <tr>
+                                                   
+                                                    <td>@liste.Detail</td>
+                                                    <td>@liste.Amount</td>
 
-                                            <tr>
-                                                <td>@ViewBag.breadSold.ProductName</td>
-                                                <td>@ViewBag.breadSold.Price</td>
-                                                <td>@ViewBag.breadSold.Revenue</td>
-                                                <td>@ViewBag.breadSold.RemainingYesterday</td>
-                                                <td>@ViewBag.breadSold.RemainingToday</td>
-                                                <td>@ViewBag.breadSold.ProductedToday</td>
-                                                <td>@ViewBag.breadSold.StaleProductToday</td>
-                                            </tr>
-                                            
+                                                    <td>
+                                                        <a asp-action="Edit" asp-route-id="@liste.Id" class="btn btn-info btn-sm"><i class="bi bi-pencil"></i> Düzenle</a>
+                                                    </td>
+                                                    <td>
+                                                        <a asp-action="Delete" asp-route-id="@liste.Id"
+                                                           onclick="return confirm('Are you sure you want to delete this record?')"
+                                                           class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Sil</a>
+                                                    </td>
+                                                </tr>
+                                            }
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -337,7 +350,7 @@
             <div class="card-body d-flex flex-column align-items-center justify-content-center">
                 <i class="fas fa-chart-line fa-3x"></i>
                 <h5 class="card-title">Net Kazanç</h5>
-                <div class="display-5">₺8000</div>
+                <div class="display-5">₺@ViewBag.NetKazanc</div>
             </div>
         </div>
 
@@ -345,14 +358,14 @@
             <div class="card-body d-flex flex-column align-items-center justify-content-center">
                 <i class="fas fa-money-bill fa-3x"></i>
                 <h5 class="card-title">Kasadaki Nakit Para</h5>
-                <div class="display-5">₺7900</div>
+                <div class="display-5">₺@ViewBag.CashCounting.TotalMoney</div>
             </div>
         </div>
     </div>
 
-    <div class="text-center">
+    @* <div class="text-center">
         <button class="btn btn-success">Onayla</button>
-    </div>
+    </div> *@
 
 
 

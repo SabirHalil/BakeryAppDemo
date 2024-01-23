@@ -34,17 +34,17 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpPost("AddProduct")]
+        [HttpPost("AddMarketContract")]
         public ActionResult AddMarketContract(MarketContract marketContract)
         {
             _marketContractService.Add(marketContract);
             return Ok();
         }
 
-        [HttpDelete("DeleteMarketContract")]
-        public ActionResult DeleteMarketContract(MarketContract marketContract)
+        [HttpDelete("DeleteMarketContractById")]
+        public ActionResult DeleteMarketContractById(int  id)
         {
-            _marketContractService.Delete(marketContract);
+            _marketContractService.DeleteById(id);
             return Ok();
         }
 

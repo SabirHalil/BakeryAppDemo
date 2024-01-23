@@ -11,48 +11,93 @@ namespace WebAPI.Controllers
     {
 
         private IMarketService _marketService;
-        
+
 
         public MarketController(IMarketService marketService)
         {
-            _marketService = marketService;           
+            _marketService = marketService;
         }
 
-        
+
 
         [HttpGet("GetAllMarket")]
         public ActionResult GetMarket()
         {
-            var result = _marketService.GetAll();
-            return Ok(result);
+            try
+            {
+                var result = _marketService.GetAll();
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+
         }
 
         [HttpGet("GetByIdMarket")]
         public ActionResult GetByIdMarket(int id)
         {
-            var result = _marketService.GetById(id);
-            return Ok(result);
+            try
+            {
+                var result = _marketService.GetById(id);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+
         }
 
-        [HttpPost("AddProduct")]
+        [HttpPost("AddMarket")]
         public ActionResult AddMarket(Market market)
         {
-            _marketService.Add(market);
-            return Ok();
+            try
+            {
+                _marketService.Add(market);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+
         }
 
-        [HttpDelete("DeleteMarket")]
-        public ActionResult DeleteMarket(Market market)
+        [HttpDelete("DeleteMarketById")]
+        public ActionResult DeleteMarketById(int id)
         {
-            _marketService.Delete(market);
-            return Ok();
+            try
+            {
+                _marketService.DeleteById(id);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+
         }
 
         [HttpPut("UpdateMarket")]
         public ActionResult UpdateMarket(Market market)
         {
-            _marketService.Update(market);
-            return Ok();
+            try
+            {
+                _marketService.Update(market);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+
         }
     }
 }

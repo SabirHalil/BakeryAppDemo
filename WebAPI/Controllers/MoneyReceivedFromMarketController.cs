@@ -140,6 +140,13 @@ namespace WebAPI.Controllers
                 {
                     return BadRequest(Messages.WrongInput);
                 }
+
+                if (_moneyReceivedFromMarketService.IsExist(moneyReceivedFromMarket.MarketId,moneyReceivedFromMarket.Date))
+                {
+
+                    return BadRequest(Messages.Conflict);
+                }
+
                 decimal totalAmount = TotalAmout(moneyReceivedFromMarket.Date, moneyReceivedFromMarket.MarketId);
                 if (totalAmount < moneyReceivedFromMarket.Amount)
                 {
@@ -205,6 +212,13 @@ namespace WebAPI.Controllers
                 {
                     return BadRequest(Messages.WrongInput);
                 }
+
+                if (! _moneyReceivedFromMarketService.IsExist(moneyReceivedFromMarket.MarketId, moneyReceivedFromMarket.Date))
+                {
+
+                    return BadRequest(Messages.WrongInput);
+                }
+
                 decimal totalAmount = TotalAmout(moneyReceivedFromMarket.Date, moneyReceivedFromMarket.MarketId);
                 if (totalAmount < moneyReceivedFromMarket.Amount)
                 {

@@ -32,5 +32,13 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
+        public bool IsExist(int marketId, DateTime date)
+        {
+            using (BakeryAppContext context = new())
+            {
+                return context.Set<StaleBreadReceivedFromMarket>()
+                    .Any(s => s.MarketId == marketId && s.Date.Date == date.Date);
+            }
+        }
     }
 }
