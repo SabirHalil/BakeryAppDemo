@@ -1,12 +1,9 @@
 ﻿using Business.Abstract;
 using Business.Constants;
 using Castle.Core.Internal;
-using Core.Entities;
 using Entities.Concrete;
-using Entities.DTOs;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+
 
 namespace WebAPI.Controllers
 {
@@ -62,9 +59,9 @@ namespace WebAPI.Controllers
 
             try
             {
-                int id = 0;
+                int id = doughFactoryListDetail[0].DoughFactoryListId;
                 bool IsNewList = false;
-                if (doughFactoryListDetail[0].DoughFactoryListId == 0)
+                if (id == 0)
                 {
                     id = _doughFactoryListService.Add(new DoughFactoryList { Id = 0, UserId = userId, Date = DateTime.Now });
                     IsNewList = true;
@@ -90,10 +87,7 @@ namespace WebAPI.Controllers
                         }
                     }
                 }
-                return new ObjectResult(new { message = Messages.Created })
-                {
-                    StatusCode = 201
-                };
+                return Ok(id);
 
             }
             catch (Exception e)
