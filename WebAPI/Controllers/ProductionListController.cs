@@ -62,29 +62,23 @@ namespace WebAPI.Controllers
             {
                 return BadRequest("Product list is null or empty.");
             }
-            int id = 0;
-            bool IsNewList = false;
-            if (productionListDetail[0].ProductionListId == 0)
+            var listId = _productionListService.GetByDateAndCategoryId(DateTime.Now, categoryId);
+
+            if (listId == 0)
             {
-                id = _productionListService.Add(new ProductionList { Id = 0, UserId = userId, Date = DateTime.Now , CategoryId= categoryId});
-                IsNewList = true;
+                listId = _productionListService.Add(new ProductionList { Id = listId, UserId = userId, Date = DateTime.Now , CategoryId= categoryId});
+                
             }
 
             for (int i = 0; i < productionListDetail.Count; i++)
-            {
-
-                if (IsNewList)
-                {
-                    productionListDetail[i].ProductionListId = id;
-                    //_doughFactoryListDetailService.Add(productionListDetail[i]);
-                }
-                else
-                {
+            {  
+                    productionListDetail[i].ProductionListId = listId;
+              
                     if (_productionListDetailService.IsExist(productionListDetail[i].ProductId, productionListDetail[i].ProductionListId))
                     {
                         return Conflict("A product already exist in the list.");
                     }
-                }
+               
                productionListDetail[i].Price = _productService.GetPriceById(productionListDetail[i].ProductId);
             }
 

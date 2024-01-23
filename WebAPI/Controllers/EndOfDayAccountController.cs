@@ -69,14 +69,14 @@ namespace WebAPI.Controllers
                     ProductSoldInTheBakery productSoldInTheBakery = new();
                     productSoldInTheBakery.ProductId = products[i].Id;
                     productSoldInTheBakery.ProductName = products[i].Name;
-                    productSoldInTheBakery.Price = _productionListDetailService.GetProductionListDetailByDateAndProductId((date.Date), products[i].Id).Price;
+                  //  productSoldInTheBakery.Price = _productionListDetailService.GetProductionListDetailByDateAndProductId((date.Date), products[i].Id).Price;
 
                     productSoldInTheBakery.RemainingYesterday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date.AddDays(-1)), products[i].Id);
                     productSoldInTheBakery.RemainingToday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date), products[i].Id);
 
                     productSoldInTheBakery.StaleProductToday = _staleProductService.GetQuantityStaleBreadByDateAndProductId((date.Date), products[i].Id);
 
-                    productSoldInTheBakery.ProductedToday = _productionListDetailService.GetProductionListDetailByDateAndProductId((date.Date), products[i].Id).Quantity;
+             //       productSoldInTheBakery.ProductedToday = _productionListDetailService.GetProductionListDetailByDateAndProductId((date.Date), products[i].Id).Quantity;
 
                     productSoldInTheBakery.Revenue = productSoldInTheBakery.Price * (productSoldInTheBakery.RemainingYesterday + productSoldInTheBakery.ProductedToday - productSoldInTheBakery.RemainingToday - productSoldInTheBakery.StaleProductToday);
 
