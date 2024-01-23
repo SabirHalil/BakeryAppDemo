@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpPost("AddProduct")]
+        [HttpPost("AddServiceProduct")]
         public ActionResult AddServiceProduct(ServiceProduct serviceProduct)
         {
             _serviceProductService.Add(serviceProduct);
@@ -42,9 +42,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("DeleteServiceProduct")]
-        public ActionResult DeleteServiceProduct(ServiceProduct serviceProduct)
+        public ActionResult DeleteServiceProduct(int id)
         {
-            _serviceProductService.Delete(serviceProduct);
+            _serviceProductService.DeleteById(id);
             return Ok();
         }
 

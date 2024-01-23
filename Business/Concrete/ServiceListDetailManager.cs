@@ -50,11 +50,6 @@ namespace Business.Concrete
             _serviceListDetailDal.Update(serviceListDetail);
         }
 
-        public bool IsExist(int id)
-        {
-            return _serviceListDetailDal.IsExist(id);
-        }
-
         public List<ServiceListDetail> GetByListId(int id)
         {
             return _serviceListDetailDal.GetAll(p=>p.ServiceListId ==id);
@@ -68,6 +63,11 @@ namespace Business.Concrete
         public ServiceListDetail GetByServiceListIdAndMarketContractId(int serviceListId, int marketContracId)
         {
             return _serviceListDetailDal.Get(p => p.ServiceListId == serviceListId && p.MarketContractId == marketContracId);
+        }
+
+        public bool IsExist(int serviceListId, int marketContractId)
+        {
+            return _serviceListDetailDal.IsExist(serviceListId,marketContractId);
         }
     }
 }

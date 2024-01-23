@@ -7,5 +7,6 @@ namespace DataAccess.Abstract
     {
         void DeleteById(int id);
         void DeleteByDateAndMarketId(DateTime date, int marketId);
+        bool IsExist(int marketId, DateTime date);
     }
 }

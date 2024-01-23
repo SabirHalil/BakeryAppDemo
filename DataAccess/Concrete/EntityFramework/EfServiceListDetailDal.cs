@@ -32,9 +32,13 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
-        public bool IsExist(int id)
+        public bool IsExist(int serviceListId, int marketContractId)
         {
-            throw new NotImplementedException();
+            using (BakeryAppContext context = new())
+            {               
+                return context.Set<ServiceListDetail>().Any(s => s.MarketContractId == marketContractId && s.ServiceListId == serviceListId);
+            }
         }
+
     }
 }

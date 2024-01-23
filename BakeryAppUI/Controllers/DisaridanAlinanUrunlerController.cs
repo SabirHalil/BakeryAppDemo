@@ -19,7 +19,7 @@ namespace WebAppDemo.Controllers
 
             List<PurchasedProduct> purchasedProduct =
                 await _apiService.GetApiResponse<List<PurchasedProduct>>
-                ("https://localhost:7207/api/PurchasedProduct/GetAddedPurchasedProductByDate?date=" + _date.date.ToString("yyyy-MM-dd"));
+                (ApiUrl.url + "/api/PurchasedProduct/GetAddedPurchasedProductByDate?date=" + _date.date.ToString("yyyy-MM-dd"));
 
             
 

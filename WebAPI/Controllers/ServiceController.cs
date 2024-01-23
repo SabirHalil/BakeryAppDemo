@@ -76,20 +76,17 @@ namespace WebAPI.Controllers
                     }
                     else
                     {
-
-                        serviceListDetail.ServiceListId = serviceListDetailDto[i].ServiceListId;
-
-                        //    //if (_serviceListDetailService.IsExist(serviceListDetail[i].ServiceProductId))
-                        //    //{
-                        //    //    return Conflict(Messages.Conflict);
-                        //    //}
-                        //    //else
-                        //    //{
-
-                        //    // }   
+                        serviceListDetail.ServiceListId = serviceListDetailDto[i].ServiceListId;                    
                     }
 
+
                     serviceListDetail.MarketContractId = _marketContractService.GetIdByMarketId(serviceListDetailDto[i].MarketId);
+
+                    if (_serviceListDetailService.IsExist(serviceListDetail.ServiceListId ,serviceListDetail.MarketContractId))
+                    {
+                        return Conflict(Messages.Conflict);
+                    }
+
                     serviceListDetail.Price = _marketContractService.GetPriceById(serviceListDetail.MarketContractId);
                     serviceListDetail.Quantity = serviceListDetailDto[i].Quantity;
                     _serviceListDetailService.Add(serviceListDetail);
@@ -230,11 +227,17 @@ namespace WebAPI.Controllers
                 return BadRequest(Messages.WrongInput);
             }
             try
-            {
+            {    
                 ServiceListDetail serviceListDetail = new();
-                serviceListDetail.ServiceListId = serviceListDetailDto.ServiceListId;
-                serviceListDetail.Quantity = serviceListDetailDto.Quantity;
+                serviceListDetail.ServiceListId = serviceListDetailDto.ServiceListId;                
                 serviceListDetail.MarketContractId = _marketContractService.GetIdByMarketId(serviceListDetailDto.MarketId);
+
+                if (! _serviceListDetailService.IsExist(serviceListDetail.ServiceListId, serviceListDetail.MarketContractId))
+                {
+                    return Conflict(Messages.WrongInput);
+                }
+
+                serviceListDetail.Quantity = serviceListDetailDto.Quantity;
                 serviceListDetail.Price = _marketContractService.GetPriceById(serviceListDetail.MarketContractId);
                 serviceListDetail.Id = _serviceListDetailService.GetIdByServiceListIdAndMarketContracId(serviceListDetail.ServiceListId, serviceListDetail.MarketContractId);
                 _serviceListDetailService.Update(serviceListDetail);

@@ -17,11 +17,11 @@ namespace BakeryAppUI.Controllers
 
             List<ProductCounting> productCounting =
                 await _apiService.GetApiResponse<List<ProductCounting>>
-                ("https://localhost:7207/api/ProductsCounting/GetAddedProductsCountingByDate?date=" + _date.date.ToString("yyyy-MM-dd"));
+                (ApiUrl.url + "/api/ProductsCounting/GetAddedProductsCountingByDate?date=" + _date.date.ToString("yyyy-MM-dd"));
 
             var breadCounting =
                 await _apiService.GetApiResponse<BreadCounting>
-                ("https://localhost:7207/api/BreadCounting/GetBreadCountingByDate?date=" + _date.date.ToString("yyyy-MM-dd"));
+                (ApiUrl.url + "/api/BreadCounting/GetBreadCountingByDate?date=" + _date.date.ToString("yyyy-MM-dd"));
 
 
             ViewBag.productCounting = productCounting;

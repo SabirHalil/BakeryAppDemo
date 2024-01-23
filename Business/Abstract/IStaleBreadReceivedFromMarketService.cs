@@ -5,6 +5,7 @@ namespace Business.Abstract
     public interface IStaleBreadReceivedFromMarketService
     {
         List<StaleBreadReceivedFromMarket> GetAll();
+        List<StaleBreadReceivedFromMarket> GetByDate(DateTime date);
         StaleBreadReceivedFromMarket GetByMarketId(int id, DateTime date);
         int  GetStaleBreadCountByMarketId(int MarketId, DateTime date);
         void Add(StaleBreadReceivedFromMarket staleBreadReceivedFromMarket);
@@ -13,5 +14,7 @@ namespace Business.Abstract
         void Delete(StaleBreadReceivedFromMarket staleBreadReceivedFromMarket);
         void Update(StaleBreadReceivedFromMarket staleBreadReceivedFromMarket);
         StaleBreadReceivedFromMarket GetById(int id);
+
+        bool IsExist(int marketId, DateTime date);
     }
 }

@@ -17,9 +17,10 @@ namespace BakeryAppUI.Controllers
 
             List<ProductionListDetail> productionListDetail =
                 await _apiService.GetApiResponse<List<ProductionListDetail>>
-                ("https://localhost:7207/api/ProductionList/GetAddedProductsByDateAndCategoryId?date=" + _date.date.ToString("yyyy-MM-dd") + "&categoryId=2");
+                (ApiUrl.url + "/api/ProductionList/GetAddedProductsByDateAndCategoryId?date=" + _date.date.ToString("yyyy-MM-dd") + "&categoryId=2");
+                
 
-        
+
 
             ViewBag.productionListDetail = productionListDetail;
             ViewBag.MakerName = "Kazım Kaya";

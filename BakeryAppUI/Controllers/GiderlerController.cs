@@ -17,7 +17,7 @@ namespace BakeryAppUI.Controllers
 
             List<Expense> expense =
                 await _apiService.GetApiResponse<List<Expense>>
-                ("https://localhost:7207/api/Expense/GetExpensesByDate?date=" + _date.date.ToString("yyyy-MM-dd"));
+                (ApiUrl.url + "/api/Expense/GetExpensesByDate?date=" + _date.date.ToString("yyyy-MM-dd"));
 
 
             ViewBag.expense = expense;           

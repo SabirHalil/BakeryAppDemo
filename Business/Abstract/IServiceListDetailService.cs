@@ -15,6 +15,6 @@ namespace Business.Abstract
         void Update(ServiceListDetail serviceListDetail);
         ServiceListDetail GetById(int id);
         //List<int> GetMarketContractById(int id);
-        bool IsExist(int id);
+        bool IsExist(int serviceListId,int marketContractId);
     }
 }

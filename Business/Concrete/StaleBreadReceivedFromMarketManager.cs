@@ -61,5 +61,15 @@ namespace Business.Concrete
 
             return staleBreadReceivedFromMarket == null ? 0 : staleBreadReceivedFromMarket.Quantity;
         }
+
+        public List<StaleBreadReceivedFromMarket> GetByDate(DateTime date)
+        {
+            return _staleBreadReceivedFromMarketDal.GetAll(s=>s.Date.Date == date.Date);
+        }
+
+        public bool IsExist(int marketId, DateTime date)
+        {
+            return _staleBreadReceivedFromMarketDal.IsExist(marketId, date);    
+        }
     }
 }
