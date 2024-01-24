@@ -58,9 +58,9 @@ namespace WebAPI.Controllers
 
             try
             {
-                int id = 0;
+                int id = serviceListDetailDto[0].ServiceListId;
                 bool IsNewList = false;
-                if (serviceListDetailDto[0].ServiceListId == 0)
+                if (id == 0)
                 {
                     id = _serviceListService.Add(new ServiceList { Id = 0, UserId = userId, Date = DateTime.Now });
                     IsNewList = true;
@@ -91,10 +91,7 @@ namespace WebAPI.Controllers
                     serviceListDetail.Quantity = serviceListDetailDto[i].Quantity;
                     _serviceListDetailService.Add(serviceListDetail);
                 }
-                return new ObjectResult(new { message = Messages.Created })
-                {
-                    StatusCode = 201
-                };
+                return Ok(id);
 
             }
             catch (Exception e)
@@ -143,58 +140,23 @@ namespace WebAPI.Controllers
 
             try
             {
-                List<GetServiceListDetailDto> serviceListDetailDto = new List<GetServiceListDetailDto>();
                 List<Market> allMarkets = _marketService.GetAll();
+
                 if (listId == 0)
                 {
-
-                    //List<Market> allMarkets0 = _marketService.GetAll();
-
-
-
-                    for (int i = 0; i < allMarkets.Count; i++)
-                    {
-                        GetServiceListDetailDto service = new GetServiceListDetailDto();
-                        service.MarketId = allMarkets[i].Id;
-                        service.MarketName = allMarkets[i].Name;
-                        service.ServiceListId = listId;
-
-                        serviceListDetailDto.Add(service);
-                    }
-                }
-                else
-                {
-
-
-                    List<ServiceListDetail> serviceListDetail = _serviceListDetailService.GetByListId(listId);
-                    List<int> MarketIds = new List<int>();
-
-                    for (int i = 0; i < serviceListDetail.Count; i++)
-                    {
-                        MarketIds.Add(_marketContractService.GetMarketIdById(serviceListDetail[i].MarketContractId));
-                    }
-
-
-                    // LINQ kullanarak filtreleme
-                    List<Market> filteredMarkets = allMarkets.Where(m => !MarketIds.Contains(m.Id)).ToList();
-
-
-
-                    for (int i = 0; i < filteredMarkets.Count; i++)
-                    {
-                        GetServiceListDetailDto service = new GetServiceListDetailDto();
-                        service.MarketId = filteredMarkets[i].Id;
-                        service.MarketName = filteredMarkets[i].Name;
-                        service.ServiceListId = listId;
-                        serviceListDetailDto.Add(service);
-                    }
+                    return Ok(allMarkets);
                 }
 
-                return Ok(serviceListDetailDto);
+                List<ServiceListDetail> serviceListDetail = _serviceListDetailService.GetByListId(listId);
+                List<int> marketIds = serviceListDetail.Select(detail => _marketContractService.GetMarketIdById(detail.MarketContractId)).ToList();
+
+                // Using LINQ to filter markets
+                List<Market> filteredMarkets = allMarkets.Where(m => !marketIds.Contains(m.Id)).ToList();
+
+                return Ok(filteredMarkets);
             }
             catch (Exception e)
             {
-
                 return StatusCode(500, e.Message);
             }
         }
