@@ -14,7 +14,7 @@ namespace Business.Concrete
         IProductionListDetailDal _productionListDetailDal;
         IProductionListService _productionListService;
 
-        public ProductionListDetailManager(IProductionListService productionListService,IProductionListDetailDal productionListDetailDal)
+        public ProductionListDetailManager(IProductionListService productionListService, IProductionListDetailDal productionListDetailDal)
         {
             _productionListDetailDal = productionListDetailDal;
             _productionListService = productionListService;
@@ -65,14 +65,20 @@ namespace Business.Concrete
 
         }
 
-        public ProductionListDetail GetProductionListDetailByDateAndProductId(DateTime date, int productId,int c)
+        public ProductionListDetail GetProductionListDetailByDateAndProductId(DateTime date, Product product)
         {
 
-            int productionListId = _productionListService.GetByDateAndCategoryId(date,c);
+            int productionListId = _productionListService.GetByDateAndCategoryId(date,product.CategoryId);
 
-            ProductionListDetail productionListDetail = _productionListDetailDal.Get(d => d.ProductId == productId && d.ProductionListId == productionListId);
+            if (productionListId <= 0)
+            {
+                return new ProductionListDetail { Quantity = 0, Price = 0 };
+            }
 
-            return productionListDetail == null ? new ProductionListDetail { Quantity = 0, Price=0} : productionListDetail;
+            ProductionListDetail productionListDetail =
+                    _productionListDetailDal.Get(d => d.ProductId == product.Id && d.ProductionListId == productionListId);
+ 
+            return productionListDetail == null ? new ProductionListDetail { Quantity = 0, Price = 0 } : productionListDetail;
         }
     }
 }

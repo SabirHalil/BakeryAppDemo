@@ -45,7 +45,7 @@ namespace Business.Concrete
             _productionListDal.Update(productionList);
         }
 
-  
+
 
         public int GetByDateAndCategoryId(DateTime date, int categoryId)
         {
@@ -53,10 +53,18 @@ namespace Business.Concrete
             return productList == null ? 0 : productList.Id;
         }
 
-        public int GetByDate(DateTime date)
+        public List<int> GetByDate(DateTime date)
         {
-            ProductionList productList = _productionListDal.Get(p => p.Date.Date == date.Date);
-            return productList == null ? 0 : productList.Id;
+            List<ProductionList> productList = _productionListDal.GetAll(p => p.Date.Date == date.Date);
+            if (productList != null && productList.Any())
+            {
+                List<int> productListIds = productList.Select(p => p.Id).ToList();
+                return productListIds;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

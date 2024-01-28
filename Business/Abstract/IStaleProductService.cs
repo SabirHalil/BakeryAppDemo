@@ -11,7 +11,7 @@ namespace Business.Abstract
         void Delete(StaleProduct staleProduct);
         void Update(StaleProduct staleProduct);
         StaleProduct GetById(int id);
-        int GetQuantityStaleBreadByDateAndProductId(DateTime date, int productId);
+        int GetQuantityStaleProductByDateAndProductId(DateTime date, int productId);
         List<StaleProductDto> GetByDateAndCategory(DateTime date, int categoryId);
         List<Product> GetProductsNotAddedToStale(DateTime date, int categoryId);
 

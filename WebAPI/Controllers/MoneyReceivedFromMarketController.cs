@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.Concrete;
 using Business.Constants;
 using Entities.Concrete;
 using Entities.DTOs;
@@ -20,8 +21,12 @@ namespace WebAPI.Controllers
         private IStaleBreadReceivedFromMarketService _staleBreadReceivedFromMarketService;
         private IDebtMarketService _debtMarketService;
 
-        public MoneyReceivedFromMarketController(IDebtMarketService debtMarketService, IStaleBreadReceivedFromMarketService staleBreadReceivedFromMarketService, IMarketService marketService, IMarketContractService marketContractService, IMoneyReceivedFromMarketService moneyReceivedFromMarketService, IServiceListService serviceListService, IServiceListDetailService serviceListDetailService)
+        private IMarketEndOfDayService _marketEndOfDayService;
+
+
+        public MoneyReceivedFromMarketController(IMarketEndOfDayService marketEndOfDayService, IDebtMarketService debtMarketService, IStaleBreadReceivedFromMarketService staleBreadReceivedFromMarketService, IMarketService marketService, IMarketContractService marketContractService, IMoneyReceivedFromMarketService moneyReceivedFromMarketService, IServiceListService serviceListService, IServiceListDetailService serviceListDetailService)
         {
+            _marketEndOfDayService = marketEndOfDayService;
             _debtMarketService = debtMarketService;
             _moneyReceivedFromMarketService = moneyReceivedFromMarketService;
             _serviceListDetailService = serviceListDetailService;
@@ -40,7 +45,7 @@ namespace WebAPI.Controllers
             try
             {
                 //var result = _moneyReceivedFromMarketService.GetByMarketId(marketId);
-                var result = _moneyReceivedFromMarketService.GetByMarketIdAndDate(marketId,date);
+                var result = _moneyReceivedFromMarketService.GetByMarketIdAndDate(marketId, date);
                 return Ok(result);
             }
             catch (Exception e)
@@ -56,30 +61,14 @@ namespace WebAPI.Controllers
         {
             try
             {
-                List<MoneyReceivedFromMarket> moneyReceivedFromMarkets = _moneyReceivedFromMarketService.GetByDate(date);
-
-                List<PaymentMarket> paymentMarkets = new();
-
-                for (int i = 0; i < moneyReceivedFromMarkets.Count; i++)
-                {
-                    PaymentMarket paymentMarket = new();
-                    paymentMarket.MarketId = moneyReceivedFromMarkets[i].MarketId;
-                    paymentMarket.id = moneyReceivedFromMarkets[i].Id;
-                    paymentMarket.Amount = moneyReceivedFromMarkets[i].Amount;
-                    paymentMarket.MarketName = _marketService.GetNameById(moneyReceivedFromMarkets[i].MarketId);
-                    paymentMarket.TotalAmount = TotalAmout(date, moneyReceivedFromMarkets[i].MarketId);
-                    paymentMarket.StaleBread = _staleBreadReceivedFromMarketService.GetStaleBreadCountByMarketId(paymentMarket.MarketId, date);
-                    paymentMarkets.Add(paymentMarket);
-
-                }
-
-                return Ok(paymentMarkets);
+                return Ok(_marketEndOfDayService.CalculateMarketEndOfDay(date));
             }
             catch (Exception e)
             {
 
                 return StatusCode(500, e.Message);
             }
+
         }
 
 
@@ -141,7 +130,7 @@ namespace WebAPI.Controllers
                     return BadRequest(Messages.WrongInput);
                 }
 
-                if (_moneyReceivedFromMarketService.IsExist(moneyReceivedFromMarket.MarketId,moneyReceivedFromMarket.Date))
+                if (_moneyReceivedFromMarketService.IsExist(moneyReceivedFromMarket.MarketId, moneyReceivedFromMarket.Date))
                 {
 
                     return BadRequest(Messages.Conflict);
@@ -213,7 +202,7 @@ namespace WebAPI.Controllers
                     return BadRequest(Messages.WrongInput);
                 }
 
-                if (! _moneyReceivedFromMarketService.IsExist(moneyReceivedFromMarket.MarketId, moneyReceivedFromMarket.Date))
+                if (!_moneyReceivedFromMarketService.IsExist(moneyReceivedFromMarket.MarketId, moneyReceivedFromMarket.Date))
                 {
 
                     return BadRequest(Messages.WrongInput);
@@ -291,23 +280,7 @@ namespace WebAPI.Controllers
 
             return TotalAmount;
         }
-        private class PaymentMarket
-        {
-            public int id { get; set; }
-            public decimal Amount { get; set; }
-            public int MarketId { get; set; }
-            public string MarketName { get; set; }
-            public decimal TotalAmount { get; set; }
-            public int StaleBread { get; set; }
-        }
 
-        private class NotPaymentMarket
-        {
-            public int MarketId { get; set; }
-            public string MarketName { get; set; }
-            public decimal TotalAmount { get; set; }
-            public int StaleBread { get; set; }
-        }
     }
 
 
