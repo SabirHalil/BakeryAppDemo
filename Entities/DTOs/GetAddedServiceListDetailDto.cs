@@ -9,6 +9,7 @@ namespace Entities.DTOs
 {
     public class GetAddedServiceListDetailDto : IDto
     {
+        public int Id { get; set; }
         public int ServiceListId { get; set; }
         public int Quantity { get; set; }
         public int MarketId { get; set; }

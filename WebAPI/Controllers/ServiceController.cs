@@ -44,7 +44,6 @@ namespace WebAPI.Controllers
                 return StatusCode(500, e.Message);
             }
 
-
         }
 
         [HttpPost("AddServiceListAndListDetail")]
@@ -76,13 +75,13 @@ namespace WebAPI.Controllers
                     }
                     else
                     {
-                        serviceListDetail.ServiceListId = serviceListDetailDto[i].ServiceListId;                    
+                        serviceListDetail.ServiceListId = serviceListDetailDto[i].ServiceListId;
                     }
 
 
                     serviceListDetail.MarketContractId = _marketContractService.GetIdByMarketId(serviceListDetailDto[i].MarketId);
 
-                    if (_serviceListDetailService.IsExist(serviceListDetail.ServiceListId ,serviceListDetail.MarketContractId))
+                    if (_serviceListDetailService.IsExist(serviceListDetail.ServiceListId, serviceListDetail.MarketContractId))
                     {
                         return Conflict(Messages.Conflict);
                     }
@@ -114,6 +113,7 @@ namespace WebAPI.Controllers
                 for (int i = 0; i < serviceListDetail.Count; i++)
                 {
                     GetAddedServiceListDetailDto addedServiceListDetailDto = new();
+                    addedServiceListDetailDto.Id = serviceListDetail[i].Id;
                     addedServiceListDetailDto.ServiceListId = serviceListDetail[i].ServiceListId;
                     addedServiceListDetailDto.Quantity = serviceListDetail[i].Quantity;
 
@@ -162,16 +162,16 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("DeleteServiceListDetail")]
-        public ActionResult DeleteServiceListDetail(DataForDelete dataForDelete)
+        public ActionResult DeleteServiceListDetail(int id)
         {
-            if (dataForDelete.ServiceListId <= 0)
+            if (id <= 0)
             {
                 return BadRequest(Messages.WrongInput);
             }
 
             try
             {
-                _serviceListDetailService.DeleteByServiceListIdAndMarketContracId(dataForDelete.ServiceListId, _marketContractService.GetIdByMarketId(dataForDelete.MarketId));
+                _serviceListDetailService.DeleteById(id);
                 return Ok();
             }
             catch (Exception e)

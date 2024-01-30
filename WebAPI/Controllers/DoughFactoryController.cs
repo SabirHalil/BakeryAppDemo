@@ -59,42 +59,39 @@ namespace WebAPI.Controllers
 
             try
             {
-                int id = doughFactoryListDetail[0].DoughFactoryListId;
-                bool IsNewList = false;
-                if (id == 0)
+                int doughFactoryListId = doughFactoryListDetail[0].DoughFactoryListId;
+                bool isNewList = doughFactoryListId == 0;
+
+                if (isNewList)
                 {
-                    id = _doughFactoryListService.Add(new DoughFactoryList { Id = 0, UserId = userId, Date = DateTime.Now });
-                    IsNewList = true;
+                    doughFactoryListId = _doughFactoryListService.Add(new DoughFactoryList { UserId = userId, Date = DateTime.Now });
                 }
 
-                for (int i = 0; i < doughFactoryListDetail.Count; i++)
+                foreach (var detail in doughFactoryListDetail)
                 {
-
-                    if (IsNewList)
+                    if (isNewList)
                     {
-                        doughFactoryListDetail[i].DoughFactoryListId = id;
-                        _doughFactoryListDetailService.Add(doughFactoryListDetail[i]);
+                        detail.DoughFactoryListId = doughFactoryListId;
+                        _doughFactoryListDetailService.Add(detail);
                     }
                     else
                     {
-                        if (_doughFactoryListDetailService.IsExist(doughFactoryListDetail[i].DoughFactoryProductId, doughFactoryListDetail[i].DoughFactoryListId ))
+                        if (_doughFactoryListDetailService.IsExist(detail.DoughFactoryProductId, doughFactoryListId))
                         {
                             return Conflict(Messages.Conflict);
                         }
                         else
                         {
-                            _doughFactoryListDetailService.Add(doughFactoryListDetail[i]);
+                            _doughFactoryListDetailService.Add(detail);
                         }
                     }
                 }
-                return Ok(id);
 
+                return Ok(doughFactoryListId);
             }
             catch (Exception e)
             {
-
                 return StatusCode(500, e.Message);
-
             }
         }
 
