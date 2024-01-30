@@ -106,7 +106,11 @@ namespace WebAPI.Controllers
                     NotPaymentMarket notPaymentMarket = new();
                     notPaymentMarket.MarketId = filteredMarkets[i];
                     notPaymentMarket.MarketName = _marketService.GetNameById(filteredMarkets[i]);
-                    notPaymentMarket.TotalAmount = TotalAmout(date, filteredMarkets[i]);
+
+                    var result = CalculateTotalAmountAndBread(date, filteredMarkets[i]);
+                    
+                    notPaymentMarket.TotalAmount = result.TotalAmount;
+                    notPaymentMarket.GivenBread = result.TotalBread;
                     notPaymentMarket.StaleBread = _staleBreadReceivedFromMarketService.GetStaleBreadCountByMarketId(notPaymentMarket.MarketId, date);
                     NotPaymentMarkets.Add(notPaymentMarket);
                 }
@@ -136,7 +140,9 @@ namespace WebAPI.Controllers
                     return BadRequest(Messages.Conflict);
                 }
 
-                decimal totalAmount = TotalAmout(moneyReceivedFromMarket.Date, moneyReceivedFromMarket.MarketId);
+                
+                var result = CalculateTotalAmountAndBread(moneyReceivedFromMarket.Date, moneyReceivedFromMarket.MarketId);
+                decimal totalAmount = result.TotalAmount;
                 if (totalAmount < moneyReceivedFromMarket.Amount)
                 {
                     return BadRequest(Messages.InvalidAmount);
@@ -207,7 +213,8 @@ namespace WebAPI.Controllers
                     return BadRequest(Messages.WrongInput);
                 }
 
-                decimal totalAmount = TotalAmout(moneyReceivedFromMarket.Date, moneyReceivedFromMarket.MarketId);
+                var result = CalculateTotalAmountAndBread(moneyReceivedFromMarket.Date, moneyReceivedFromMarket.MarketId);
+                decimal totalAmount = result.TotalAmount;
                 if (totalAmount < moneyReceivedFromMarket.Amount)
                 {
                     return BadRequest(Messages.InvalidAmount);
@@ -255,7 +262,7 @@ namespace WebAPI.Controllers
             return Ok();
         }
 
-        private decimal TotalAmout(DateTime date, int marketId)
+        private (decimal TotalAmount, int TotalBread) CalculateTotalAmountAndBread(DateTime date, int marketId)
         {
 
             List<ServiceList> serviceLists = _serviceListService.GetByDate(date);
@@ -277,7 +284,8 @@ namespace WebAPI.Controllers
 
             decimal TotalAmount = (TotalBread - StaleBreadCount) * Price;
 
-            return TotalAmount;
+
+            return (TotalAmount, TotalBread);
         }
 
     }

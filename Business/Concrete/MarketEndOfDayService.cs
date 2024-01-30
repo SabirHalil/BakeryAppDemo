@@ -44,7 +44,11 @@ namespace Business.Concrete
                 paymentMarket.id = moneyReceivedFromMarkets[i].Id;
                 paymentMarket.Amount = moneyReceivedFromMarkets[i].Amount;
                 paymentMarket.MarketName = _marketService.GetNameById(moneyReceivedFromMarkets[i].MarketId);
-                paymentMarket.TotalAmount = TotalAmout(date, moneyReceivedFromMarkets[i].MarketId);
+
+                var result = CalculateTotalAmountAndBread(date, moneyReceivedFromMarkets[i].MarketId);
+
+                paymentMarket.TotalAmount = result.TotalAmount;
+                paymentMarket.GivenBread = result.TotalBread;
                 paymentMarket.StaleBread = _staleBreadReceivedFromMarketService.GetStaleBreadCountByMarketId(paymentMarket.MarketId, date);
                 paymentMarkets.Add(paymentMarket);
             }
@@ -54,7 +58,7 @@ namespace Business.Concrete
 
 
 
-        private decimal TotalAmout(DateTime date, int marketId)
+        private (decimal TotalAmount, int TotalBread) CalculateTotalAmountAndBread(DateTime date, int marketId)
         {
 
             List<ServiceList> serviceLists = _serviceListService.GetByDate(date);
@@ -76,7 +80,8 @@ namespace Business.Concrete
 
             decimal TotalAmount = (TotalBread - StaleBreadCount) * Price;
 
-            return TotalAmount;
+
+            return (TotalAmount, TotalBread);
         }
     }
 }
