@@ -151,7 +151,6 @@ namespace WebAPI.Controllers
                     });
                 }
 
-
                 _moneyReceivedFromMarketService.Add(moneyReceivedFromMarket);
             }
             catch (Exception e)
