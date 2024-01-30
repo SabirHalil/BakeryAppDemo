@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.Concrete;
 using Entities.Concrete;
 using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
@@ -29,12 +30,19 @@ namespace WebAPI.Controllers
         private IBreadPriceService _breadPriceService;
 
         private IStaleBreadService _staleBreadService;
-        public EndOfDayAccountController(IStaleBreadService staleBreadService, IDoughFactoryListService doughFactoryListService, IDoughFactoryListDetailService doughFactoryListDetailService, IDoughFactoryProductService doughFactoryProductService,
+
+        private IMarketEndOfDayService _marketEndOfDayService;
+        private IMoneyReceivedFromMarketService _moneyReceivedFromMarketService;
+        public EndOfDayAccountController(IMarketEndOfDayService marketEndOfDayService,IStaleBreadService staleBreadService, IDoughFactoryListService doughFactoryListService, IDoughFactoryListDetailService doughFactoryListDetailService, IDoughFactoryProductService doughFactoryProductService,
             IGivenProductsToServiceService givenProductsToServiceService, IBreadCountingService breadCountingService,
             IPurchasedProductListDetailService purchasedProductListDetailService, IStaleProductService staleProductService,
             IProductsCountingService productsCountingService, IProductService productService, IProductionListDetailService productionListDetailService,
-            IBreadPriceService breadPriceService)
+            IBreadPriceService breadPriceService,
+            IMoneyReceivedFromMarketService moneyReceivedFromMarketService)
         {
+            _moneyReceivedFromMarketService = moneyReceivedFromMarketService;
+
+            _marketEndOfDayService = marketEndOfDayService;
             _purchasedProductListDetailService = purchasedProductListDetailService;
             _productService = productService;
             _productionListDetailService = productionListDetailService;
@@ -51,7 +59,25 @@ namespace WebAPI.Controllers
             _breadPriceService = breadPriceService;
         }
 
+        [HttpGet("GetServiceDetail")]
+        public ActionResult GetServiceDetail(DateTime date)
+        {
+            try
+            {
+                var result = new
+                {
+                    PaymentMarkets = _marketEndOfDayService.CalculateMarketEndOfDay(date),
+                    MoneyReceivedFromMarkets = _moneyReceivedFromMarketService.GetByDate(date)
+                };
+                //return Ok(_marketEndOfDayService.CalculateMarketEndOfDay(date), _moneyReceivedFromMarketService.GetByDate(date));
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
 
+                return StatusCode(500, e.Message);
+            }
+        }
 
         [HttpGet("GetProductsSoldInTheBakery")]
         public ActionResult GetProductsSoldInTheBakery(DateTime date)
@@ -64,23 +90,33 @@ namespace WebAPI.Controllers
                 products.AddRange(products2);
 
                 List<ProductSoldInTheBakery> productsSoldInTheBakery = new();
+
                 for (int i = 0; i < products.Count; i++)
                 {
                     ProductSoldInTheBakery productSoldInTheBakery = new();
                     productSoldInTheBakery.ProductId = products[i].Id;
                     productSoldInTheBakery.ProductName = products[i].Name;
-                  //  productSoldInTheBakery.Price = _productionListDetailService.GetProductionListDetailByDateAndProductId((date.Date), products[i].Id).Price;
+
+                    ProductionListDetail productionListDetail = _productionListDetailService.GetProductionListDetailByDateAndProductId((date), products[i]);
+
+                    productSoldInTheBakery.ProductedToday = productionListDetail.Quantity;
+                    productSoldInTheBakery.Price = productionListDetail.Price;
+
+
+                    for (int j = 1; j < 6 && productSoldInTheBakery.Price == 0; j++)
+                    {
+                        productSoldInTheBakery.Price = _productionListDetailService.GetProductionListDetailByDateAndProductId((date.Date.AddDays(-j)), products[i]).Price;
+                    }
 
                     productSoldInTheBakery.RemainingYesterday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date.AddDays(-1)), products[i].Id);
                     productSoldInTheBakery.RemainingToday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date), products[i].Id);
 
-                    productSoldInTheBakery.StaleProductToday = _staleProductService.GetQuantityStaleBreadByDateAndProductId((date.Date), products[i].Id);
-
-             //       productSoldInTheBakery.ProductedToday = _productionListDetailService.GetProductionListDetailByDateAndProductId((date.Date), products[i].Id).Quantity;
+                    productSoldInTheBakery.StaleProductToday = _staleProductService.GetQuantityStaleProductByDateAndProductId((date.Date), products[i].Id);
 
                     productSoldInTheBakery.Revenue = productSoldInTheBakery.Price * (productSoldInTheBakery.RemainingYesterday + productSoldInTheBakery.ProductedToday - productSoldInTheBakery.RemainingToday - productSoldInTheBakery.StaleProductToday);
 
                     productsSoldInTheBakery.Add(productSoldInTheBakery);
+
                 }
 
                 return Ok(productsSoldInTheBakery);
@@ -105,14 +141,22 @@ namespace WebAPI.Controllers
                     PurchasedProductSoldInTheBakery purchasedProductSoldInTheBakery = new();
                     purchasedProductSoldInTheBakery.ProductId = products[i].Id;
                     purchasedProductSoldInTheBakery.ProductName = products[i].Name;
+
+
                     purchasedProductSoldInTheBakery.Price = _purchasedProductListDetailService.GetPurchasedProductListDetailByDateAndProductId((date.Date), products[i].Id).Price;
+
+
+                    for (int j = 1; j < 6 && purchasedProductSoldInTheBakery.Price == 0; j++)
+                    {
+                        purchasedProductSoldInTheBakery.Price = _purchasedProductListDetailService.GetPurchasedProductListDetailByDateAndProductId((date.Date.AddDays(-j)), products[i].Id).Price;
+                    }
 
                     purchasedProductSoldInTheBakery.RemainingYesterday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date.AddDays(-1)), products[i].Id);
                     purchasedProductSoldInTheBakery.RemainingToday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date), products[i].Id);
 
-                    purchasedProductSoldInTheBakery.StaleProductToday = _staleProductService.GetQuantityStaleBreadByDateAndProductId((date.Date), products[i].Id);
+                    purchasedProductSoldInTheBakery.StaleProductToday = _staleProductService.GetQuantityStaleProductByDateAndProductId((date.Date), products[i].Id);
 
-                    purchasedProductSoldInTheBakery.PurchasedToday = _purchasedProductListDetailService.GetPurchasedProductListDetailByDateAndProductId((date.Date), products[i].Id).Quantity;
+                    purchasedProductSoldInTheBakery.PurchasedToday = _purchasedProductListDetailService.GetPurchasedProductListDetailByDateAndProductId((date.Date), products[i].Id)?.Quantity ?? 0;
 
                     purchasedProductSoldInTheBakery.Revenue = purchasedProductSoldInTheBakery.Price * (purchasedProductSoldInTheBakery.RemainingYesterday + purchasedProductSoldInTheBakery.PurchasedToday - purchasedProductSoldInTheBakery.RemainingToday - purchasedProductSoldInTheBakery.StaleProductToday);
 
@@ -162,8 +206,8 @@ namespace WebAPI.Controllers
                 }
 
                 BreadSold breadSold = new();
-                breadSold.RemainingYesterday = _breadCountingService.GetBreadCountingByDate(date.Date.AddDays(-1)).Quantity;
-                breadSold.RemainingToday = _breadCountingService.GetBreadCountingByDate(date.Date).Quantity;
+                breadSold.RemainingYesterday = _breadCountingService.GetBreadCountingByDate(date.Date.AddDays(-1))?.Quantity ?? 0;
+                breadSold.RemainingToday = _breadCountingService.GetBreadCountingByDate(date.Date)?.Quantity ?? 0;
                 breadSold.ProductedToday = AllBreadProduced;
                 breadSold.StaleProductToday = StaleBread;
                 breadSold.ProductName = "Ekmek";

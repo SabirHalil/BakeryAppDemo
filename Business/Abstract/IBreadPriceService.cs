@@ -11,4 +11,5 @@ namespace Business.Abstract
         void Update(BreadPrice breadPrice);
         BreadPrice GetById(int id);
     }
+
 }

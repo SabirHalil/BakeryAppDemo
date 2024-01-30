@@ -8,7 +8,7 @@ namespace Business.Abstract
         int Add(ProductionList productionList);
         void DeleteById(int id);
         int GetByDateAndCategoryId(DateTime date, int categoryId);
-        int GetByDate(DateTime date);
+        List<int> GetByDate(DateTime date);
         void Delete(ProductionList productionList);
         void Update(ProductionList productionList);
         ProductionList GetById(int id);
