@@ -158,13 +158,13 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpDelete("DeleteStaleBreadReceivedFromMarket")]
-        public ActionResult DeleteStaleBreadReceivedFromMarket(StaleBreadReceivedFromMarket staleBreadReceivedFromMarket)
+        [HttpDelete("DeleteStaleBreadReceivedFromMarketById")]
+        public ActionResult DeleteStaleBreadReceivedFromMarket(int id)
         {
 
             try
             {
-                _staleBreadReceivedFromMarketService.Delete(staleBreadReceivedFromMarket);
+                _staleBreadReceivedFromMarketService.DeleteById(id);
                 return Ok();
             }
             catch (Exception e)

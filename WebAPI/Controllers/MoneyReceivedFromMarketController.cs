@@ -178,14 +178,15 @@ namespace WebAPI.Controllers
                     return BadRequest(Messages.WrongInput);
                 }
 
-                _debtMarketService.Delete(new DebtMarket
-                {
-                    Date = moneyReceivedFromMarket.Date,
-                    MarketId = moneyReceivedFromMarket.MarketId,
-                    Id = _debtMarketService.GetDebtIdByDateAndMarketId(moneyReceivedFromMarket.Date, moneyReceivedFromMarket.MarketId)
-                });
 
-                _moneyReceivedFromMarketService.Delete(moneyReceivedFromMarket);
+                int debtId = _debtMarketService.GetDebtIdByDateAndMarketId(moneyReceivedFromMarket.Date, moneyReceivedFromMarket.MarketId);
+          
+                if(debtId != 0)
+                {
+                    _debtMarketService.DeleteById(debtId);
+                }
+
+                _moneyReceivedFromMarketService.DeleteById(moneyReceivedFromMarket.Id);
             }
             catch (Exception e)
             {
