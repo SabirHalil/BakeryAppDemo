@@ -19,16 +19,16 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
-        public decimal GetTotalAmountForMarket(int marketId)
+        public Dictionary<int, decimal> GetTotalDebtsForMarkets()
         {
             using (BakeryAppContext context = new BakeryAppContext())
             {
-                decimal totalAmount = context.DebtMarkets
-                    .Where(dm => dm.MarketId == marketId)
-                    .Select(dm => dm.Amount)
-                    .DefaultIfEmpty() // Bu satır koleksiyon boşsa varsayılan olarak "0" ekler  *** Önemli!!
-                    .Sum();
-                return totalAmount;
+                var totalAmounts = context.DebtMarkets
+                    .GroupBy(dm => dm.MarketId)
+                    .Select(group => new { MarketId = group.Key, TotalAmount = group.Sum(dm => dm.Amount) })
+                    .ToDictionary(result => result.MarketId, result => result.TotalAmount);
+
+                return totalAmounts;
             }
         }
 

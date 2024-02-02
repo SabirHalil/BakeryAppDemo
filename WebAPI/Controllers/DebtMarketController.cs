@@ -24,18 +24,17 @@ namespace WebAPI.Controllers
         [HttpGet("GetDebtsOfMarkets")]
         public ActionResult GetDebtsOfMarkets()
         {
-
             try
             {
                 List<DebtsOfMarkets> debtsOfMarkets = new();
 
-                List<Market> allMarkets = _marketService.GetAll();
-                for (int i = 0;i<allMarkets.Count; i++) {
-
+                Dictionary<int, decimal> totalDebtsForMarkets = _debtMarketService.GetTotalDebtsForMarkets();
+                foreach (var totalDebtForMarket in totalDebtsForMarkets)
+                {
                     DebtsOfMarkets debtsOfMarket = new();
-                    debtsOfMarket.MarketId = allMarkets[i].Id;
-                    debtsOfMarket.MarketName = allMarkets[i].Name;
-                    debtsOfMarket.Amount = _debtMarketService.GetTotalAmountForMarket(debtsOfMarket.MarketId);
+                    debtsOfMarket.MarketId = totalDebtForMarket.Key;
+                    debtsOfMarket.Amount = totalDebtForMarket.Value;
+                    debtsOfMarket.MarketName = _marketService.GetNameById(debtsOfMarket.MarketId);
 
                     debtsOfMarkets.Add(debtsOfMarket);
                 }
