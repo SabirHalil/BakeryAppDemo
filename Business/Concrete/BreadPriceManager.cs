@@ -9,10 +9,10 @@ namespace Business.Concrete
 
 
         IBreadPriceDal _breadPriceDal;
-        
+
         public BreadPriceManager(IBreadPriceDal breadPriceDal)
         {
-            _breadPriceDal = breadPriceDal;  
+            _breadPriceDal = breadPriceDal;
         }
 
         public void Add(BreadPrice breadPrice)
@@ -31,7 +31,7 @@ namespace Business.Concrete
         }
         public List<BreadPrice> GetAll()
         {
-           return _breadPriceDal.GetAll();
+            return _breadPriceDal.GetAll();
         }
 
         public BreadPrice GetById(int id)
@@ -42,6 +42,39 @@ namespace Business.Concrete
         public void Update(BreadPrice breadPrice)
         {
             _breadPriceDal.Update(breadPrice);
+        }
+
+        public decimal BreadPriceByDate(DateTime date)
+        {
+
+            BreadPrice searchedPrice = _breadPriceDal.Get(p => p.Date.Date == date.Date);
+
+            if (searchedPrice != null)
+            {
+                return searchedPrice.Price;
+            }
+            else
+            {
+                BreadPrice? previousPrice = _breadPriceDal
+                                    .GetAll(p => p.Date.Date < date.Date)
+                                    .OrderByDescending(p => p.Date.Date)
+                                    .FirstOrDefault();
+
+                if (previousPrice != null)
+                {
+                    return previousPrice.Price;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        public bool IsExistByDate(DateTime date)
+        {
+            BreadPrice searchedPrice = _breadPriceDal.Get(p => p.Date.Date == date.Date);
+            return searchedPrice != null ? true : false;
         }
     }
 }

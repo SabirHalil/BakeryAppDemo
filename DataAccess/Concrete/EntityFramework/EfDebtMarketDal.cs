@@ -19,6 +19,19 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
+        public decimal GetTotalAmountForMarket(int marketId)
+        {
+            using (BakeryAppContext context = new BakeryAppContext())
+            {
+                decimal totalAmount = context.DebtMarkets
+                    .Where(dm => dm.MarketId == marketId)
+                    .Select(dm => dm.Amount)
+                    .DefaultIfEmpty() // Bu satır koleksiyon boşsa varsayılan olarak "0" ekler  *** Önemli!!
+                    .Sum();
+                return totalAmount;
+            }
+        }
+
         public bool IsExist(int id)
         {
             using (var context = new BakeryAppContext())

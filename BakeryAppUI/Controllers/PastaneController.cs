@@ -21,8 +21,7 @@ namespace BakeryAppUI.Controllers
                 (ApiUrl.url + "/api/ProductionList/GetAddedProductsByDateAndCategoryId?date=" + _date.date.ToString("yyyy-MM-dd") + "&categoryId=1");
 
 
-            ViewBag.productionListDetail = productionListDetail;
-            ViewBag.MakerName = "Ahmet Yerli";
+            ViewBag.productionListDetail = productionListDetail;            
             ViewBag.date = _date.date;
 
             return View();
