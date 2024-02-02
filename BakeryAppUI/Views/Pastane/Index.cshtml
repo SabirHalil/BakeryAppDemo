@@ -50,20 +50,14 @@
          <div class="text-center">
         <h3>Pastane Ürünleri</h3>
         </div>
-      @*   <div class="mb-3">
-        <a href="@Url.Action("Add")" class="btn btn-success">
-        Yeni Kayıt
-        </a>
-        </div> *@
+      
+        <button type="button" class="btn btn-primary" onclick="generatePDF()">PDF Oluştur</button>
+
 
 
         <table id="myTable" class="table table-striped">
             <thead>
-                <tr>
-                    <th class="th-sm">
-                        Usta Adı
-                    </th>
-
+                <tr>                   
                     <th class="th-sm">
                         Ürün Adı
                     </th>
@@ -73,42 +67,141 @@
                     <th class="th-sm">
                         Fiyatı
                     </th>
-
-                    <th class="th-sm">
-                        Düzenle
-                    </th>
-                    <th class="th-sm">
-                        Sil
-                    </th>
                 </tr>
             </thead>
             <tbody>
-
-
                 @foreach (var liste in ViewBag.productionListDetail)
                 {
-                    <tr>
-                        <td>@ViewBag.MakerName</td>
+                    <tr>                       
                         <td>@liste.ProductName</td>
                         <td>@liste.Quantity</td>
                         <td>@liste.Price</td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@liste.Id" class="btn btn-info btn-sm"><i class="bi bi-pencil"></i> Düzenle</a>
-                        </td>
-                        <td>
-                            <a asp-action="Delete" asp-route-id="@liste.Id"
-                               onclick="return confirm('Are you sure you want to delete this record?')"
-                               class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Sil</a>
-                        </td>
                     </tr>
-                }
-
-             
-
+                }           
             </tbody>
         </table>
     </div>
 
+    <!-- PDF önizleme için geniş modal -->
+    <div class="modal fade" id="pdfPreviewModal" tabindex="-1" aria-labelledby="pdfPreviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pdfPreviewModalLabel">PDF Önizleme</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- PDF önizleme için iframe -->
+                    <iframe id="pdfViewer" class="embed-responsive-item" width="100%" height="500px"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- pdfmake -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
+
+    <script>
+        function generatePDF() {
+            // Tablo verileri
+            var data = [];
+            var headers = [];
+
+            // Tablo başlıkları ve verilerini doldurun
+            $('#myTable thead th').each(function () {
+                headers.push({ text: $(this).text().trim(), style: 'tableHeader' });
+            });
+
+            $('#myTable tbody tr').each(function () {
+                var rowData = [];
+                $(this).find('td').each(function () {
+                    rowData.push($(this).text().trim());
+                });
+                data.push(rowData);
+            });
+
+            // Tarih ve firma adı
+            var currentDate = new Date('@ViewBag.date.ToString("yyyy-MM-dd")');
+            var formattedDate = currentDate.toLocaleDateString('tr-TR'); // Türkçe tarih formatı
+            var dayOfWeek = new Intl.DateTimeFormat('tr-TR', { weekday: 'long' }).format(currentDate); // Gün
+
+            var companyName = 'ASLANOĞLU FIRIN';
+
+            // Toplam gelir
+            var totalRevenue = parseFloat('@ViewBag.TotalRevenue').toFixed(2);
+
+            // PDF oluşturma
+            var docDefinition = {
+                content: [
+                    {
+                        columns: [
+                            { width: '50%', text: companyName, style: 'companyName' },
+                            { width: '50%', text: formattedDate + ' ' + dayOfWeek, style: 'date', alignment: 'right' },
+                        ],
+                        margin: [0, 0, 0, 10], // Boşluk
+                    },
+                    { text: 'Pastane', style: 'header' },
+                    {
+                        style: 'table',
+                        table: {
+                            headerRows: 1,
+                            body: [headers, ...data]
+                        }
+                    },
+                    { text: '\n' }, // Boş satır
+                    {
+                        columns: [
+                            { text: 'Toplam Gelir: ' + totalRevenue + ' TL', style: 'totalRevenue', alignment: 'right' },
+                        ],
+                        margin: [0, 10, 0, 0], // Boşluk
+                    }
+                ],
+                styles: {
+                    companyName: {
+                        fontSize: 14,
+                        bold: true,
+                    },
+                    date: {
+                        fontSize: 12,
+                    },
+                    header: {
+                        fontSize: 18,
+                        bold: true,
+                        margin: [0, 0, 0, 10]
+                    },
+                    table: {
+                        margin: [0, 5, 0, 15]
+                    },
+                    tableHeader: {
+                        bold: true,
+                        fontSize: 13,
+                        color: 'black'
+                    },
+                    totalRevenue: {
+                        fontSize: 14,
+                        bold: true,
+                    }
+                },
+                pageMargins: [30, 30, 30, 30] // Sayfa kenar boşlukları
+            };
+
+            // // PDF'i indir
+            // pdfMake.createPdf(docDefinition).download('tablo.pdf');
+
+            // PDF'i oluştur
+            var pdfDoc = pdfMake.createPdf(docDefinition);
+
+            pdfDoc.getDataUrl(function (dataUrl) {
+                var pdfViewer = document.getElementById('pdfViewer');
+                pdfViewer.src = dataUrl;
+
+                // Modal'ı göster
+                $('#pdfPreviewModal').modal('show');
+            });
+        }
+    </script>
 
 
     <script>

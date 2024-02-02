@@ -10,6 +10,8 @@ namespace Business.Abstract
         void Delete(BreadPrice breadPrice);
         void Update(BreadPrice breadPrice);
         BreadPrice GetById(int id);
+        Decimal BreadPriceByDate (DateTime date);
+        bool IsExistByDate(DateTime date);
     }
 
 }

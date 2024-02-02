@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Constants;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,23 +13,33 @@ namespace WebAPI.Controllers
     {
 
         private IDebtMarketService _debtMarketService;
+        private IMarketService _marketService;
 
-
-        public DebtMarketController(IDebtMarketService debtMarketService)
+        public DebtMarketController(IMarketService marketService, IDebtMarketService debtMarketService)
         {
             _debtMarketService = debtMarketService;
+            _marketService = marketService;
         }
 
-
-
-        [HttpGet("GetAllDebtMarket")]
-        public ActionResult GetDebtMarket()
+        [HttpGet("GetDebtsOfMarkets")]
+        public ActionResult GetDebtsOfMarkets()
         {
 
             try
             {
-                var result = _debtMarketService.GetAll();
-                return Ok(result);
+                List<DebtsOfMarkets> debtsOfMarkets = new();
+
+                List<Market> allMarkets = _marketService.GetAll();
+                for (int i = 0;i<allMarkets.Count; i++) {
+
+                    DebtsOfMarkets debtsOfMarket = new();
+                    debtsOfMarket.MarketId = allMarkets[i].Id;
+                    debtsOfMarket.MarketName = allMarkets[i].Name;
+                    debtsOfMarket.Amount = _debtMarketService.GetTotalAmountForMarket(debtsOfMarket.MarketId);
+
+                    debtsOfMarkets.Add(debtsOfMarket);
+                }
+                return Ok(debtsOfMarkets);
             }
             catch (Exception e)
             {

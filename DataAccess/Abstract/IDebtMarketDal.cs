@@ -7,5 +7,6 @@ namespace DataAccess.Abstract
     {
         void DeleteById(int id);
         bool IsExist(int id);
+        decimal GetTotalAmountForMarket(int marketId);
     }
 }
