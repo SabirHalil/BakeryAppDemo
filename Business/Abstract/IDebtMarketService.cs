@@ -6,7 +6,7 @@ namespace Business.Abstract
     {
         List<DebtMarket> GetAll();
         List<DebtMarket> GetDebtByMarketId(int marketId);
-        decimal GetTotalAmountForMarket(int marketId);
+        Dictionary<int, decimal> GetTotalDebtsForMarkets();
         void Add(DebtMarket debtMarket);
         void DeleteById(int id);
         void Delete(DebtMarket debtMarket);

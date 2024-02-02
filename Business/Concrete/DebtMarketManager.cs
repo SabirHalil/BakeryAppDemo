@@ -59,10 +59,10 @@ namespace Business.Concrete
         {
             return _debtMarketDal.GetAll(d=> d.MarketId == marketId);
         }
-
-        public decimal GetTotalAmountForMarket(int marketId)
+     
+        public Dictionary<int, decimal> GetTotalDebtsForMarkets()
         {
-            return _debtMarketDal.GetTotalAmountForMarket(marketId);
+            return _debtMarketDal.GetTotalDebtsForMarkets();
         }
     }
 }
