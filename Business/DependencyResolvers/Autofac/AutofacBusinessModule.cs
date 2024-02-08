@@ -19,6 +19,9 @@ namespace Business.DependencyResolvers.Autofac
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<ServiceStaleProductManager>().As<IServiceStaleProductService>();
+            builder.RegisterType<EfServiceStaleProductDal>().As<IServiceStaleProductDal>();
+
             builder.RegisterType<StaleProductManager>().As<IStaleProductService>();
             builder.RegisterType<EfStaleProductDal>().As<IStaleProductDal>();
 

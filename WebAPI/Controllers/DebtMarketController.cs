@@ -52,7 +52,6 @@ namespace WebAPI.Controllers
         public ActionResult GetDebtByMarketId(int marketId)
         {
 
-
             try
             {
 
@@ -132,15 +131,15 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("DeleteDebtMarket")]
-        public ActionResult DeleteDebtMarket(DebtMarket debtMarket)
+        public ActionResult DeleteDebtMarket(int id)
         {
             try
             {
-                if (debtMarket == null || debtMarket.Amount < 0)
+                if (id == 0)
                 {
                     return BadRequest(Messages.WrongInput);
                 }
-                _debtMarketService.Delete(debtMarket);
+                _debtMarketService.DeleteById(id);
                 return Ok();
             }
             catch (Exception e)
