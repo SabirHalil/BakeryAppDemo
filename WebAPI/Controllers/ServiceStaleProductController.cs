@@ -19,8 +19,8 @@ namespace WebAPI.Controllers
             _serviceStaleProductService = serviceStaleProductService; ;
         }
 
-        [HttpGet("GetStaleBreadListByDate")]
-        public ActionResult GetStaleBreadListByDate(DateTime date, int serviceTypeId)
+        [HttpGet("GetServiceStaleProductListByDateAndServiceTypeId")]
+        public ActionResult GetServiceStaleProductListByDateAndServiceTypeId(DateTime date, int serviceTypeId)
         {
             try
             {
