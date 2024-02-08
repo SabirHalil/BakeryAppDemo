@@ -11,53 +11,108 @@ namespace WebAPI.Controllers
     {
 
         private IGivenProductsToServiceService _givenProductsToServiceService;
-        
+
 
         public GivenProductsToServiceController(IGivenProductsToServiceService givenProductsToServiceService)
         {
-            _givenProductsToServiceService = givenProductsToServiceService; ;            
+            _givenProductsToServiceService = givenProductsToServiceService; ;
         }
 
         [HttpGet("GetGivenProductsToServiceByDateAndServisTypeId")]
         public ActionResult GetGivenProductsToServiceByDateAndServisTypeId(DateTime date, int servisTypeId)
         {
-            var result = _givenProductsToServiceService.GetAllByDateAndServisTypeId(date,servisTypeId);
-            return Ok(result);
+            try
+            {
+                var result = _givenProductsToServiceService.GetAllByDateAndServisTypeId(date, servisTypeId);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+
         }
 
         [HttpGet("GetGivenProductsToServiceDayResultByDateAndServiceType")]
         public ActionResult GetGivenProductsToServiceDayResult(DateTime date)
         {
-            var result = _givenProductsToServiceService.GetTotalQuantityByDate(date);
-            return Ok(result);
+            try
+            {
+                var result = _givenProductsToServiceService.GetTotalQuantityByDate(date);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+
         }
 
         [HttpGet("GetByIdGivenProductsToService")]
         public ActionResult GetByIdGivenProductsToService(int id)
         {
-            var result = _givenProductsToServiceService.GetById(id);
-            return Ok(result);
+            try
+            {
+                var result = _givenProductsToServiceService.GetById(id);
+                return Ok(result);
+
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+
         }
 
         [HttpPost("AddGivenProductsToService")]
         public ActionResult AddGivenProductsToService(GivenProductsToService givenProductsToService)
         {
-            _givenProductsToServiceService.Add(givenProductsToService);
-            return Ok();
+            try
+            {
+                _givenProductsToServiceService.Add(givenProductsToService);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+
         }
 
-        [HttpDelete("DeleteGivenProductsToService")]
-        public ActionResult DeleteGivenProductsToService(GivenProductsToService givenProductsToService)
+        [HttpDelete("DeleteGivenProductsToServiceById")]
+        public ActionResult DeleteGivenProductsToServiceById(int id)
         {
-            _givenProductsToServiceService.Delete(givenProductsToService);
-            return Ok();
+            try
+            {
+                _givenProductsToServiceService.DeleteById(id);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+
         }
 
         [HttpPut("UpdateGivenProductsToService")]
         public ActionResult UpdateGivenProductsToService(GivenProductsToService givenProductsToService)
         {
-            _givenProductsToServiceService.Update(givenProductsToService);
-            return Ok();
+            try
+            {
+                _givenProductsToServiceService.Update(givenProductsToService);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+
         }
     }
 }
