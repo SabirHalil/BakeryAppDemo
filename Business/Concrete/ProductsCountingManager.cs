@@ -65,5 +65,10 @@ namespace Business.Concrete
         {
             _productsCountingDal.AddList(productsCountings);
         }
+
+        public Dictionary<int, int> GetProductsCountingByDateAndCategory(DateTime date, int categoryId)
+        {
+           return _productsCountingDal.GetProductsCountingByDateAndCategory(date,categoryId);
+        }
     }
 }

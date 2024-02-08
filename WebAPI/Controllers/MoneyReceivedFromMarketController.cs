@@ -70,6 +70,20 @@ namespace WebAPI.Controllers
             }
 
         }
+        [HttpGet("GetMarketsEndOfDayCalculationWithDetail")]
+        public ActionResult GetMarketsEndOfDayCalculationWithDetail(DateTime date)
+        {
+            try
+            {
+                return Ok(_marketEndOfDayService.MarketsEndOfDayCalculationWithDetail(date));
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+
+        }
 
 
         [HttpGet("GetNotMoneyReceivedMarketListByDate")]

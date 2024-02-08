@@ -27,5 +27,21 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
+        public Dictionary<int, int> GetProductsCountingByDateAndCategory(DateTime date, int categoryId)
+        {
+            using (BakeryAppContext context = new BakeryAppContext())
+            {
+                var productsCountingQuantities = context.ProductsCountings
+                    .Where(pc => pc.Date.Date == date.Date)
+                    .Join(context.Products,
+                          counting => counting.ProductId,
+                          product => product.Id,
+                          (counting, product) => new { Counting = counting, Product = product })
+                    .Where(pair => pair.Product != null && pair.Product.CategoryId == categoryId)
+                    .ToDictionary(pair => pair.Counting.ProductId, pair => pair.Counting.Quantity);
+
+                return productsCountingQuantities;
+            }
+        }
     }
 }

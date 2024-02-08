@@ -31,7 +31,7 @@
     </div>
 
 
-    @using (Html.BeginForm("PostDate", "Borek", FormMethod.Post, new { id = "myForm" }))
+    @using (Html.BeginForm("PostDate", "MarketService", FormMethod.Post, new { id = "myForm" }))
     {
         <input type="hidden" id="dateHidden" name="date" />
     }
@@ -44,65 +44,104 @@
         }
     </script>
 
-    @if (ViewBag.productionListDetailDto.Count != 0)
-    {
 
+    @if (ViewBag.MarketBreadDetails.Count != 0)
+    {
         <div class="container">
             <div class="text-center">
-                <h3>Börek Çeşitler</h3>
+                <h3>Market Servis</h3>
             </div>
 
             <button type="button" class="btn btn-primary" onclick="generatePDF()">PDF Oluştur</button>
+
 
             <table id="myTable" class="table table-striped">
                 <thead>
                     <tr>
                         <th class="th-sm">
-                            Ürün Adı
+                            Market Adı
+                        </th>
+
+                        @foreach (var column in ViewBag.MarketBreadDetails[0].BreadGivenByEachService.Keys)
+                        {
+                            <th class="th-sm">
+                                @column
+                            </th>
+                        }
+
+                        <th class="th-sm">
+                            Toplam Verilen
                         </th>
                         <th class="th-sm">
-                            Dünden Kalan
+                            Bayat
                         </th>
                         <th class="th-sm">
-                            İmal Edilen
+                            Toplam Satış
+                        </th>
+                        @* <th class="th-sm">
+                    Birim Fiyatı
+                    </th> *@
+                        <th class="th-sm">
+                            Toplam Para
                         </th>
                         <th class="th-sm">
-                            Toplam Net
+                            Alınan Para
                         </th>
                         <th class="th-sm">
-                            Bayata Atılan
-                        </th>
-                        <th class="th-sm">
-                            Net
-                        </th>
-                        <th class="th-sm">
-                            Satılan
-                        </th>
-                        <th class="th-sm">
-                            Fiyatı
-                        </th>
-                        <th class="th-sm">
-                            Gelir
+                            Kalan Para
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var liste in ViewBag.productionListDetailDto)
+                    @foreach (var liste in ViewBag.MarketBreadDetails)
                     {
                         <tr>
-                            <td>@liste.ProductName</td>
-                            <td>@liste.RemainingYesterday</td>
-                            <td>@liste.ProductedToday</td>
-                            <td>@(@liste.RemainingYesterday + @liste.ProductedToday)</td>
-                            <td>@liste.StaleProductToday</td>
-                            <td>@(@liste.RemainingYesterday + @liste.ProductedToday - @liste.StaleProductToday)</td>
-                            <td>@(@liste.RemainingYesterday + @liste.ProductedToday - @liste.StaleProductToday - @liste.RemainingToday)</td>
-                            <td>@liste.Price</td>
-                            <td>@(@liste.Price * (@liste.RemainingYesterday + @liste.ProductedToday - @liste.StaleProductToday - @liste.RemainingToday))</td>
+                            <td>@liste.MarketName</td>
+                            @foreach (var value in liste.BreadGivenByEachService.Values)
+                            {
+                                <td>
+                                    @(value == 0 ? "-" : value.ToString())
+                                </td>
+                            }
+                            <td>@liste.GivenBread</td>
+                            <td>@liste.StaleBread</td>
+                            <td>@(@liste.GivenBread - @liste.StaleBread)</td>
+
+                            <td>@liste.TotalAmount</td>
+                            <td>@liste.Amount</td>
+                            <td>@(@liste.TotalAmount - @liste.Amount)</td>
                         </tr>
                     }
                 </tbody>
             </table>
+
+            <div class="container mt-5">
+
+                <div class="row">
+                    <div class="col-md-3 ms-auto">
+                        <div class="alert alert-primary" role="alert">
+                            <h3 class="alert-heading">Toplam Para</h3>
+                            <p class="mb-0">@ViewBag.TotalAmount</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 ms-auto">
+                        <div class="alert alert-primary" role="alert">
+                            <h3 class="alert-heading">Toplam Alınan Para</h3>
+                            <p class="mb-0">@ViewBag.TotalReceivedMoney</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 ms-auto">
+                        <div class="alert alert-primary" role="alert">
+                            <h3 class="alert-heading">Toplam Kalan Para</h3>
+                            <p class="mb-0">@(@ViewBag.TotalAmount - @ViewBag.TotalReceivedMoney)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
         </div>
 
         <!-- PDF önizleme için geniş modal -->
@@ -152,8 +191,10 @@
 
                 var companyName = 'ASLANOĞLU FIRIN';
 
-                // Toplam gelir
-                var totalRevenue = parseFloat('@ViewBag.TotalRevenue').toFixed(2);
+                // Toplam hesap
+                var totalAmount = parseFloat('@ViewBag.TotalAmount').toFixed(2);
+                var totalReceivedMoney = parseFloat('@ViewBag.TotalReceivedMoney').toFixed(2);
+                var totalRemainingMoney = parseFloat('@(@ViewBag.TotalAmount - @ViewBag.TotalReceivedMoney)').toFixed(2);
 
                 // PDF oluşturma
                 var docDefinition = {
@@ -165,7 +206,7 @@
                             ],
                             margin: [0, 0, 0, 10], // Boşluk
                         },
-                        { text: 'Börek', style: 'header' },
+                        { text: 'Market Servisi', style: 'header' },
                         {
                             style: 'table',
                             table: {
@@ -175,9 +216,12 @@
                         },
                         { text: '\n' }, // Boş satır
                         {
-                            columns: [
-                                { text: 'Toplam Gelir: ' + totalRevenue + ' TL', style: 'totalRevenue', alignment: 'right' },
+                            stack: [
+                                { text: 'Toplam Para: ' + totalAmount + ' TL', style: 'total', alignment: 'left' },
+                                { text: 'Toplam Alınan Para: ' + totalReceivedMoney + ' TL', style: 'total', alignment: 'left' },
+                                { text: 'Toplam Kalan Para: ' + totalRemainingMoney + ' TL', style: 'total', alignment: 'left' },
                             ],
+
                             margin: [0, 10, 0, 0], // Boşluk
                         }
                     ],
@@ -202,7 +246,7 @@
                             fontSize: 13,
                             color: 'black'
                         },
-                        totalRevenue: {
+                        total: {
                             fontSize: 14,
                             bold: true,
                         }
@@ -234,7 +278,6 @@
             <p>Seçtiğiniz tarihte görüntülenecek veri bulunamadı. Lütfen başka bir tarih seçin veya veri ekleyin.</p>
         </div>
     }
-
 
     <script>
         $(document).ready(function () {

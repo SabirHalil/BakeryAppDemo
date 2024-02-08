@@ -1,0 +1,549 @@
+﻿@model BakeryAppUI.Models.Date
+<div class="container mt-5">
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="row">
+                <label for="inputDate" class="col-sm-2 col-form-label font-weight-bold fs-5">Tarih</label>
+                <div class="col-sm-10">
+                    <div class="input-group input-group-lg">
+                        <input type="date" class="form-control font-weight-bold" id="inputDate"
+                               max="@DateTime.Now.ToString("yyyy-MM-dd")"
+                               value="@ViewBag.date.ToString("yyyy-MM-dd")"
+                               onchange="submitForm()">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h2 class="text-center mb-4">Gün Sonu Hesap</h2>
+        </div>
+    </div>
+
+
+    @using (Html.BeginForm("PostDate", "EndOfDayAccount", FormMethod.Post, new { id = "myForm" }))
+    {
+        <input type="hidden" id="dateHidden" name="date" />
+    }
+
+    <script>
+        function submitForm() {
+            var selectedDate = document.getElementById("inputDate").value;
+            document.getElementById("dateHidden").value = selectedDate;
+            document.getElementById("myForm").submit();
+        }
+    </script>
+
+
+
+    <div class="container mt-5">
+        <button type="button" class="btn btn-primary" onclick="generatePDF()">PDF Oluştur</button>
+
+       
+
+        <div class="row">
+            <div class="col-md-4">
+
+                <div class="mb-4">
+                    <h3 class="text-center">Eksilen Ekmek</h3>
+                    <table class="table" id="eksilenEkmekTable">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Geri Atılan Hamur</th>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Yarına Kalan Ekmek</th>
+                                <td>15</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Servis Ekmek</th>
+                                <td>500</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Servis Bayat</th>
+                                <td>50</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Yenen Ekmek</th>
+                                <td>20</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Bayat</th>
+                                <td>30</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Getir</th>
+                                <td>200</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Toplam</th>
+                                <td>100</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="mb-4">
+                    <h3 class="text-center">Mevcut Ekmek</h3>
+                    <table class="table" id="mevcutEkmekTable">
+                        <tbody>
+                            <tr>
+                                <th scope="row">İmalat</th>
+                                <td>5000</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Dünden Kalan</th>
+                                <td>30</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Dışarıdan Alınan</th>
+                                <td>500</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Toplam</th>
+                                <td>8000</td>
+                            </tr>
+                            <tr class="empty-row">
+                                <th scope="row"></th>
+                                <td></td>
+                            </tr>
+                            <tr class="empty-row">
+                                <th scope="row"></th>
+                                <td></td>
+                            </tr>
+                            <tr class="empty-row">
+                                <th scope="row"></th>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Tezgahta Satılan Ekmek</th>
+                                <td>630</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="mb-4">
+                    <h3 class="text-center">Kasa</h3>
+                    <table class="table" id="kasaTable">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Kasa Devir</th>
+                                <td>10 TL</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Servis</th>
+                                <td>1000 TL</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Tezgah</th>
+                                <td>2000 TL</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Pastane</th>
+                                <td>1000 TL</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Gelir</th>
+                                <td>6000 TL</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Toplam</th>
+                                <td>8000 TL</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Gider</th>
+                                <td>100 TL</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Devir</th>
+                                <td>200 TL</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h3 class="text-center">Giderler</h3>
+                <table class="table table-bordered custom-table" id="giderlerTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Gider Başlık</th>
+                            <th scope="col">Tutar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Giriş Kapısı Lamba</td>
+                            <td>100 TL</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div class="col-md-3 offset-md-5">
+                <div style="background-color: #3498db; color: white; padding: 20px; text-align: center; font-size: 1.5em;">
+                    Net Elden: 500₺
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .empty-row {
+        height: 40px;
+    }
+</style>
+
+<!-- PDF önizleme için geniş modal -->
+<div class="modal fade" id="pdfPreviewModal" tabindex="-1" aria-labelledby="pdfPreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pdfPreviewModalLabel">PDF Önizleme</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                <!-- PDF önizleme için iframe -->
+                <iframe id="pdfViewer" class="embed-responsive-item" width="100%" height="500px"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<!-- pdfmake -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
+
+
+
+<script>
+    function generatePDF() {
+        // Tablo verileri
+        var eksilenEkmekData = getTableData('#eksilenEkmekTable');
+        var mevcutEkmekData = getTableData('#mevcutEkmekTable');
+        var kasaData = getTableData('#kasaTable');
+        var giderlerData = getTableData('.custom-table');
+
+        // Tarih ve firma adı
+        var currentDate = new Date('@DateTime.Now.ToString("yyyy-MM-dd")');
+        var formattedDate = currentDate.toLocaleDateString('tr-TR'); // Türkçe tarih formatı
+        var dayOfWeek = new Intl.DateTimeFormat('tr-TR', { weekday: 'long' }).format(currentDate); // Gün
+
+        var companyName = 'ASLANOĞLU FIRIN';
+
+        // PDF oluşturma
+        var docDefinition = {
+            content: [
+                {
+                    columns: [
+                        { width: '50%', text: companyName, style: 'companyName' },
+                        { width: '50%', text: formattedDate + ' ' + dayOfWeek, style: 'date', alignment: 'right' },
+                    ],
+                    margin: [0, 0, 0, 10], // Boşluk
+                },
+                {
+                    columns: [
+                        // Eksilen Ekmek Tablosu
+                        {
+                            width: '30%',
+                            stack: [
+                                { text: 'Eksilen Ekmek', style: 'header' },
+                                {
+                                    style: 'table',
+                                    table: {
+                                        headerRows: 1,
+                                        body: eksilenEkmekData
+                                    }
+                                },
+                                { text: '\n' }, // Boş satır
+                            ]
+                        },
+                       
+
+                        
+
+                        // Mevcut Ekmek Tablosu
+                        {
+                            width: '35%',
+                            stack: [
+                                { text: 'Mevcut Ekmek', style: 'header' },
+                                {
+                                    style: 'table',
+                                    table: {
+                                        headerRows: 1,
+                                        body: mevcutEkmekData
+                                    }
+                                },
+                                { text: '\n' }, // Boş satır
+                            ]
+                        },
+                        // Boşluk
+                        { width: '5%', text: '' },
+                        // Kasa Tablosu
+                        {
+                            width: '30%',
+                            stack: [
+                                { text: 'Kasa', style: 'header' },
+                                {
+                                    style: 'table',
+                                    table: {
+                                        headerRows: 1,
+                                        body: kasaData
+                                    }
+                                },
+                                { text: '\n' }, // Boş satır
+                            ]
+                        }
+                    ]
+                },
+               // Giderler Tablosu ve Net Elden
+{
+    columns: [
+        // Sol tarafta Giderler Tablosu
+        {
+            width: '50%',
+            stack: [
+                { text: 'Giderler', style: 'header' },
+                {
+                    style: 'table',
+                    table: {
+                        headerRows: 1,
+                        body: giderlerData
+                    }
+                },
+                { text: '\n' }, // Boş satır
+            ]
+        },
+        // Sağ tarafta Net Elden
+        {
+            width: '39%',
+            columns: [
+                { text: 'Net Elden: 500₺', style: 'netElden', alignment: 'right' },
+            ],
+            margin: [0, 10, 0, 0], // Boşluk
+        },
+        { width: '11%', text: '' },
+    ]
+}
+
+            ],
+            styles: {
+                companyName: {
+                    fontSize: 14,
+                    bold: true,
+                },
+                date: {
+                    fontSize: 12,
+                },
+                header: {
+                    fontSize: 18,
+                    bold: true,
+                    margin: [0, 0, 0, 10]
+                },
+                table: {
+                    margin: [0, 5, 0, 15]
+                },
+                netElden: {
+                    fontSize: 14,
+                    color: '#00000', // Beyaz renk
+                   
+                    bold: true,
+                    margin: [0, 0, 0, 10]
+                }
+            },
+            pageMargins: [30, 30, 30, 30] // Sayfa kenar boşlukları
+        };
+
+        // PDF'i oluştur
+        var pdfDoc = pdfMake.createPdf(docDefinition);
+
+        // PDF'i önizleme iframe'ına göster
+        pdfDoc.getDataUrl(function (dataUrl) {
+            var pdfViewer = document.getElementById('pdfViewer');
+            pdfViewer.src = dataUrl;
+
+            // Modal'ı göster
+            $('#pdfPreviewModal').modal('show');
+        });
+    }
+
+    function getTableData(tableSelector) {
+        var tableData = [];
+
+        $(tableSelector + ' tbody tr').each(function () {
+            var rowData = [];
+            $(this).find('th, td').each(function () {
+                rowData.push($(this).text().trim());
+            });
+            tableData.push(rowData);
+        });
+
+        return tableData;
+    }
+</script>
+
+@* <script>
+    function generatePDF() {
+        // Tablo verileri
+        var eksilenEkmekData = getTableData('#eksilenEkmekTable');
+        var mevcutEkmekData = getTableData('#mevcutEkmekTable');
+        var kasaData = getTableData('#kasaTable');
+        var giderlerData = getTableData('.custom-table');
+
+        // Tarih ve firma adı
+        var currentDate = new Date('@DateTime.Now.ToString("yyyy-MM-dd")');
+        var formattedDate = currentDate.toLocaleDateString('tr-TR'); // Türkçe tarih formatı
+        var dayOfWeek = new Intl.DateTimeFormat('tr-TR', { weekday: 'long' }).format(currentDate); // Gün
+
+        var companyName = 'ASLANOĞLU FIRIN';
+
+        // PDF oluşturma
+        var docDefinition = {
+            content: [
+                {
+                    columns: [
+                        { width: '50%', text: companyName, style: 'companyName' },
+                        { width: '50%', text: formattedDate + ' ' + dayOfWeek, style: 'date', alignment: 'right' },
+                    ],
+                    margin: [0, 0, 0, 10], // Boşluk
+                },
+                {
+                    columns: [
+                        // Eksilen Ekmek Tablosu
+                        {
+                            width: '33%',
+                            stack: [
+                                { text: 'Eksilen Ekmek', style: 'header' },
+                                {
+                                    style: 'table',
+                                    table: {
+                                        headerRows: 1,
+                                        body: eksilenEkmekData
+                                    }
+                                },
+                                { text: '\n' }, // Boş satır
+                            ]
+                        },
+                        // Mevcut Ekmek Tablosu
+                        {
+                            width: '33%',
+                            stack: [
+                                { text: 'Mevcut Ekmek', style: 'header' },
+                                {
+                                    style: 'table',
+                                    table: {
+                                        headerRows: 1,
+                                        body: mevcutEkmekData
+                                    }
+                                },
+                                { text: '\n' }, // Boş satır
+                            ]
+                        },
+                        // Kasa Tablosu
+                        {
+                            width: '33%',
+                            stack: [
+                                { text: 'Kasa', style: 'header' },
+                                {
+                                    style: 'table',
+                                    table: {
+                                        headerRows: 1,
+                                        body: kasaData
+                                    }
+                                },
+                                { text: '\n' }, // Boş satır
+                            ]
+                        }
+                    ],
+                    margin: [0, 0, 0, 10], // Boşluk
+                },
+                // Giderler Tablosu
+                { text: 'Giderler', style: 'header' },
+                {
+                    style: 'table',
+                    table: {
+                        headerRows: 1,
+                        body: giderlerData
+                    }
+                },
+                { text: '\n' }, // Boş satır
+                {
+                    columns: [
+                        { text: 'Net Elden: 500₺', style: 'netElden', alignment: 'right' },
+                    ],
+                    margin: [0, 10, 0, 0], // Boşluk
+                }
+            ],
+            styles: {
+                companyName: {
+                    fontSize: 14,
+                    bold: true,
+                },
+                date: {
+                    fontSize: 12,
+                },
+                header: {
+                    fontSize: 18,
+                    bold: true,
+                    margin: [0, 0, 0, 10]
+                },
+                table: {
+                    margin: [0, 5, 0, 15]
+                },
+                netElden: {
+                    fontSize: 14,
+                    color: '#000000', // Siyah renk                    
+                    bold: true,
+                    margin: [0, 0, 0, 10]
+                }
+            },
+            pageMargins: [30, 30, 30, 30] // Sayfa kenar boşlukları
+        };
+
+        // PDF'i oluştur
+        var pdfDoc = pdfMake.createPdf(docDefinition);
+
+        // PDF'i önizleme iframe'ına göster
+        pdfDoc.getDataUrl(function (dataUrl) {
+            var pdfViewer = document.getElementById('pdfViewer');
+            pdfViewer.src = dataUrl;
+
+            // Modal'ı göster
+            $('#pdfPreviewModal').modal('show');
+        });
+    }
+
+    function getTableData(tableSelector) {
+        var tableData = [];
+
+        $(tableSelector + ' tbody tr').each(function () {
+            var rowData = [];
+            $(this).find('th, td').each(function () {
+                rowData.push($(this).text().trim());
+            });
+            tableData.push(rowData);
+        });
+
+        return tableData;
+    }
+</script>
+ *@

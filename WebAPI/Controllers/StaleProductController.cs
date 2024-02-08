@@ -18,6 +18,22 @@ namespace WebAPI.Controllers
             _staleProductService = staleProductService;
         }
 
+        [HttpGet("GetStaleProductsByDateAndCategory")]
+        public ActionResult GetStaleProductsByDateAndCategory(DateTime date, int categoryId)
+        {
+            try
+            {
+                var result = _staleProductService.GetStaleProductsByDateAndCategory(date, categoryId);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+
+        }
+        
         [HttpGet("GetByDateAndCategory")]
         public ActionResult GetByDateAndCategory(DateTime date, int categoryId)
         {

@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
+using static Business.Concrete.MarketEndOfDayService;
 
 namespace Business.Concrete
 {
@@ -14,9 +15,9 @@ namespace Business.Concrete
         private readonly IServiceListService _serviceListService;
         private readonly IMarketContractService _marketContractService;
 
-        
+
         public MarketEndOfDayService(
-            IMarketContractService marketContractService, 
+            IMarketContractService marketContractService,
             IMoneyReceivedFromMarketService moneyReceivedFromMarketService,
             IMarketService marketService,
             IStaleBreadReceivedFromMarketService staleBreadReceivedFromMarketService,
@@ -56,8 +57,46 @@ namespace Business.Concrete
             return paymentMarkets;
         }
 
+        public List<MarketBreadDetails> MarketsEndOfDayCalculationWithDetail(DateTime date)
+        {
 
+            List<MoneyReceivedFromMarket> moneyReceivedFromMarkets = _moneyReceivedFromMarketService.GetByDate(date);
 
+            List<MarketBreadDetails> marketsBreadDetails = new();
+
+            for (int i = 0; i < moneyReceivedFromMarkets.Count; i++)
+            {
+                MarketBreadDetails marketBreadDetails = new();
+                marketBreadDetails.MarketId = moneyReceivedFromMarkets[i].MarketId;
+                marketBreadDetails.id = moneyReceivedFromMarkets[i].Id;
+                marketBreadDetails.Amount = moneyReceivedFromMarkets[i].Amount;
+                marketBreadDetails.MarketName = _marketService.GetNameById(moneyReceivedFromMarkets[i].MarketId);
+
+                var result = CalculateTotalAmountAndBread(date, moneyReceivedFromMarkets[i].MarketId);
+
+                marketBreadDetails.TotalAmount = result.TotalAmount;
+                marketBreadDetails.GivenBread = result.TotalBread;
+                marketBreadDetails.StaleBread = _staleBreadReceivedFromMarketService.GetStaleBreadCountByMarketId(marketBreadDetails.MarketId, date);
+
+                marketBreadDetails.BreadGivenByEachService = BreadGivenByEachService(date, moneyReceivedFromMarkets[i].MarketId);
+                marketsBreadDetails.Add(marketBreadDetails);
+            }
+
+            return marketsBreadDetails;
+        }
+
+        private Dictionary<string, int> BreadGivenByEachService(DateTime date, int marketId)
+        {
+            Dictionary<string, int> breadGivenByEachService = new();
+            List<ServiceList> serviceLists = _serviceListService.GetByDate(date);
+            for (int i = 0; i < serviceLists.Count; i++)
+            {
+                ServiceListDetail serviceListDetail = _serviceListDetailService.GetByServiceListIdAndMarketContractId(serviceLists[i].Id, _marketContractService.GetIdByMarketId(marketId));
+                string KeyName = $"{i + 1}. Servis";
+                breadGivenByEachService[KeyName] = serviceListDetail != null ? serviceListDetail.Quantity : 0;
+            }
+            return breadGivenByEachService;
+        }
         private (decimal TotalAmount, int TotalBread) CalculateTotalAmountAndBread(DateTime date, int marketId)
         {
 
@@ -82,6 +121,18 @@ namespace Business.Concrete
 
 
             return (TotalAmount, TotalBread);
+        }
+
+        public class MarketBreadDetails
+        {
+            public int id { get; set; }
+            public decimal Amount { get; set; }
+            public int MarketId { get; set; }
+            public string? MarketName { get; set; }
+            public decimal TotalAmount { get; set; }
+            public int StaleBread { get; set; }
+            public int GivenBread { get; set; }
+            public Dictionary<string, int>? BreadGivenByEachService { get; set; }
         }
     }
 }

@@ -7,5 +7,6 @@ namespace DataAccess.Abstract
     {
         void DeleteById(int id);
         void AddList(List<ProductsCounting> productsCountings);
+        Dictionary<int, int> GetProductsCountingByDateAndCategory(DateTime date, int categoryId);
     }
 }

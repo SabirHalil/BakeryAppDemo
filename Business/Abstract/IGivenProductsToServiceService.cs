@@ -6,7 +6,7 @@ namespace Business.Abstract
     public interface IGivenProductsToServiceService
     {
         List<GivenProductsToService> GetAll();
-        List<GivenProductsToService> GetAllByDate(DateTime date);
+        List<GivenProductsToService> GetAllByDateAndServisTypeId(DateTime date, int servisTypeId);
         List<GivenProductsToServiceTotalResultDto> GetTotalQuantityByDate(DateTime date);
         void Add(GivenProductsToService KDeneme);
         void DeleteById(int id);

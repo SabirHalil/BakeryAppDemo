@@ -23,6 +23,20 @@ namespace WebAPI.Controllers
         }
 
 
+        [HttpGet("GetProductsCountingByDateAndCategory")]
+        public ActionResult GetProductsCountingByDateAndCategory(DateTime date, int categoryId)
+        {
+            try
+            {               
+                var result = _productsCountingService.GetProductsCountingByDateAndCategory(date,categoryId);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+        
         [HttpGet("GetAddedProductsCountingByDate")]
         public ActionResult GetAddedProductsCountingByDate(DateTime date)
         {

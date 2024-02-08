@@ -58,11 +58,28 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
+        public Dictionary<int, int> GetStaleProductsByDateAndCategory(DateTime date, int categoryId)
+        {
+            using (BakeryAppContext context = new BakeryAppContext())
+            {
+                var staleProductQuantities = context.StaleProducts
+                    .Where(s => s.Date.Date == date.Date)
+                    .Join(context.Products,
+                          stale => stale.ProductId,
+                          product => product.Id,
+                          (stale, product) => new { Stale = stale, Product = product })
+                    .Where(pair => pair.Product != null && pair.Product.CategoryId == categoryId)
+                    .ToDictionary(pair => pair.Stale.ProductId, pair => pair.Stale.Quantity);
+
+                return staleProductQuantities;
+            }
+        }
+
         public bool IsExist(int productId, DateTime date)
         {
             using (BakeryAppContext context = new BakeryAppContext())
             {
-               
+
                 bool exists = context.StaleProducts
                     .Any(sp => sp.Date.Date == date.Date && sp.ProductId == productId);
 
