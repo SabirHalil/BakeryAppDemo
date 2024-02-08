@@ -42,7 +42,7 @@ namespace DataAccess.Concrete.EntityFramework
                     .Select(group => new GivenProductsToServiceTotalResultDto
                     {
                         ServiceTypeName = context.ServiceTypes.FirstOrDefault(st => st.Id == group.Key).Name,
-                        TotalQuantity = group.Sum(x => x.Quantity).ToString()
+                        TotalQuantity = group.Sum(x => x.Quantity)
                     })
                     .ToList();
 

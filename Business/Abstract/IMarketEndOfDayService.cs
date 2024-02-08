@@ -7,6 +7,7 @@ namespace Business.Abstract
     {
         List<PaymentMarket> CalculateMarketEndOfDay(DateTime date);
         List<MarketBreadDetails> MarketsEndOfDayCalculationWithDetail(DateTime date);
+        decimal TotalAmountFromMarkets(DateTime date);
     }
 
 }

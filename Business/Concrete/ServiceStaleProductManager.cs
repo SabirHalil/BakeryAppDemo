@@ -43,5 +43,10 @@ namespace Business.Concrete
         {
             _serviceStaleProductDal.Update(serviceStaleProduct);
         }
+
+        public List<ServiceStaleProduct> GetAllByDate(DateTime date, int serviceTypeId)
+        {
+            return _serviceStaleProductDal.GetAll(s => s.Date.Date == date.Date && s.ServiceTypeId == serviceTypeId);
+        }
     }
 }

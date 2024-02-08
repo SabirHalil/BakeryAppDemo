@@ -161,7 +161,7 @@
                             </tr>
                             <tr>
                                 <th scope="row">Gider</th>
-                                <td>100 TL</td>
+                                <td>@(@ViewBag.totalExpenseAmount == 0 ? "-" : @ViewBag.totalExpenseAmount)</td>
                             </tr>
                             <tr>
                                 <th scope="row">Devir</th>
@@ -186,8 +186,11 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Giriş Kapısı Lamba</td>
-                            <td>100 TL</td>
+                            @foreach (var expense in ViewBag.expense)
+                            {
+                                <td>expense.Detail</td>
+                                <td>expense.Amount</td>                               
+                            }                            
                         </tr>
                     </tbody>
                 </table>

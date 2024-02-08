@@ -17,7 +17,7 @@ namespace WebAppNew.Controllers
 
         public async Task<IActionResult> Index()
         {
-             decimal purchasedProductRevenue =0;
+            decimal purchasedProductRevenue =0;
             try
             {
                 decimal totalExpenseAmount = 0;
