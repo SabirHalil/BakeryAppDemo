@@ -6,6 +6,7 @@ namespace Business.Abstract
     public interface IStaleProductService
     {
         List<StaleProduct> GetAll();
+        Dictionary<int, int> GetStaleProductsByDateAndCategory(DateTime date, int categoryId);
         void Add(StaleProduct staleProduct);
         void DeleteById(int id);
         void Delete(StaleProduct staleProduct);

@@ -18,10 +18,10 @@ namespace WebAPI.Controllers
             _givenProductsToServiceService = givenProductsToServiceService; ;            
         }
 
-        [HttpGet("GetGivenProductsToServiceByDate")]
-        public ActionResult GetGivenProductsToServiceByDate(DateTime date)
+        [HttpGet("GetGivenProductsToServiceByDateAndServisTypeId")]
+        public ActionResult GetGivenProductsToServiceByDateAndServisTypeId(DateTime date, int servisTypeId)
         {
-            var result = _givenProductsToServiceService.GetAll();
+            var result = _givenProductsToServiceService.GetAllByDateAndServisTypeId(date,servisTypeId);
             return Ok(result);
         }
 

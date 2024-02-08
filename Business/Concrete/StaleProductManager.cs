@@ -65,5 +65,10 @@ namespace Business.Concrete
         {
            return _staleProductDal.IsExist(productId, date);
         }
+
+        public Dictionary<int, int> GetStaleProductsByDateAndCategory(DateTime date, int categoryId)
+        {
+            return _staleProductDal.GetStaleProductsByDateAndCategory(date,categoryId);
+        }
     }
 }

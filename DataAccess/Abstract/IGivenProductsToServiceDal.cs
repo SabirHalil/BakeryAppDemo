@@ -8,5 +8,7 @@ namespace DataAccess.Abstract
     {
         void DeleteById(int id);
         List<GivenProductsToServiceTotalResultDto> GetTotalQuantityResultByDate(DateTime date);
+
+        List<GivenProductsToService> GetAllByDateAndServisTypeId(DateTime date, int servisTypeId);
     }
 }

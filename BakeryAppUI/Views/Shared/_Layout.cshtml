@@ -17,197 +17,79 @@
         <a class="navbar-brand ps-3" href="@Url.Action("Index", "Home")">ASLANOĞLU Fırın</a>
         <!-- Sidebar Toggle-->
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
-      
-        
-            @* <div class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-                <input type="date" class="form-control"
-                               max="@DateTime.Now.ToString("yyyy-MM-dd")"
-                               value="@DateTime.Now.ToString("yyyy-MM-dd")">                
-            </div>
- *@
 
-
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                var dateInput = document.querySelector('.form-control');
-
-                window.anlikSecilenTarih = dateInput.value;
-
-                dateInput.addEventListener('change', function () {
-                    window.anlikSecilenTarih = dateInput.value;
-                    console.log(window.anlikSecilenTarih);
-                });
-            });
-        </script>
-
-
-        <!-- Navbar-->
-       @*  <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+        <!-- Çıkış Butonu -->
+        <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="#!">Ayarlar</a></li>
-                    <li><a class="dropdown-item" href="#!">Activity Log</a></li>
-                    <li><hr class="dropdown-divider" /></li>
-                    <li><a class="dropdown-item" href="#!">Çıkış</a></li>
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">                    
+                    <i class="fas fa-user fa-fw fs-5"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">                   
+                    <li>
+                        <form method="post" action="@Url.Action("Logout", "Account")">
+                            <button type="submit" class="dropdown-item">Çıkış</button>
+                        </form>
+                    </li>
                 </ul>
             </li>
-        </ul> *@
+        </ul> 
     </nav>
+
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
             <nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
-            @*<nav class="sb-sidenav accordion sb-sidenav-dark id="sidenavAccordion">*@
+                @* <nav class="sb-sidenav accordion sb-sidenav-dark id="sidenavAccordion"> *@
                 <div class="sb-sidenav-menu">
                     <div class="nav">
                         <div class="sb-sidenav-menu-heading">     </div>
                         <a class="nav-link" href="@Url.Action("Index", "Home")">
-                        @*<a class="nav-link" href="@Url.Action("Index", "Login")" ">*@
+                            @*<a class="nav-link" href="@Url.Action("Index", "Login")" ">*@
                             <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
                             Ana Menu
                         </a>
 
-                        <a class="nav-link" href="@Url.Action("Index", "GunSonuHesap")">
+                        <a class="nav-link" href="@Url.Action("Index", "EndOfDayAccount")">
                             <div class="sb-nav-link-icon"><i class="fas fa-calculator"></i></div>
                             Gün Sonu Hesabı
                         </a>
 
                         <div class="sb-sidenav-menu-heading">Üretim İşlemleri</div>
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Hamurhane" aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="fas fa-bread-slice"></i></div>
-                            Hamurhane
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+
+                        <a class="nav-link" href="@Url.Action("Index", "Hamurhane")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-calculator"></i></div>
+                           Hamurhane
                         </a>
-                        <div class="collapse" id="Hamurhane" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="@Url.Action("Index", "Hamurhane")">Ekmek Üretim</a>
-                                
-                            </nav>
-                        </div>
-                        
-                        
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Pastane" aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="fas fa-birthday-cake"></i></div>
+
+                        <a class="nav-link" href="@Url.Action("Index", "Pastane")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-calculator"></i></div>
                             Pastane
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                         </a>
-                        <div class="collapse" id="Pastane" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="@Url.Action("Index", "Pastane")">Pasta Üretim</a>
-                               
-                            </nav>
-                        </div>
-       
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Borek" aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="fas fa-pizza-slice"></i></div>
+
+                        <a class="nav-link" href="@Url.Action("Index", "Borek")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-calculator"></i></div>
                             Börek
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="Borek" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="@Url.Action("Index", "Borek")">Börek Üretim</a>
-                            </nav>
-                        </div>
-
-
-                        <div class="sb-sidenav-menu-heading">Diğer İşlemler</div>
-
-                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#tezgah" aria-expanded="false" aria-controls="collapsePages">
-                            <div class="sb-nav-link-icon"><i class="fas fa-cash-register"></i></div>
-                            Tezgah
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="tezgah" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
-                            @* <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#kalanUrunSayimi" aria-expanded="false" aria-controls="pagesCollapseAuth">
-                                    Kalan Ürün Sayımı
-                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="kalanUrunSayimi" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-                                    <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link" href="@Url.Action("Index", "KalanEkmek")">Kalan Ekmek</a>
-                                        <a class="nav-link" href="@Url.Action("Index", "KalanPasta")">Kalan Pasta</a>
-                                        <a class="nav-link" href="@Url.Action("Index", "KalanBorek")">Kalan Börek</a>
-                                        <a class="nav-link" href="@Url.Action("Index", "DisaridanAlinanUrunlerdenKalanlar")">Dışarıdan Alınanlar Ürünlerden Kalan</a>
-                                    </nav>
-                                </div>
-                               
-                            </nav> *@
-
-                            <div class="collapse" id="tezgah" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="@Url.Action("Index", "KalanUrunSayimi")"> Kalan Ürün Sayımı</a>
-                                </nav>
-                            </div> 
-                            
-                            <div class="collapse" id="tezgah" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="@Url.Action("Index", "StaleProduct")"> Bayat Ürün Sayımı</a>
-                                </nav>
-                            </div>
-                            
-                            <div class="collapse" id="tezgah" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="@Url.Action("Index", "DisaridanAlinanUrunler")">Dışarıdan Alınan Ürünler</a>
-                                </nav>
-                            </div>
-
-                            @* <div class="collapse" id="tezgah" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="@Url.Action("Index", "ServisTakibi")">Servis Takibi</a>
-                                </nav>
-                            </div>
- *@
-                            <div class="collapse" id="tezgah" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="@Url.Action("Index", "Giderler")">Giderler</a>
-                                </nav>
-                            </div>
-
-                        </div>
-
-                        @* <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Servis" aria-expanded="false" aria-controls="collapseLayouts">
-                            <div class="sb-nav-link-icon"><i class="fas fa-car"></i></div>
-                            Servis
-                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
-                        <div class="collapse" id="Servis" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                            <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="@Url.Action("Index", "Sofor")">Şoför</a>
-                                <a class="nav-link" href="@Url.Action("Index", "MarketeVerilenEkmek")">Market V. Ekmek</a>
-
-                            </nav>
-                        </div> *@
-
-
-                     
-                        <a class="nav-link" href="@Url.Action("Index", "Kullanicilar")">
-                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                            Kullanıcılar
                         </a>
 
 
+                        <div class="sb-sidenav-menu-heading">Dışarıdan Alınan Ürünler</div>
+                        <a class="nav-link" href="@Url.Action("Index", "DisaridanAlinanUrunler")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-calculator"></i></div>
+                            Dışarıdan Alınan Ürünler
+                        </a>
 
+
+                        <div class="sb-sidenav-menu-heading">Servis</div>
+                        <a class="nav-link" href="@Url.Action("Index", "MarketService")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-calculator"></i></div>
+                            Market Servis
+                        </a>  
+                        
                     </div>
                 </div>
-
-
-
-
-
-              @*<div class="sb-sidenav-footer">
-                    <div class="small">Logged in as:</div>
-                    Start Bootstrap
-                </div>*@
-
-
             </nav>
         </div>
-
-
         <div id="layoutSidenav_content">
-
-            <main id="main" class="main">                
+            <main id="main" class="main">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12">
@@ -219,16 +101,16 @@
             </main>
 
             @*<footer class="py-4 bg-light mt-auto">
-                <div class="container-fluid px-4">
-                    <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">Copyright &copy; Your Website 2023</div>
-                        <div>
-                            <a href="#">Privacy Policy</a>
-                            &middot;
-                            <a href="#">Terms &amp; Conditions</a>
-                        </div>
-                    </div>
-                </div>
+            <div class="container-fluid px-4">
+            <div class="d-flex align-items-center justify-content-between small">
+            <div class="text-muted">Copyright &copy; Your Website 2023</div>
+            <div>
+            <a href="#">Privacy Policy</a>
+            &middot;
+            <a href="#">Terms &amp; Conditions</a>
+            </div>
+            </div>
+            </div>
             </footer>*@
         </div>
     </div>

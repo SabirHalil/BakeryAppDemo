@@ -20,7 +20,17 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
-      
+        public List<GivenProductsToService> GetAllByDateAndServisTypeId(DateTime date, int servisTypeId)
+        {
+            using (BakeryAppContext context = new())
+            {
+                var result = context.GivenProductsToServices
+                    .Where(x => x.Date.Date == date.Date && x.ServiceTypeId == servisTypeId)
+                    .ToList();
+
+                return result;
+            }
+        }
 
         public List<GivenProductsToServiceTotalResultDto> GetTotalQuantityResultByDate(DateTime date)
         {

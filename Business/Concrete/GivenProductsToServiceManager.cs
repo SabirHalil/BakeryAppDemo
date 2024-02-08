@@ -45,14 +45,15 @@ namespace Business.Concrete
             _givenProductsToServiceDal.Update(givenProductsToService);
         }
 
-        public List<GivenProductsToService> GetAllByDate(DateTime date)
-        {
-            return _givenProductsToServiceDal.GetAll(g=> g.Date.Date == date.Date);
-        }
-
+       
         public List<GivenProductsToServiceTotalResultDto> GetTotalQuantityByDate(DateTime date)
         {
             return _givenProductsToServiceDal.GetTotalQuantityResultByDate(date);
+        }
+
+        public List<GivenProductsToService> GetAllByDateAndServisTypeId(DateTime date, int servisTypeId)
+        {
+            return _givenProductsToServiceDal.GetAllByDateAndServisTypeId(date,servisTypeId);     
         }
     }
 }

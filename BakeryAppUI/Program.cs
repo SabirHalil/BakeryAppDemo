@@ -30,6 +30,22 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "customRoute",
+        pattern: "Gün-Sonu-Hesap", // Ýstediðiniz URL'yi buraya yazýn
+        defaults: new { controller = "EndOfDayAccount", action = "Index" } // Controller ve action'ý kendi ihtiyaçlarýnýza göre deðiþtirin
+    );
+
+    //endpoints.MapControllerRoute(
+    //    name: "default",
+    //    pattern: "{controller=Home}/{action=Index}/{id?}");
+});
+
+
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
