@@ -10,6 +10,6 @@ namespace Entities.DTOs
     public class GivenProductsToServiceTotalResultDto : IDto
     {
         public string ServiceTypeName { get; set; }
-        public string TotalQuantity { get; set; }
+        public int TotalQuantity { get; set; }
     }
 }

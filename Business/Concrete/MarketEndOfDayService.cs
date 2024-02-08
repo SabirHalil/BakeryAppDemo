@@ -85,6 +85,19 @@ namespace Business.Concrete
             return marketsBreadDetails;
         }
 
+        public decimal TotalAmountFromMarkets(DateTime date)
+        {
+            List<MoneyReceivedFromMarket> moneyReceivedFromMarkets = _moneyReceivedFromMarketService.GetByDate(date);
+            decimal TotalAmount = 0;
+
+            for (int i = 0; i < moneyReceivedFromMarkets.Count; i++)
+            {               
+                var result = CalculateTotalAmountAndBread(date, moneyReceivedFromMarkets[i].MarketId);
+                TotalAmount += result.TotalAmount;              
+            }
+            return TotalAmount;
+        }
+
         private Dictionary<string, int> BreadGivenByEachService(DateTime date, int marketId)
         {
             Dictionary<string, int> breadGivenByEachService = new();
