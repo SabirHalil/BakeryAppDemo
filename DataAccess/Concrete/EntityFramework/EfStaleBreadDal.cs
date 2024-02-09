@@ -47,7 +47,7 @@ namespace DataAccess.Concrete.EntityFramework
                     {
                         Id = x.Id,
                         Quantity = x.Quantity,
-                        Date = date,
+                        Date = x.Date,
                         DoughFactoryProductId = x.DoughFactoryProductId,
                         DoughFactoryProductName = df.Name
                     }
