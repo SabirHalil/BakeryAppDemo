@@ -183,7 +183,7 @@
                             </tr>
                             <tr>
                                 <th scope="row">Gider</th>
-                                <td>@(@ViewBag.totalExpenseAmount == 0 ? "-" : @ViewBag.totalExpenseAmount) TL</td>
+                                <td>@(@ViewBag.totalExpenseAmount == 0 ? "-" : @ViewBag.totalExpenseAmount + "TL") </td>
                             </tr>
                             <tr>
                                 <th scope="row">Devir</th>
@@ -271,7 +271,7 @@
         var eksilenEkmekData = getTableData('#eksilenEkmekTable');
         var mevcutEkmekData = getTableData('#mevcutEkmekTable');
         var kasaData = getTableData('#kasaTable');
-        var giderlerData = getTableData('.custom-table');
+        var giderlerData = getTableData('#giderlerTable');
 
         // Tarih ve firma adı
         var currentDate = new Date('@ViewBag.date.ToString("yyyy-MM-dd")');
@@ -358,13 +358,15 @@
                             width: '50%',
                             stack: [
                                 { text: 'Giderler', style: 'header' },
-                                {
-                                    style: 'table',
-                                    table: {
-                                        headerRows: 1,
-                                        body: giderlerData
+                                giderlerData.length > 0
+                                    ? {
+                                        style: 'table',
+                                        table: {
+                                            headerRows: 1,
+                                            body: giderlerData
+                                        }
                                     }
-                                },
+                                    : { text: 'Gider bulunmamaktadır', style: 'noDataMessage' },
                                 { text: '\n' }, // Boş satır
                             ]
                         },
@@ -382,6 +384,11 @@
 
             ],
             styles: {
+                oDataMessage: {
+                    fontSize: 12,
+                    italic: true,
+                    color: 'gray'
+                },
                 companyName: {
                     fontSize: 14,
                     bold: true,
