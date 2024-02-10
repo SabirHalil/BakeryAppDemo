@@ -10,5 +10,6 @@ namespace Entities.Concrete
         public string Detail { get; set; } = null!;
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
+        public int UserId { get; set; }
     }
 }

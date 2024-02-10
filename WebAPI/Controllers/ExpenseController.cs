@@ -28,6 +28,7 @@ namespace WebAPI.Controllers
                 {
                     return BadRequest("Invalid date!");
                 }
+                Console.WriteLine(date.ToString());
                 var result = _expenseService.GetExpensesByDate(date);
                 return Ok(result);
             }

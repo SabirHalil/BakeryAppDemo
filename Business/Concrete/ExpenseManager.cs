@@ -46,7 +46,7 @@ namespace Business.Concrete
 
         public List<Expense> GetExpensesByDate(DateTime date)
         {
-            return _expenseDal.GetAll(e => e.Date == date.Date);
+            return _expenseDal.GetAll(e => e.Date.Date == date.Date);
         }
     }
 }
