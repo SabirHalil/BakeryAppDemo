@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
+using System.Security.Principal;
 using System.Threading;
 
 namespace WebAPI.Controllers
@@ -35,14 +36,21 @@ namespace WebAPI.Controllers
         private IMarketEndOfDayService _marketEndOfDayService;
         private IMoneyReceivedFromMarketService _moneyReceivedFromMarketService;
 
-        
-        public EndOfDayAccountController(IMarketEndOfDayService marketEndOfDayService,IStaleBreadService staleBreadService, IDoughFactoryListService doughFactoryListService, IDoughFactoryListDetailService doughFactoryListDetailService, IDoughFactoryProductService doughFactoryProductService,
+        private IServiceStaleProductService _serviceStaleProductService;
+
+        private ICashCountingService _cashCountingService;
+        public EndOfDayAccountController(IMarketEndOfDayService marketEndOfDayService, IStaleBreadService staleBreadService, IDoughFactoryListService doughFactoryListService, IDoughFactoryListDetailService doughFactoryListDetailService, IDoughFactoryProductService doughFactoryProductService,
             IGivenProductsToServiceService givenProductsToServiceService, IBreadCountingService breadCountingService,
             IPurchasedProductListDetailService purchasedProductListDetailService, IStaleProductService staleProductService,
             IProductsCountingService productsCountingService, IProductService productService, IProductionListDetailService productionListDetailService,
             IBreadPriceService breadPriceService,
-            IMoneyReceivedFromMarketService moneyReceivedFromMarketService)
+            IMoneyReceivedFromMarketService moneyReceivedFromMarketService,
+            IServiceStaleProductService serviceStaleProductService, 
+            ICashCountingService cashCountingService)
         {
+            _serviceStaleProductService = serviceStaleProductService;
+            _cashCountingService = cashCountingService;
+
             _moneyReceivedFromMarketService = moneyReceivedFromMarketService;
 
             _marketEndOfDayService = marketEndOfDayService;
@@ -60,6 +68,7 @@ namespace WebAPI.Controllers
 
             _staleBreadService = staleBreadService;
             _breadPriceService = breadPriceService;
+
         }
 
         [HttpGet("GetEndOfDayAccountDetail")]
@@ -67,9 +76,11 @@ namespace WebAPI.Controllers
         {
             try
             {
-
-                
-                decimal ServisGelir = _marketEndOfDayService.TotalAmountFromMarkets(date);
+                Account account = new();
+                account.ServisGelir = _marketEndOfDayService.TotalAmountFromMarkets(date);
+                account.KasaDevir = _cashCountingService.GetOneCashCountingByDate(date.AddDays(-1))?.RemainedMoney ?? 0;
+                account.Devir = _cashCountingService.GetOneCashCountingByDate(date)?.RemainedMoney ?? 0;
+                account.KasaSayım = _cashCountingService.GetOneCashCountingByDate(date)?.TotalMoney ?? 0;
 
                 //-------------------------------------
 
@@ -96,7 +107,7 @@ namespace WebAPI.Controllers
                     DoughFactoryProduct doughFactoryProduct = _doughFactoryProductService.GetById(staleBreadDtos[i].DoughFactoryProductId);
                     StaleBread += doughFactoryProduct.BreadEquivalent * staleBreadDtos[i].Quantity;
                 }
-               
+
                 //--------------------------------------------------------------
 
                 EndOfDayAccountForBread endOfDayAccountForBread = new();
@@ -107,15 +118,33 @@ namespace WebAPI.Controllers
                 endOfDayAccountForBread.RemainingToday = _breadCountingService.GetBreadCountingByDate(date.Date)?.Quantity ?? 0;
                 endOfDayAccountForBread.StaleBreadToday = StaleBread;
 
-                List<GivenProductsToServiceTotalResultDto> GivenProductsToServiceTotal = _givenProductsToServiceService.GetTotalQuantityByDate(date);              
+                // Değerler değişebilir
+                endOfDayAccountForBread.PurchasedBread = 0;                
+                endOfDayAccountForBread.EatenBread = 10;
+                //
+
+                List<GivenProductsToServiceTotalResultDto> GivenProductsToServiceTotal = _givenProductsToServiceService.GetTotalQuantityByDate(date);
                 endOfDayAccountForBread.TotalBreadGivenToGetir = GivenProductsToServiceTotal
                     .FirstOrDefault(item => item.ServiceTypeName == "Getir")?.TotalQuantity ?? 0;
-            
+
                 endOfDayAccountForBread.TotalBreadGivenToService = GivenProductsToServiceTotal
                     .FirstOrDefault(item => item.ServiceTypeName == "Marketler")?.TotalQuantity ?? 0;
 
+                endOfDayAccountForBread.TotalStaleBreadFromService = 0;
+                List<ServiceStaleProduct> serviceStaleProduct = _serviceStaleProductService.GetAllByDate(date, 1);
+                foreach (var service in serviceStaleProduct)
+                {
+                    endOfDayAccountForBread.TotalStaleBreadFromService += service.Quantity;
+                }
 
-                return Ok(endOfDayAccountForBread);
+
+                EndOfDayResult result = new EndOfDayResult
+                {
+                    EndOfDayAccount = endOfDayAccountForBread,
+                    Account = account
+                };
+
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -123,7 +152,7 @@ namespace WebAPI.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-        
+
         //[HttpGet("GetServiceDetail")]
         //public ActionResult GetServiceDetail(DateTime date)
         //{
@@ -144,99 +173,110 @@ namespace WebAPI.Controllers
         //    }
         //}
 
-        //[HttpGet("GetProductsSoldInTheBakery")]
-        //public ActionResult GetProductsSoldInTheBakery(DateTime date)
-        //{
-        //    try
-        //    {
-        //        List<Product> products = _productService.GetAllByCategoryId(2);
-        //        List<Product> products2 = _productService.GetAllByCategoryId(1);
+        [HttpGet("GetProductsSoldInTheBakery")]
+        public ActionResult GetProductsSoldInTheBakery(DateTime date)
+        {
+            try
+            {
+                decimal TotalRevenue = 0;
+                List<Product> products = _productService.GetAllByCategoryId(2);
+                List<Product> products2 = _productService.GetAllByCategoryId(1);
 
-        //        products.AddRange(products2);
+                products.AddRange(products2);
 
-        //        List<ProductSoldInTheBakery> productsSoldInTheBakery = new();
+               // List<ProductSoldInTheBakery> productsSoldInTheBakery = new();
 
-        //        for (int i = 0; i < products.Count; i++)
-        //        {
-        //            ProductSoldInTheBakery productSoldInTheBakery = new();
-        //            productSoldInTheBakery.ProductId = products[i].Id;
-        //            productSoldInTheBakery.ProductName = products[i].Name;
+                for (int i = 0; i < products.Count; i++)
+                {
+                    ProductSoldInTheBakery productSoldInTheBakery = new();
+                    productSoldInTheBakery.ProductId = products[i].Id;
+                    productSoldInTheBakery.ProductName = products[i].Name;
 
-        //            ProductionListDetail productionListDetail = _productionListDetailService.GetProductionListDetailByDateAndProductId((date), products[i]);
+                    ProductionListDetail productionListDetail = _productionListDetailService.GetProductionListDetailByDateAndProductId((date), products[i]);
 
-        //            productSoldInTheBakery.ProductedToday = productionListDetail.Quantity;
-        //            productSoldInTheBakery.Price = productionListDetail.Price;
-
-
-        //            for (int j = 1; j < 6 && productSoldInTheBakery.Price == 0; j++)
-        //            {
-        //                productSoldInTheBakery.Price = _productionListDetailService.GetProductionListDetailByDateAndProductId((date.Date.AddDays(-j)), products[i]).Price;
-        //            }
-
-        //            productSoldInTheBakery.RemainingYesterday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date.AddDays(-1)), products[i].Id);
-        //            productSoldInTheBakery.RemainingToday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date), products[i].Id);
-
-        //            productSoldInTheBakery.StaleProductToday = _staleProductService.GetQuantityStaleProductByDateAndProductId((date.Date), products[i].Id);
-
-        //            productSoldInTheBakery.Revenue = productSoldInTheBakery.Price * (productSoldInTheBakery.RemainingYesterday + productSoldInTheBakery.ProductedToday - productSoldInTheBakery.RemainingToday - productSoldInTheBakery.StaleProductToday);
-
-        //            productsSoldInTheBakery.Add(productSoldInTheBakery);
-
-        //        }
-
-        //        return Ok(productsSoldInTheBakery);
-        //    }
-        //    catch (Exception e)
-        //    {
-
-        //        return StatusCode(500, "Daha sonra tekrar deneyin...");
-        //    }
-
-        //}
-
-        //[HttpGet("GetPurchasedProductsSoldInTheBakery")]
-        //public ActionResult GetPurchasedProductsSoldInTheBakery(DateTime date)
-        //{
-        //    try
-        //    {
-        //        List<Product> products = _productService.GetAllByCategoryId(3);
-        //        List<PurchasedProductSoldInTheBakery> purchasedProductsSoldInTheBakery = new();
-        //        for (int i = 0; i < products.Count; i++)
-        //        {
-        //            PurchasedProductSoldInTheBakery purchasedProductSoldInTheBakery = new();
-        //            purchasedProductSoldInTheBakery.ProductId = products[i].Id;
-        //            purchasedProductSoldInTheBakery.ProductName = products[i].Name;
+                    productSoldInTheBakery.ProductedToday = productionListDetail.Quantity;
+                    productSoldInTheBakery.Price = productionListDetail.Price;
 
 
-        //            purchasedProductSoldInTheBakery.Price = _purchasedProductListDetailService.GetPurchasedProductListDetailByDateAndProductId((date.Date), products[i].Id).Price;
+                    for (int j = 1; j < 6 && productSoldInTheBakery.Price == 0; j++)
+                    {
+                        productSoldInTheBakery.Price = _productionListDetailService.GetProductionListDetailByDateAndProductId((date.Date.AddDays(-j)), products[i]).Price;
+                    }
+
+                    productSoldInTheBakery.RemainingYesterday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date.AddDays(-1)), products[i].Id);
+                    productSoldInTheBakery.RemainingToday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date), products[i].Id);
+
+                    productSoldInTheBakery.StaleProductToday = _staleProductService.GetQuantityStaleProductByDateAndProductId((date.Date), products[i].Id);
+
+                    productSoldInTheBakery.Revenue = productSoldInTheBakery.Price * (productSoldInTheBakery.RemainingYesterday + productSoldInTheBakery.ProductedToday - productSoldInTheBakery.RemainingToday - productSoldInTheBakery.StaleProductToday);
+
+                    TotalRevenue += productSoldInTheBakery.Revenue;
+
+                    //productsSoldInTheBakery.Add(productSoldInTheBakery);
+
+                }
+
+                
+
+               // return Ok(productsSoldInTheBakery);
+                return Ok(TotalRevenue);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, "Daha sonra tekrar deneyin...");
+            }
+
+        }
+
+        [HttpGet("GetPurchasedProductsSoldInTheBakery")]
+        public ActionResult GetPurchasedProductsSoldInTheBakery(DateTime date)
+        {
+            try
+            {
+                decimal TotalRevenue = 0;
+
+                List<Product> products = _productService.GetAllByCategoryId(3);
+                //List<PurchasedProductSoldInTheBakery> purchasedProductsSoldInTheBakery = new();
+                for (int i = 0; i < products.Count; i++)
+                {
+                    PurchasedProductSoldInTheBakery purchasedProductSoldInTheBakery = new();
+                    purchasedProductSoldInTheBakery.ProductId = products[i].Id;
+                    purchasedProductSoldInTheBakery.ProductName = products[i].Name;
 
 
-        //            for (int j = 1; j < 6 && purchasedProductSoldInTheBakery.Price == 0; j++)
-        //            {
-        //                purchasedProductSoldInTheBakery.Price = _purchasedProductListDetailService.GetPurchasedProductListDetailByDateAndProductId((date.Date.AddDays(-j)), products[i].Id).Price;
-        //            }
+                    purchasedProductSoldInTheBakery.Price = _purchasedProductListDetailService.GetPurchasedProductListDetailByDateAndProductId((date.Date), products[i].Id).Price;
 
-        //            purchasedProductSoldInTheBakery.RemainingYesterday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date.AddDays(-1)), products[i].Id);
-        //            purchasedProductSoldInTheBakery.RemainingToday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date), products[i].Id);
 
-        //            purchasedProductSoldInTheBakery.StaleProductToday = _staleProductService.GetQuantityStaleProductByDateAndProductId((date.Date), products[i].Id);
+                    for (int j = 1; j < 6 && purchasedProductSoldInTheBakery.Price == 0; j++)
+                    {
+                        purchasedProductSoldInTheBakery.Price = _purchasedProductListDetailService.GetPurchasedProductListDetailByDateAndProductId((date.Date.AddDays(-j)), products[i].Id).Price;
+                    }
 
-        //            purchasedProductSoldInTheBakery.PurchasedToday = _purchasedProductListDetailService.GetPurchasedProductListDetailByDateAndProductId((date.Date), products[i].Id)?.Quantity ?? 0;
+                    purchasedProductSoldInTheBakery.RemainingYesterday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date.AddDays(-1)), products[i].Id);
+                    purchasedProductSoldInTheBakery.RemainingToday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date), products[i].Id);
 
-        //            purchasedProductSoldInTheBakery.Revenue = purchasedProductSoldInTheBakery.Price * (purchasedProductSoldInTheBakery.RemainingYesterday + purchasedProductSoldInTheBakery.PurchasedToday - purchasedProductSoldInTheBakery.RemainingToday - purchasedProductSoldInTheBakery.StaleProductToday);
+                    purchasedProductSoldInTheBakery.StaleProductToday = _staleProductService.GetQuantityStaleProductByDateAndProductId((date.Date), products[i].Id);
 
-        //            purchasedProductsSoldInTheBakery.Add(purchasedProductSoldInTheBakery);
-        //        }
+                    purchasedProductSoldInTheBakery.PurchasedToday = _purchasedProductListDetailService.GetPurchasedProductListDetailByDateAndProductId((date.Date), products[i].Id)?.Quantity ?? 0;
 
-        //        return Ok(purchasedProductsSoldInTheBakery);
-        //    }
-        //    catch (Exception e)
-        //    {
+                    purchasedProductSoldInTheBakery.Revenue = purchasedProductSoldInTheBakery.Price * (purchasedProductSoldInTheBakery.RemainingYesterday + purchasedProductSoldInTheBakery.PurchasedToday - purchasedProductSoldInTheBakery.RemainingToday - purchasedProductSoldInTheBakery.StaleProductToday);
 
-        //        return StatusCode(500, "Daha sonra tekrar deneyin...");
-        //    }
+                    TotalRevenue += purchasedProductSoldInTheBakery.Revenue;
 
-        //}
+                   // purchasedProductsSoldInTheBakery.Add(purchasedProductSoldInTheBakery);
+                }
+
+                //return Ok(purchasedProductsSoldInTheBakery);
+                return Ok(TotalRevenue);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, "Daha sonra tekrar deneyin...");
+            }
+
+        }
 
         //[HttpGet("GetBreadSold")]
         //public ActionResult GetBreadSold(DateTime date)
@@ -294,20 +334,35 @@ namespace WebAPI.Controllers
 
 
         private class EndOfDayAccountForBread
-        {            
-            public decimal Price { get; set; }          
+        {
+            public decimal Price { get; set; }
             public double ProductedToday { get; set; }
             public int RemainingYesterday { get; set; }
             public int RemainingToday { get; set; }
-            public double StaleBreadToday { get; set; }            
+            public double StaleBreadToday { get; set; }
             public int TotalBreadGivenToService { get; set; }
             public int TotalBreadGivenToGetir { get; set; }
-
-            //public int PurchasedBread { get; set; }
-            //public int TotalStaleBreadFromService { get; set; }
-            //public int EatenBread { get; set; }
+            public int PurchasedBread { get; set; }
+            public int TotalStaleBreadFromService { get; set; }
+            public int EatenBread { get; set; }
 
         }
+
+        private class Account
+        {
+            public decimal ServisGelir { get; set; }
+            public decimal KasaDevir { get; set; }
+            public decimal Devir { get; set; }
+            public decimal KasaSayım { get; set; }
+          
+        }
+        private class EndOfDayResult
+        {
+            public EndOfDayAccountForBread EndOfDayAccount { get; set; }
+            public Account Account { get; set; }
+            public decimal PastaneRevenue { get; set; }
+        }
+
         private class ProductSoldInTheBakery
         {
             public int ProductId { get; set; }

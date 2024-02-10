@@ -6,16 +6,34 @@ namespace BakeryAppUI.Controllers
     public class EndOfDayAccountController : Controller
     {
         private readonly ApiService _apiService;
+        private readonly EndOfDayAccountService _endOfDayAccountService;
         private static Date _date = new Date { date = DateTime.Now };
-        public EndOfDayAccountController(ApiService apiService)
+        public EndOfDayAccountController(ApiService apiService, EndOfDayAccountService endOfDayAccountService)
         {
             _apiService = apiService;
+            _endOfDayAccountService = endOfDayAccountService;   
         }
 
         // static decimal purchasedProductRevenue;
 
         public async Task<IActionResult> Index()
         {
+            decimal PastaneTotalRevenue = 0;
+            PastaneTotalRevenue += await _apiService.GetApiResponse<decimal>
+               (ApiUrl.url + "/api/EndOfDayAccount/GetPurchasedProductsSoldInTheBakery?date=" + _date.date.ToString("yyyy-MM-dd"));
+            
+            PastaneTotalRevenue += await _apiService.GetApiResponse<decimal>
+               (ApiUrl.url + "/api/EndOfDayAccount/GetProductsSoldInTheBakery?date=" + _date.date.ToString("yyyy-MM-dd"));
+
+           //ViewBag.Pastane = await _endOfDayAccountService.GetTotalRevenue(_date.date);
+            ViewBag.Pastane = PastaneTotalRevenue;
+
+
+            decimal breadPrice =
+               await _apiService.GetApiResponse<decimal>
+               (ApiUrl.url + "/api/BreadPrice/GetBreadPriceByDate?date=" + _date.date.ToString("yyyy-MM-dd"));
+            ViewBag.breadPrice = breadPrice;
+
             decimal totalExpenseAmount = 0;
             List<Expense> expense =
             await _apiService.GetApiResponse<List<Expense>>
@@ -25,7 +43,15 @@ namespace BakeryAppUI.Controllers
                 totalExpenseAmount += item.Amount;
             }
 
+            EndOfDayResult endOfDayResult =
+                        await _apiService.GetApiResponse<EndOfDayResult>
+                        (ApiUrl.url + "/api/EndOfDayAccount/GetEndOfDayAccountDetail?date=" + _date.date.ToString("yyyy-MM-dd"));
 
+            ViewBag.EndOfDayAccount = endOfDayResult.EndOfDayAccount;
+            ViewBag.Account = endOfDayResult.Account;
+
+           
+            
             ViewBag.expense = expense;
             ViewBag.totalExpenseAmount = totalExpenseAmount;
             ViewBag.date = _date.date;
@@ -43,47 +69,10 @@ namespace BakeryAppUI.Controllers
             return RedirectToAction("Index"); // İsteğe bağlı olarak başka bir sayfaya yönlendirme yapabilirsiniz.
         }
 
-
-
-        public class ProductSoldInTheBakery
+        public class EndOfDayResult
         {
-            public int ProductId { get; set; }
-            public string ProductName { get; set; }
-            public decimal Price { get; set; }
-            public decimal Revenue { get; set; }
-            public int RemainingYesterday { get; set; }
-            public int ProductedToday { get; set; }
-            public int RemainingToday { get; set; }
-            public int StaleProductToday { get; set; }
-
-        }
-        public class PurchasedProductSoldInTheBakery
-        {
-            public int ProductId { get; set; }
-            public string ProductName { get; set; }
-            public decimal Price { get; set; }
-            public decimal Revenue { get; set; }
-            public int RemainingYesterday { get; set; }
-            public int PurchasedToday { get; set; }
-            public int RemainingToday { get; set; }
-            public int StaleProductToday { get; set; }
-
-        }
-        public class BreadSold
-        {
-            //public int ProductId { get; set; }
-            public string ProductName { get; set; }
-            //public decimal Price { get; set; }
-            public double Price { get; set; }
-            public double Revenue { get; set; }
-            //  public decimal Revenue { get; set; }
-            public int RemainingYesterday { get; set; }
-            public double ProductedToday { get; set; }
-            public int RemainingToday { get; set; }
-            public double StaleProductToday { get; set; }
-            //  public int GivenBreadsToServiceTotal { get; set; }
-
-
+            public EndOfDayAccountForBread EndOfDayAccount { get; set; }
+            public Account Account { get; set; }
         }
     }
 }
