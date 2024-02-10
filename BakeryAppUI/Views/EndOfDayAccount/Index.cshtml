@@ -33,12 +33,17 @@
         }
     </script>
 
-
+    @{
+        double total = ViewBag.EndOfDayAccount.RemainingToday +
+        ViewBag.EndOfDayAccount.TotalBreadGivenToService +
+        ViewBag.EndOfDayAccount.TotalStaleBreadFromService +
+        ViewBag.EndOfDayAccount.EatenBread +
+        ViewBag.EndOfDayAccount.StaleBreadToday +
+        ViewBag.EndOfDayAccount.TotalBreadGivenToGetir;
+    }
 
     <div class="container mt-5">
         <button type="button" class="btn btn-primary" onclick="generatePDF()">PDF Oluştur</button>
-
-       
 
         <div class="row">
             <div class="col-md-4">
@@ -47,37 +52,41 @@
                     <h3 class="text-center">Eksilen Ekmek</h3>
                     <table class="table" id="eksilenEkmekTable">
                         <tbody>
-                            <tr>
+                            @* <tr>
                                 <th scope="row">Geri Atılan Hamur</th>
-                                <td>10</td>
-                            </tr>
+                                <td>-</td>
+                            </tr> *@
                             <tr>
                                 <th scope="row">Yarına Kalan Ekmek</th>
-                                <td>15</td>
+                                <td>@ViewBag.EndOfDayAccount.RemainingToday</td>
                             </tr>
                             <tr>
                                 <th scope="row">Servis Ekmek</th>
-                                <td>500</td>
+                                <td>@ViewBag.EndOfDayAccount.TotalBreadGivenToService</td>
                             </tr>
                             <tr>
                                 <th scope="row">Servis Bayat</th>
-                                <td>50</td>
+                                <td>@ViewBag.EndOfDayAccount.TotalStaleBreadFromService</td>
                             </tr>
                             <tr>
                                 <th scope="row">Yenen Ekmek</th>
-                                <td>20</td>
+                                <td>@ViewBag.EndOfDayAccount.EatenBread</td>
                             </tr>
                             <tr>
                                 <th scope="row">Bayat</th>
-                                <td>30</td>
+                                <td>@ViewBag.EndOfDayAccount.StaleBreadToday</td>
                             </tr>
                             <tr>
                                 <th scope="row">Getir</th>
-                                <td>200</td>
+                                <td>@ViewBag.EndOfDayAccount.TotalBreadGivenToGetir</td>
+                            </tr>
+                            <tr class="empty-row">
+                                <th scope="row"></th>
+                                <td></td>
                             </tr>
                             <tr>
                                 <th scope="row">Toplam</th>
-                                <td>100</td>
+                                <td>@total</td>
                             </tr>
                         </tbody>
                     </table>
@@ -87,25 +96,35 @@
 
             <div class="col-md-4">
 
+                @{
+                    double totalBreadProduction = ViewBag.EndOfDayAccount.ProductedToday;
+                    double totalRemainingYesterday = ViewBag.EndOfDayAccount.RemainingYesterday;
+                    double totalPurchasedBread = ViewBag.EndOfDayAccount.PurchasedBread;
+
+                    double total2 = totalBreadProduction + totalRemainingYesterday + totalPurchasedBread;
+
+
+                    double tezgahatSatilanEkmek = total2 - total;
+                }
                 <div class="mb-4">
                     <h3 class="text-center">Mevcut Ekmek</h3>
                     <table class="table" id="mevcutEkmekTable">
                         <tbody>
                             <tr>
                                 <th scope="row">İmalat</th>
-                                <td>5000</td>
+                                <td>@ViewBag.EndOfDayAccount.ProductedToday</td>
                             </tr>
                             <tr>
                                 <th scope="row">Dünden Kalan</th>
-                                <td>30</td>
+                                <td>@ViewBag.EndOfDayAccount.RemainingYesterday</td>
                             </tr>
                             <tr>
                                 <th scope="row">Dışarıdan Alınan</th>
-                                <td>500</td>
+                                <td>@ViewBag.EndOfDayAccount.PurchasedBread</td>
                             </tr>
                             <tr>
                                 <th scope="row">Toplam</th>
-                                <td>8000</td>
+                                <td>@total2</td>
                             </tr>
                             <tr class="empty-row">
                                 <th scope="row"></th>
@@ -121,14 +140,17 @@
                             </tr>
                             <tr>
                                 <th scope="row">Tezgahta Satılan Ekmek</th>
-                                <td>630</td>
+                                <td>@tezgahatSatilanEkmek</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
             </div>
+            @{
+                double Tezgah = (total2 - total) * Convert.ToDouble(ViewBag.breadPrice);
 
+            }
             <div class="col-md-4">
 
                 <div class="mb-4">
@@ -137,35 +159,35 @@
                         <tbody>
                             <tr>
                                 <th scope="row">Kasa Devir</th>
-                                <td>10 TL</td>
+                                <td>@ViewBag.Account.KasaDevir TL</td>
                             </tr>
                             <tr>
                                 <th scope="row">Servis</th>
-                                <td>1000 TL</td>
+                                <td>@ViewBag.Account.ServisGelir TL</td>
                             </tr>
                             <tr>
                                 <th scope="row">Tezgah</th>
-                                <td>2000 TL</td>
+                                <td>@Tezgah TL</td>
                             </tr>
                             <tr>
                                 <th scope="row">Pastane</th>
-                                <td>1000 TL</td>
+                                <td>@ViewBag.Pastane TL</td>
                             </tr>
                             <tr>
                                 <th scope="row">Gelir</th>
-                                <td>6000 TL</td>
+                                <td>@((decimal)@Tezgah + @ViewBag.Pastane + @ViewBag.Account.ServisGelir) TL</td>
                             </tr>
                             <tr>
                                 <th scope="row">Toplam</th>
-                                <td>8000 TL</td>
+                                <td>@((decimal)@Tezgah + @ViewBag.Pastane + @ViewBag.Account.ServisGelir + @ViewBag.Account.KasaDevir) TL</td>
                             </tr>
                             <tr>
                                 <th scope="row">Gider</th>
-                                <td>@(@ViewBag.totalExpenseAmount == 0 ? "-" : @ViewBag.totalExpenseAmount)</td>
+                                <td>@(@ViewBag.totalExpenseAmount == 0 ? "-" : @ViewBag.totalExpenseAmount) TL</td>
                             </tr>
                             <tr>
                                 <th scope="row">Devir</th>
-                                <td>200 TL</td>
+                                <td>@ViewBag.Account.Devir TL</td>
                             </tr>
                         </tbody>
                     </table>
@@ -180,26 +202,31 @@
                 <table class="table table-bordered custom-table" id="giderlerTable">
                     <thead>
                         <tr>
-                            <th scope="col">Gider Başlık</th>
+                            <th scope="col">Gider</th>
                             <th scope="col">Tutar</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            @foreach (var expense in ViewBag.expense)
-                            {
-                                <td>expense.Detail</td>
-                                <td>expense.Amount</td>                               
-                            }                            
-                        </tr>
+                        @foreach (var expense in ViewBag.expense)
+                        {
+                            <tr>
+                                <td>@expense.Detail</td>
+                                <td>@expense.Amount</td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>
-
+            @{
+            decimal NetElden =
+                ((decimal)@Tezgah + ViewBag.Pastane + ViewBag.Account.ServisGelir + ViewBag.Account.KasaDevir)
+                - ViewBag.totalExpenseAmount - ViewBag.Account.Devir;
+                            
+            }
 
             <div class="col-md-3 offset-md-5">
                 <div style="background-color: #3498db; color: white; padding: 20px; text-align: center; font-size: 1.5em;">
-                    Net Elden: 500₺
+                    Net Elden: @NetElden ₺
                 </div>
             </div>
         </div>
@@ -247,11 +274,13 @@
         var giderlerData = getTableData('.custom-table');
 
         // Tarih ve firma adı
-        var currentDate = new Date('@DateTime.Now.ToString("yyyy-MM-dd")');
+        var currentDate = new Date('@ViewBag.date.ToString("yyyy-MM-dd")');
         var formattedDate = currentDate.toLocaleDateString('tr-TR'); // Türkçe tarih formatı
         var dayOfWeek = new Intl.DateTimeFormat('tr-TR', { weekday: 'long' }).format(currentDate); // Gün
 
         var companyName = 'ASLANOĞLU FIRIN';
+
+        
 
         // PDF oluşturma
         var docDefinition = {
@@ -274,15 +303,16 @@
                                     style: 'table',
                                     table: {
                                         headerRows: 1,
-                                        body: eksilenEkmekData
+                                        body: eksilenEkmekData,
+                                        heights: Array(eksilenEkmekData.length).fill(15),
                                     }
                                 },
                                 { text: '\n' }, // Boş satır
                             ]
                         },
-                       
 
-                        
+
+
 
                         // Mevcut Ekmek Tablosu
                         {
@@ -293,7 +323,8 @@
                                     style: 'table',
                                     table: {
                                         headerRows: 1,
-                                        body: mevcutEkmekData
+                                        body: mevcutEkmekData,
+                                        heights: Array(mevcutEkmekData.length).fill(15),
                                     }
                                 },
                                 { text: '\n' }, // Boş satır
@@ -310,7 +341,8 @@
                                     style: 'table',
                                     table: {
                                         headerRows: 1,
-                                        body: kasaData
+                                        body: kasaData,
+                                        heights: Array(kasaData.length).fill(15),
                                     }
                                 },
                                 { text: '\n' }, // Boş satır
@@ -318,35 +350,35 @@
                         }
                     ]
                 },
-               // Giderler Tablosu ve Net Elden
-{
-    columns: [
-        // Sol tarafta Giderler Tablosu
-        {
-            width: '50%',
-            stack: [
-                { text: 'Giderler', style: 'header' },
+                // Giderler Tablosu ve Net Elden
                 {
-                    style: 'table',
-                    table: {
-                        headerRows: 1,
-                        body: giderlerData
-                    }
-                },
-                { text: '\n' }, // Boş satır
-            ]
-        },
-        // Sağ tarafta Net Elden
-        {
-            width: '39%',
-            columns: [
-                { text: 'Net Elden: 500₺', style: 'netElden', alignment: 'right' },
-            ],
-            margin: [0, 10, 0, 0], // Boşluk
-        },
-        { width: '11%', text: '' },
-    ]
-}
+                    columns: [
+                        // Sol tarafta Giderler Tablosu
+                        {
+                            width: '50%',
+                            stack: [
+                                { text: 'Giderler', style: 'header' },
+                                {
+                                    style: 'table',
+                                    table: {
+                                        headerRows: 1,
+                                        body: giderlerData
+                                    }
+                                },
+                                { text: '\n' }, // Boş satır
+                            ]
+                        },
+                        // Sağ tarafta Net Elden
+                        {
+                            width: '46%',
+                            columns: [
+                                { text: 'Net Elden: @NetElden ₺', style: 'netElden', alignment: 'right' }, // Combine label and value
+                            ],
+                            margin: [0, 10, 0, 0], // Boşluk
+                        },
+                        { width: '4%', text: '' },
+                    ]
+                }
 
             ],
             styles: {
@@ -368,7 +400,7 @@
                 netElden: {
                     fontSize: 14,
                     color: '#00000', // Beyaz renk
-                   
+
                     bold: true,
                     margin: [0, 0, 0, 10]
                 }
@@ -514,7 +546,7 @@
                 },
                 netElden: {
                     fontSize: 14,
-                    color: '#000000', // Siyah renk                    
+                    color: '#000000', // Siyah renk
                     bold: true,
                     margin: [0, 0, 0, 10]
                 }

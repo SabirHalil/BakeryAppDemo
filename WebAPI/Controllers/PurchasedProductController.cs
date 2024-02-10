@@ -37,6 +37,7 @@ namespace WebAPI.Controllers
                     getAddedPurchasedProduct.ProductName = _productService.GetById(purchasedProductListDetail[i].ProductId).Name;
                     getAddedPurchasedProduct.ProductId = purchasedProductListDetail[i].ProductId;
                     getAddedPurchasedProduct.Quantity = purchasedProductListDetail[i].Quantity;
+                    getAddedPurchasedProduct.Price = purchasedProductListDetail[i].Price;
                     getAddedPurchasedProduct.Id = purchasedProductListDetail[i].Id;
 
                     getAddedPurchasedProducts.Add(getAddedPurchasedProduct);
@@ -96,15 +97,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("AddPurchasedProducts")]
-        public ActionResult AddPurchasedProductListDetail(List<PurchasedProductListDetail> purchasedProductListDetail, int userId)
+        public ActionResult AddPurchasedProductListDetail(List<PurchasedProductListDetail> purchasedProductListDetail)
         {
             try
-            {
-                if (userId <= 0)
-                {
-                    return BadRequest(Messages.WrongInput);
-                }
-
+            {             
                 if (purchasedProductListDetail.IsNullOrEmpty())
                 {
                     return BadRequest(Messages.ListEmpty);
@@ -120,8 +116,7 @@ namespace WebAPI.Controllers
                     {
                         return BadRequest(Messages.OncePerDay);
                     }
-                    purchasedProductListDetail[i].Price = _productService.GetById(purchasedProductListDetail[i].ProductId).Price;
-                    purchasedProductListDetail[i].UserId = userId;
+                    purchasedProductListDetail[i].Price = _productService.GetById(purchasedProductListDetail[i].ProductId).Price;                    
                 }
 
                 _purchasedProductListDetailService.AddList(purchasedProductListDetail);
@@ -207,6 +202,7 @@ namespace WebAPI.Controllers
         private class GetAddedPurchasedProduct
         {
             public int Id { get; set; }
+            public decimal Price { get; set; }
             public int ProductId { get; set; }
             public int Quantity { get; set; }
             public string ProductName { get; set; }

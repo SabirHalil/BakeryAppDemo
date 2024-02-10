@@ -19,7 +19,8 @@ namespace WebAPI.Controllers
         {
             _breadCountingService = breadCountingService; ;
         }
-
+        //[Authorize]
+        //[Authorize(Roles = "admin")]
         [HttpGet("GetBreadCountingByDate")]
         public ActionResult GetBreadCountingByDate(DateTime date)
         {

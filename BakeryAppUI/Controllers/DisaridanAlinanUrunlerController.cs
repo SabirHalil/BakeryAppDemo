@@ -21,19 +21,14 @@ namespace WebAppDemo.Controllers
             string yesterdayDate = _date.date.AddDays(-1).ToString(dateFormat);
 
             string purchasedProductListUrl = $"{ApiUrl.url}/api/PurchasedProduct/GetAddedPurchasedProductByDate?date={currentDate}";
-            string productsCountingTodayUrl = $"{ApiUrl.url}/api/ProductsCounting/GetProductsCountingByDateAndCategory?date={currentDate}&categoryId=2";
-            string productsCountingYesterdayUrl = $"{ApiUrl.url}/api/ProductsCounting/GetProductsCountingByDateAndCategory?date={yesterdayDate}&categoryId=2";
-            string staleProductsUrl = $"{ApiUrl.url}/api/StaleProduct/GetStaleProductsByDateAndCategory?date={currentDate}&categoryId=2";
+            string productsCountingTodayUrl = $"{ApiUrl.url}/api/ProductsCounting/GetProductsCountingByDateAndCategory?date={currentDate}&categoryId=3";
+            string productsCountingYesterdayUrl = $"{ApiUrl.url}/api/ProductsCounting/GetProductsCountingByDateAndCategory?date={yesterdayDate}&categoryId=3";
+            string staleProductsUrl = $"{ApiUrl.url}/api/StaleProduct/GetStaleProductsByDateAndCategory?date={currentDate}&categoryId=3";
 
 
             List<PurchasedProduct> purchasedProduct =
                 await _apiService.GetApiResponse<List<PurchasedProduct>>
                 (purchasedProductListUrl);
-
-
-            //List<ProductionListDetail> productionListDetail =
-            //    await _apiService.GetApiResponse<List<ProductionListDetail>>
-            //    (productionListUrl);
 
             Dictionary<int, int> productsCountingToday =
                 await _apiService.GetApiResponse<Dictionary<int, int>>
@@ -61,8 +56,7 @@ namespace WebAppDemo.Controllers
                     ProductId = productId,
                     ProductName = specificProduct?.ProductName,
                     ProductedToday = specificProduct?.Quantity ?? 0,
-                   // Price = specificProduct?.Price ?? 0,
-                    Price =1,
+                    Price = specificProduct?.Price ?? 0,                 
                     RemainingToday = productsCountingToday.TryGetValue(productId, out var todayValue) ? todayValue : 0,
                     RemainingYesterday = productsCountingYesterday.TryGetValue(productId, out var yesterdayValue) ? yesterdayValue : 0,
                     StaleProductToday = staleProducts.TryGetValue(productId, out var staleValue) ? staleValue : 0
@@ -79,12 +73,9 @@ namespace WebAppDemo.Controllers
 
         [HttpPost]
         public async Task<ActionResult> PostDate(Date adate)
-        {
-            // 'model.SelectedDate' üzerinden tarih bilgisini alabilirsiniz.
-            // Burada istediğiniz işlemleri gerçekleştirebilirsiniz.
+        {            
             _date.date = adate.date;
-
-            return RedirectToAction("Index"); // İsteğe bağlı olarak başka bir sayfaya yönlendirme yapabilirsiniz.
+            return RedirectToAction("Index"); 
         }
     }
 }

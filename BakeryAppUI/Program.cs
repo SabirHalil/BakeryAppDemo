@@ -6,8 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddSingleton<ITakenCourseService, TakenCourseManager>();
 
 builder.Services.AddHttpClient<ApiService>();
+//builder.Services.AddHttpClient<EndOfDayAccountService>();
+//builder.Services.AddTransient<ApiService>();
 
-
+builder.Services.AddScoped<EndOfDayAccountService>();
 
 
 // Add services to the container.
@@ -33,11 +35,19 @@ app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
+      
     endpoints.MapControllerRoute(
         name: "customRoute",
-        pattern: "Gün-Sonu-Hesap", // Ýstediðiniz URL'yi buraya yazýn
-        defaults: new { controller = "EndOfDayAccount", action = "Index" } // Controller ve action'ý kendi ihtiyaçlarýnýza göre deðiþtirin
+        pattern: "GünSonuHesap", 
+        defaults: new { controller = "EndOfDayAccount", action = "Index" } 
     );
+       
+    endpoints.MapControllerRoute(
+        name: "customRoute",
+        pattern: "AnaSayfa", 
+        defaults: new { controller = "Home", action = "Index" } 
+    );
+    
 
     //endpoints.MapControllerRoute(
     //    name: "default",
