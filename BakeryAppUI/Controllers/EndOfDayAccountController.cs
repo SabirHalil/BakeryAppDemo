@@ -19,8 +19,6 @@ namespace BakeryAppUI.Controllers
         public async Task<IActionResult> Index()
         {
             decimal PastaneTotalRevenue = 0;
-            PastaneTotalRevenue += await _apiService.GetApiResponse<decimal>
-               (ApiUrl.url + "/api/EndOfDayAccount/GetPurchasedProductsSoldInTheBakery?date=" + _date.date.ToString("yyyy-MM-dd"));
             
             PastaneTotalRevenue += await _apiService.GetApiResponse<decimal>
                (ApiUrl.url + "/api/EndOfDayAccount/GetProductsSoldInTheBakery?date=" + _date.date.ToString("yyyy-MM-dd"));
