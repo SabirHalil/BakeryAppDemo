@@ -181,8 +181,10 @@ namespace WebAPI.Controllers
                 decimal TotalRevenue = 0;
                 List<Product> products = _productService.GetAllByCategoryId(2);
                 List<Product> products2 = _productService.GetAllByCategoryId(1);
+                List<Product> products3 = _productService.GetAllByCategoryId(3);
 
                 products.AddRange(products2);
+                products.AddRange(products3);
 
                // List<ProductSoldInTheBakery> productsSoldInTheBakery = new();
 
@@ -229,54 +231,54 @@ namespace WebAPI.Controllers
 
         }
 
-        [HttpGet("GetPurchasedProductsSoldInTheBakery")]
-        public ActionResult GetPurchasedProductsSoldInTheBakery(DateTime date)
-        {
-            try
-            {
-                decimal TotalRevenue = 0;
+        //[HttpGet("GetPurchasedProductsSoldInTheBakery")]
+        //public ActionResult GetPurchasedProductsSoldInTheBakery(DateTime date)
+        //{
+        //    try
+        //    {
+        //        decimal TotalRevenue = 0;
 
-                List<Product> products = _productService.GetAllByCategoryId(3);
-                //List<PurchasedProductSoldInTheBakery> purchasedProductsSoldInTheBakery = new();
-                for (int i = 0; i < products.Count; i++)
-                {
-                    PurchasedProductSoldInTheBakery purchasedProductSoldInTheBakery = new();
-                    purchasedProductSoldInTheBakery.ProductId = products[i].Id;
-                    purchasedProductSoldInTheBakery.ProductName = products[i].Name;
-
-
-                    purchasedProductSoldInTheBakery.Price = _purchasedProductListDetailService.GetPurchasedProductListDetailByDateAndProductId((date.Date), products[i].Id).Price;
+        //        List<Product> products = _productService.GetAllByCategoryId(3);
+        //        //List<PurchasedProductSoldInTheBakery> purchasedProductsSoldInTheBakery = new();
+        //        for (int i = 0; i < products.Count; i++)
+        //        {
+        //            PurchasedProductSoldInTheBakery purchasedProductSoldInTheBakery = new();
+        //            purchasedProductSoldInTheBakery.ProductId = products[i].Id;
+        //            purchasedProductSoldInTheBakery.ProductName = products[i].Name;
 
 
-                    for (int j = 1; j < 6 && purchasedProductSoldInTheBakery.Price == 0; j++)
-                    {
-                        purchasedProductSoldInTheBakery.Price = _purchasedProductListDetailService.GetPurchasedProductListDetailByDateAndProductId((date.Date.AddDays(-j)), products[i].Id).Price;
-                    }
+        //            purchasedProductSoldInTheBakery.Price = _purchasedProductListDetailService.GetPurchasedProductListDetailByDateAndProductId((date.Date), products[i].Id).Price;
 
-                    purchasedProductSoldInTheBakery.RemainingYesterday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date.AddDays(-1)), products[i].Id);
-                    purchasedProductSoldInTheBakery.RemainingToday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date), products[i].Id);
 
-                    purchasedProductSoldInTheBakery.StaleProductToday = _staleProductService.GetQuantityStaleProductByDateAndProductId((date.Date), products[i].Id);
+        //            for (int j = 1; j < 6 && purchasedProductSoldInTheBakery.Price == 0; j++)
+        //            {
+        //                purchasedProductSoldInTheBakery.Price = _purchasedProductListDetailService.GetPurchasedProductListDetailByDateAndProductId((date.Date.AddDays(-j)), products[i].Id).Price;
+        //            }
 
-                    purchasedProductSoldInTheBakery.PurchasedToday = _purchasedProductListDetailService.GetPurchasedProductListDetailByDateAndProductId((date.Date), products[i].Id)?.Quantity ?? 0;
+        //            purchasedProductSoldInTheBakery.RemainingYesterday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date.AddDays(-1)), products[i].Id);
+        //            purchasedProductSoldInTheBakery.RemainingToday = _productsCountingService.GetQuantityProductsCountingByDateAndProductId((date.Date), products[i].Id);
 
-                    purchasedProductSoldInTheBakery.Revenue = purchasedProductSoldInTheBakery.Price * (purchasedProductSoldInTheBakery.RemainingYesterday + purchasedProductSoldInTheBakery.PurchasedToday - purchasedProductSoldInTheBakery.RemainingToday - purchasedProductSoldInTheBakery.StaleProductToday);
+        //            purchasedProductSoldInTheBakery.StaleProductToday = _staleProductService.GetQuantityStaleProductByDateAndProductId((date.Date), products[i].Id);
 
-                    TotalRevenue += purchasedProductSoldInTheBakery.Revenue;
+        //            purchasedProductSoldInTheBakery.PurchasedToday = _purchasedProductListDetailService.GetPurchasedProductListDetailByDateAndProductId((date.Date), products[i].Id)?.Quantity ?? 0;
 
-                   // purchasedProductsSoldInTheBakery.Add(purchasedProductSoldInTheBakery);
-                }
+        //            purchasedProductSoldInTheBakery.Revenue = purchasedProductSoldInTheBakery.Price * (purchasedProductSoldInTheBakery.RemainingYesterday + purchasedProductSoldInTheBakery.PurchasedToday - purchasedProductSoldInTheBakery.RemainingToday - purchasedProductSoldInTheBakery.StaleProductToday);
 
-                //return Ok(purchasedProductsSoldInTheBakery);
-                return Ok(TotalRevenue);
-            }
-            catch (Exception e)
-            {
+        //            TotalRevenue += purchasedProductSoldInTheBakery.Revenue;
 
-                return StatusCode(500, "Daha sonra tekrar deneyin...");
-            }
+        //           // purchasedProductsSoldInTheBakery.Add(purchasedProductSoldInTheBakery);
+        //        }
 
-        }
+        //        //return Ok(purchasedProductsSoldInTheBakery);
+        //        return Ok(TotalRevenue);
+        //    }
+        //    catch (Exception e)
+        //    {
+
+        //        return StatusCode(500, "Daha sonra tekrar deneyin...");
+        //    }
+
+        //}
 
         //[HttpGet("GetBreadSold")]
         //public ActionResult GetBreadSold(DateTime date)

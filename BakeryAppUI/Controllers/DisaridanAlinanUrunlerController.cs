@@ -20,15 +20,15 @@ namespace WebAppDemo.Controllers
             string currentDate = _date.date.ToString(dateFormat);
             string yesterdayDate = _date.date.AddDays(-1).ToString(dateFormat);
 
-            string purchasedProductListUrl = $"{ApiUrl.url}/api/PurchasedProduct/GetAddedPurchasedProductByDate?date={currentDate}";
+            string productionListUrl = $"{ApiUrl.url}/api/ProductionList/GetAddedProductsByDateAndCategoryId?date={currentDate}&categoryId=3";
             string productsCountingTodayUrl = $"{ApiUrl.url}/api/ProductsCounting/GetProductsCountingByDateAndCategory?date={currentDate}&categoryId=3";
             string productsCountingYesterdayUrl = $"{ApiUrl.url}/api/ProductsCounting/GetProductsCountingByDateAndCategory?date={yesterdayDate}&categoryId=3";
             string staleProductsUrl = $"{ApiUrl.url}/api/StaleProduct/GetStaleProductsByDateAndCategory?date={currentDate}&categoryId=3";
 
 
-            List<PurchasedProduct> purchasedProduct =
-                await _apiService.GetApiResponse<List<PurchasedProduct>>
-                (purchasedProductListUrl);
+            List<ProductionListDetail> productionListDetail =
+                await _apiService.GetApiResponse<List<ProductionListDetail>>
+                (productionListUrl);        
 
             Dictionary<int, int> productsCountingToday =
                 await _apiService.GetApiResponse<Dictionary<int, int>>
@@ -43,13 +43,13 @@ namespace WebAppDemo.Controllers
                 (staleProductsUrl);
 
 
-            List<int> productIds = purchasedProduct.Select(pd => pd.ProductId).ToList();
+            List<int> productIds = productionListDetail.Select(pd => pd.ProductId).ToList();
             productIds.AddRange(productsCountingYesterday.Keys.Except(productIds));
 
 
             var productionListDetailDto = productIds.Select(productId =>
             {
-                var specificProduct = purchasedProduct.FirstOrDefault(pd => pd.ProductId == productId);
+                var specificProduct = productionListDetail.FirstOrDefault(pd => pd.ProductId == productId);
 
                 return new ProductionListDetailDto
                 {
