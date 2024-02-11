@@ -239,6 +239,29 @@
                 var pdfViewer = document.getElementById('pdfViewer');
                 pdfViewer.src = dataUrl;
 
+
+                // Dosya ismi belirleme
+                var fileName = "Pastane_" + formattedDate + ".pdf";
+
+                // Önceki indirme butonlarını temizle
+                var existingButtons = document.querySelectorAll('.download-btn');
+                existingButtons.forEach(function (button) {
+                    button.remove();
+                });
+
+                // "İndir" butonu ekleyerek indirme seçeneğini sağlama
+                var downloadButton = document.createElement('a');
+                downloadButton.href = dataUrl;
+                downloadButton.download = fileName;
+                downloadButton.innerText = "Dosyayı İndir";
+                downloadButton.classList.add("btn", "btn-primary", "download-btn"); // İstenirse bir CSS sınıfı ekleyebilirsiniz
+
+                // "pdfViewer" elementine "downloadButton" elemanını ekleme
+                pdfViewer.parentElement.appendChild(downloadButton);
+
+
+
+
                 // Modal'ı göster
                 $('#pdfPreviewModal').modal('show');
             });

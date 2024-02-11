@@ -49,7 +49,7 @@
             <div class="col-md-4">
 
                 <div class="mb-4">
-                    <h3 class="text-center">Eksilen Ekmek</h3>
+                    @* <h3 class="text-center">Eksilen Ekmek</h3> *@
                     <table class="table" id="eksilenEkmekTable">
                         <tbody>
                             @* <tr>
@@ -107,7 +107,7 @@
                     double tezgahatSatilanEkmek = total2 - total;
                 }
                 <div class="mb-4">
-                    <h3 class="text-center">Mevcut Ekmek</h3>
+                  @*   <h3 class="text-center">Mevcut Ekmek</h3> *@
                     <table class="table" id="mevcutEkmekTable">
                         <tbody>
                             <tr>
@@ -154,7 +154,7 @@
             <div class="col-md-4">
 
                 <div class="mb-4">
-                    <h3 class="text-center">Kasa</h3>
+                    @* <h3 class="text-center">Kasa</h3> *@
                     <table class="table" id="kasaTable">
                         <tbody>
                             <tr>
@@ -298,7 +298,7 @@
                         {
                             width: '30%',
                             stack: [
-                                { text: 'Eksilen Ekmek', style: 'header' },
+                                
                                 {
                                     style: 'table',
                                     table: {
@@ -318,7 +318,7 @@
                         {
                             width: '35%',
                             stack: [
-                                { text: 'Mevcut Ekmek', style: 'header' },
+                                
                                 {
                                     style: 'table',
                                     table: {
@@ -336,7 +336,7 @@
                         {
                             width: '30%',
                             stack: [
-                                { text: 'Kasa', style: 'header' },
+                                
                                 {
                                     style: 'table',
                                     table: {
@@ -422,6 +422,28 @@
         pdfDoc.getDataUrl(function (dataUrl) {
             var pdfViewer = document.getElementById('pdfViewer');
             pdfViewer.src = dataUrl;
+
+
+            // Dosya ismi belirleme
+            var fileName = "GünSonuHesap_" + formattedDate+ ".pdf";    
+
+            // Önceki indirme butonlarını temizle
+            var existingButtons = document.querySelectorAll('.download-btn');
+            existingButtons.forEach(function (button) {
+                button.remove();
+            });
+
+            // "İndir" butonu ekleyerek indirme seçeneğini sağlama
+            var downloadButton = document.createElement('a');
+            downloadButton.href = dataUrl;
+            downloadButton.download = fileName;
+            downloadButton.innerText = "Dosyayı İndir";
+            downloadButton.classList.add("btn", "btn-primary", "download-btn"); // İstenirse bir CSS sınıfı ekleyebilirsiniz
+
+            // "pdfViewer" elementine "downloadButton" elemanını ekleme
+            pdfViewer.parentElement.appendChild(downloadButton);
+
+
 
             // Modal'ı göster
             $('#pdfPreviewModal').modal('show');
