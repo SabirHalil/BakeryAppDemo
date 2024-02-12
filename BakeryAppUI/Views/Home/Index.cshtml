@@ -9,7 +9,7 @@
                 <div class="card bg-primary text-white">
                     <div class="card-body d-flex flex-column align-items-center justify-content-center">
                         <i class="fas fa-chart-line"></i>
-                        <div class="mt-3">Aralık Ayı Gelir</div>
+                        <div class="mt-3">Ocak Ayı Gelir</div>
                         <div class="display-5">₺12000</div>
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
@@ -23,7 +23,7 @@
                 <div class="card bg-danger text-white">
                     <div class="card-body d-flex flex-column align-items-center justify-content-center">
                         <i class="fas fa-shopping-cart"></i>
-                        <div class="mt-3">Aralık Ayı Gider</div>
+                        <div class="mt-3">Ocak Ayı Gider</div>
                         <div class="display-5">₺4000</div>
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
@@ -37,7 +37,7 @@
                 <div class="card bg-success text-white">
                     <div class="card-body d-flex flex-column align-items-center justify-content-center">
                         <i class="fas fa-chart-pie"></i>
-                        <div class="mt-3">Aralık Ayı Net Kazanç</div>
+                        <div class="mt-3">Ocak Ayı Net Kazanç</div>
                         <div class="display-5">₺8000</div>
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
@@ -51,7 +51,7 @@
                 <div class="card mb-4">
                     <div class="card-header">
                         <i class="fas fa-chart-area me-1"></i>
-                        Aralık Ayı Kazanç Grafiği
+                        Ocak Ayı Kazanç Grafiği
                     </div>
                     <div class="card-body">
                         <canvas id="myAreaChart" width="400" height="200"></canvas>
@@ -71,7 +71,7 @@
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: Array.from({ length: kazanc.length }, (_, i) => `Aralık ${i + 1}. Gün`),
+            labels: Array.from({ length: kazanc.length }, (_, i) => `Ocak ${i + 1}. Gün`),
             datasets: [{
                 label: 'Kazanç',
                 data: kazanc,

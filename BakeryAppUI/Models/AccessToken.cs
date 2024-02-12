@@ -6,4 +6,5 @@
         public static DateTime Expiration { get; set; }
 
     }
+
 }

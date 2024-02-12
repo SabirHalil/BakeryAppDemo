@@ -1,4 +1,5 @@
-﻿using BakeryAppUI.Models;
+﻿using BakeryAppUI.Controllers;
+using BakeryAppUI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -9,6 +10,13 @@ namespace WebAppNew.Controllers
 {
     public class LoginController : Controller
     {
+
+        private readonly ApiService _apiService;
+
+        public LoginController(ApiService apiService)
+        {
+            _apiService = apiService;
+        }
         public IActionResult Index()
         {
             return View();
@@ -17,45 +25,20 @@ namespace WebAppNew.Controllers
         [HttpPost]
         public async Task<IActionResult> IndexAsync(User user)
         {
+            string apiUrl = ApiUrl.url;
+            string loginEndpoint = "/api/Auth/login";
 
-            using var httpClient = new HttpClient();
+            string queryString = $"userName={Uri.EscapeDataString(user.email)}&password={Uri.EscapeDataString(user.password)}";
+            string fullUrl = $"{apiUrl}{loginEndpoint}?{queryString}";
 
-            var jsonContent = new StringContent(
-                JsonConvert.SerializeObject(user),
-                Encoding.UTF8,
-                "application/json"
-            );
-            var responseUser = await httpClient.PostAsync("https://localhost:7207/api/Auth/login", jsonContent);
+            Login login = await _apiService.GetApiResponse<Login>(fullUrl);
 
-            if (responseUser.StatusCode == HttpStatusCode.OK)
-            {
-                var responseData = await responseUser.Content.ReadAsStringAsync();
-                var tupleResult = JsonConvert.DeserializeObject<Tuple<object, int, string, string>>(responseData);
-
-
-
-                //if(! (tupleResult.Item3.ToString() == "ismet"))
-                
-                //{
-                //    ModelState.AddModelError(string.Empty, "Sadece patron giriş yapabilir.");
-                //    return View();
-                //}
-
-
-
-
-
-                JToken jsonToken = JToken.Parse(tupleResult.Item1.ToString());
-                AccessToken.Token = jsonToken["token"].ToString();
-                AccessToken.Expiration = DateTime.Parse(jsonToken["expiration"].ToString());
-
-                //return RedirectToAction("Index", "Home", new { userID = tupleResult.Item2 });
+            if (login != null)
+            {                
                 return RedirectToAction("Index", "Home");
             }
-
-
             ModelState.AddModelError(string.Empty, "Kullanıcı adı veya şifre yanlış.");
-            return View();          
+            return View();
         }
     }
 }
