@@ -2,6 +2,8 @@
 using Core.Entities.Concrete;
 using Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using System.Security.Claims;
 using System.Xml.Linq;
 
 namespace WebAPI.Controllers
@@ -31,17 +33,15 @@ namespace WebAPI.Controllers
             var result = _authService.CreateAccessToken(userToLogin.Data);
             if (result.Success)
             {
-                // var tupleResult = new Tuple<object, int, string, string, string>(result.Data, userToLogin.Data.Id, userToLogin.Data.FirstName, userToLogin.Data.LastName, userToLogin.Data.OperationClaim);
                 LoginResponseDto loginResponseDto = new LoginResponseDto {
 
                  Id=   userToLogin.Data.Id,
                 Name = userToLogin.Data.FirstName,
                    OperationClaimId = userToLogin.Data.OperationClaimId,
                    Token = result.Data.Token};
-            
                 return Ok(loginResponseDto);
 
-                //return Ok(result.Data);
+               
             }
 
             return BadRequest(result.Message);
@@ -65,5 +65,6 @@ namespace WebAPI.Controllers
 
             return BadRequest(result.Message);
         }
+
     }
 }

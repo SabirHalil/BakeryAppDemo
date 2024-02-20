@@ -19,6 +19,13 @@ namespace Business.DependencyResolvers.Autofac
     {
         protected override void Load(ContainerBuilder builder)
         {
+
+            builder.RegisterType<ReceivedMoneyFromServiceManager>().As<IReceivedMoneyFromServiceService>();
+            builder.RegisterType<EfReceivedMoneyFromServiceDal>().As<IReceivedMoneyFromServiceDal>();
+
+            builder.RegisterType<SystemAvailabilityTimeManager>().As<ISystemAvailabilityTimeService>();
+            builder.RegisterType<EfSystemAvailabilityTimeDal>().As<ISystemAvailabilityTimeDal>();
+
             builder.RegisterType<ServiceStaleProductManager>().As<IServiceStaleProductService>();
             builder.RegisterType<EfServiceStaleProductDal>().As<IServiceStaleProductDal>();
 

@@ -2,11 +2,13 @@
 using Business.Constants;
 using Castle.Core.Internal;
 using Entities.Concrete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
+   // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BreadCountingController : ControllerBase

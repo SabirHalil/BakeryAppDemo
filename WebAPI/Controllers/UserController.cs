@@ -28,9 +28,6 @@ namespace WebAPI.Controllers
         public IActionResult GetAll()
 
         {
-            //var result = _userService.GetUsers();
-
-            //return Ok(result);
 
             var users = _userService.GetUsers()
             .Select(u => new UserDto
