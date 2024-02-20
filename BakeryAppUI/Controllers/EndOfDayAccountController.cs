@@ -45,6 +45,8 @@ namespace BakeryAppUI.Controllers
                         await _apiService.GetApiResponse<EndOfDayResult>
                         (ApiUrl.url + "/api/EndOfDayAccount/GetEndOfDayAccountDetail?date=" + _date.date.ToString("yyyy-MM-dd"));
 
+
+
             ViewBag.EndOfDayAccount = endOfDayResult.EndOfDayAccount;
             ViewBag.Account = endOfDayResult.Account;
 
