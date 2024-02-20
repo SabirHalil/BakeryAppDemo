@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "PDF Preview";
+}
+
+<h2>PDF Preview</h2>
+
+@if (ViewBag.PdfData != null)
+{
+    <object data="data:application/pdf;base64,@ViewBag.PdfData" type="application/pdf" width="100%" height="600px">
+        Your browser does not support embedding PDF files. You can download the file
+        <a href="data:application/pdf;base64,@ViewBag.PdfData" download="preview.pdf">here</a>.
+    </object>
+}
+else
+{
+    <p>Error loading PDF data</p>
+}
+
+<button id="previewButton">Show Preview</button>
+
+<script>
+    document.getElementById('previewButton').addEventListener('click', function () {
+        // Handle button click event if needed
+    });
+</script>
+
+
+
+
+
+
+
+@* @{
+    ViewData["Title"] = "PDF Preview";
+}
+
+<h2>PDF Preview</h2>
+
+<button id="previewButton">Show Preview</button>
+
+<script>
+    document.getElementById('previewButton').addEventListener('click', function () {
+        // Handle button click event if needed
+
+        // Assuming you want to redirect the user to the server action to trigger the file download
+        window.location.href = '/ControllerName/IndexAsync'; // Replace ControllerName with your actual controller name
+    });
+</script>
+ *@

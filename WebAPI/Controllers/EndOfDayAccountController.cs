@@ -2,12 +2,8 @@
 using Business.Concrete;
 using Entities.Concrete;
 using Entities.DTOs;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Security.Principal;
-using System.Threading;
+
 
 namespace WebAPI.Controllers
 {
@@ -45,7 +41,7 @@ namespace WebAPI.Controllers
             IProductsCountingService productsCountingService, IProductService productService, IProductionListDetailService productionListDetailService,
             IBreadPriceService breadPriceService,
             IMoneyReceivedFromMarketService moneyReceivedFromMarketService,
-            IServiceStaleProductService serviceStaleProductService, 
+            IServiceStaleProductService serviceStaleProductService,
             ICashCountingService cashCountingService)
         {
             _serviceStaleProductService = serviceStaleProductService;
@@ -119,7 +115,7 @@ namespace WebAPI.Controllers
                 endOfDayAccountForBread.StaleBreadToday = StaleBread;
 
                 // Değerler değişebilir
-                endOfDayAccountForBread.PurchasedBread = 0;                
+                endOfDayAccountForBread.PurchasedBread = 0;
                 endOfDayAccountForBread.EatenBread = 10;
                 //
 
@@ -145,6 +141,7 @@ namespace WebAPI.Controllers
                 };
 
                 return Ok(result);
+
             }
             catch (Exception e)
             {
@@ -186,7 +183,7 @@ namespace WebAPI.Controllers
                 products.AddRange(products2);
                 products.AddRange(products3);
 
-               // List<ProductSoldInTheBakery> productsSoldInTheBakery = new();
+                // List<ProductSoldInTheBakery> productsSoldInTheBakery = new();
 
                 for (int i = 0; i < products.Count; i++)
                 {
@@ -218,9 +215,9 @@ namespace WebAPI.Controllers
 
                 }
 
-                
 
-               // return Ok(productsSoldInTheBakery);
+
+                // return Ok(productsSoldInTheBakery);
                 return Ok(TotalRevenue);
             }
             catch (Exception e)
@@ -356,7 +353,7 @@ namespace WebAPI.Controllers
             public decimal KasaDevir { get; set; }
             public decimal Devir { get; set; }
             public decimal KasaSayım { get; set; }
-          
+
         }
         private class EndOfDayResult
         {
@@ -406,4 +403,5 @@ namespace WebAPI.Controllers
 
         }
     }
+
 }
