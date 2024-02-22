@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
-    [Authorize]
+   // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SystemAvailabilityTimeController : ControllerBase
@@ -39,10 +39,15 @@ namespace WebAPI.Controllers
         {
             try
             {
-                if (systemAvailabilityTime == null )
+                if (systemAvailabilityTime == null || systemAvailabilityTime.CloseTime == systemAvailabilityTime.OpenTime )
                 {
                     return BadRequest(Messages.WrongInput);
                 }
+                if(systemAvailabilityTime.CloseTime < systemAvailabilityTime.OpenTime)                                                                                                  
+                {
+                    systemAvailabilityTime.CloseTime = systemAvailabilityTime.CloseTime + 24;
+                }
+
 
                 _systemAvailabilityTimeService.UpdateSystemAvailabilityTime(systemAvailabilityTime);
             }

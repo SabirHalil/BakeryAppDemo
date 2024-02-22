@@ -22,7 +22,7 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetAllReceivedMoneyFromServiceByDateAndServiceType")]
+        [HttpGet("GetReceivedMoneyFromServiceByDateAndServiceType")]
         public ActionResult GetAllReceivedMoneyFromServiceByDate(DateTime date,int serviceType)
         {
             var result = _receivedMoneyFromServiceService.GetByDate(date,serviceType);
@@ -37,6 +37,12 @@ namespace WebAPI.Controllers
             {
                 return BadRequest("There is no data!");
             }
+            var isAdded = _receivedMoneyFromServiceService.GetByDate(receivedMoneyFromService.Date, receivedMoneyFromService.ServiceTypeId);
+            if (isAdded != null)
+            {
+                return BadRequest("Already Added!");
+            }
+
             _receivedMoneyFromServiceService.Add(receivedMoneyFromService);
             return Ok();
         }

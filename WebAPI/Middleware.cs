@@ -21,18 +21,10 @@ namespace WebAPI
         {
             SystemAvailabilityTime systemAvailabilityTime = _systemAvailabilityTimeService.GetSystemAvailabilityTime();
             var currentTime = DateTime.Now.TimeOfDay;
-          
-            var isAdmin = httpContext.User.IsInRole("Admin");
-            if (isAdmin)
-            {
-                await _next(httpContext);
-                return;
-            } 
-            if (currentTime > TimeSpan.FromHours(systemAvailabilityTime.OpenTime)&& currentTime < TimeSpan.FromHours(systemAvailabilityTime.CloseTime))
-            {
-                await _next(httpContext);
-                return;
-            }
+            System.Console.WriteLine(currentTime.ToString());
+            Console.WriteLine("open: "+TimeSpan.FromHours(systemAvailabilityTime.OpenTime).ToString());
+            Console.WriteLine("close: "+ TimeSpan.FromHours(systemAvailabilityTime.CloseTime).Hours.ToString());
+            Console.WriteLine("today hour: " + DateTime.Now.TimeOfDay.Hours.ToString());
 
             var requestPath = httpContext.Request.Path;
 
@@ -41,6 +33,41 @@ namespace WebAPI
                 await _next(httpContext);
                 return;
             }
+
+            if (systemAvailabilityTime.CloseTime< systemAvailabilityTime.OpenTime)
+            {
+                                            
+                if(systemAvailabilityTime.OpenTime >= 0 && systemAvailabilityTime.OpenTime < 12 &&  currentTime.Hours >=0 && currentTime.Hours < (systemAvailabilityTime.CloseTime -24)) {
+                    await _next(httpContext);
+                    return;
+                }
+                if (systemAvailabilityTime.OpenTime >= 12 && systemAvailabilityTime.OpenTime < 24 && currentTime.Hours >= 12 && currentTime.Hours < (systemAvailabilityTime.CloseTime - 24))
+                {
+                    await _next(httpContext);
+                    return;
+                }
+
+            }
+            else
+            {
+                if (currentTime > TimeSpan.FromHours(systemAvailabilityTime.OpenTime) && currentTime < TimeSpan.FromHours(systemAvailabilityTime.CloseTime))
+                {
+                    await _next(httpContext);
+                    return;
+                }
+            }
+
+
+          
+
+            var isAdmin = httpContext.User.IsInRole("Admin");
+            if (isAdmin)
+            {
+                await _next(httpContext);
+                return;
+            }
+
+
 
 
             httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
