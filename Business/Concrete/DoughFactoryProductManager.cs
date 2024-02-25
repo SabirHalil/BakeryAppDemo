@@ -32,7 +32,7 @@ namespace Business.Concrete
 
         public List<DoughFactoryProduct> GetAll()
         {
-            return _doughFactoryProductDal.GetAll();
+            return _doughFactoryProductDal.GetAll(d=> d.Status == true);
         }
 
         public DoughFactoryProduct GetById(int id)

@@ -8,7 +8,8 @@ namespace Entities.Concrete
     {
         public int Id { get; set; }
         public double BreadEquivalent { get; set; }
-        public string Name { get; set; } = null!;
+        public string Name { get; set; } 
+        public bool Status { get; set; } 
 
     }
 }

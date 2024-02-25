@@ -34,14 +34,25 @@ namespace WebAPI
                 return;
             }
 
-            if (systemAvailabilityTime.CloseTime< systemAvailabilityTime.OpenTime)
+            if ((systemAvailabilityTime.CloseTime -24) < systemAvailabilityTime.OpenTime)
             {
-                                            
-                if(systemAvailabilityTime.OpenTime >= 0 && systemAvailabilityTime.OpenTime < 12 &&  currentTime.Hours >=0 && currentTime.Hours < (systemAvailabilityTime.CloseTime -24)) {
+
+                //if(systemAvailabilityTime.OpenTime >= 0 && systemAvailabilityTime.OpenTime < 12 &&  currentTime.Hours >=0 && currentTime.Hours < (systemAvailabilityTime.CloseTime -24)) {
+                //    await _next(httpContext);
+                //    return;
+                //}
+                //if (systemAvailabilityTime.OpenTime >= 12 && systemAvailabilityTime.OpenTime < 24 && currentTime.Hours >= 12 && currentTime.Hours < (systemAvailabilityTime.CloseTime - 24))
+                //{
+                //    await _next(httpContext);
+                //    return;
+                //}
+
+                if (systemAvailabilityTime.OpenTime >= 0 && systemAvailabilityTime.OpenTime < 12 && 23 >= 0 && 23 < (systemAvailabilityTime.CloseTime - 24))
+                {
                     await _next(httpContext);
                     return;
                 }
-                if (systemAvailabilityTime.OpenTime >= 12 && systemAvailabilityTime.OpenTime < 24 && currentTime.Hours >= 12 && currentTime.Hours < (systemAvailabilityTime.CloseTime - 24))
+                if (systemAvailabilityTime.OpenTime >= 12 && systemAvailabilityTime.OpenTime < 24 && 13 >= 12 && 13< (systemAvailabilityTime.CloseTime))
                 {
                     await _next(httpContext);
                     return;
@@ -66,8 +77,6 @@ namespace WebAPI
                 await _next(httpContext);
                 return;
             }
-
-
 
 
             httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;

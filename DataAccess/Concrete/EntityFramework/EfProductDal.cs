@@ -26,7 +26,7 @@ namespace DataAccess.Concrete.EntityFramework
                 if (listId == 0)
                 {
                     var getCategoryProducts = context.Products
-                         .Where(p => p.CategoryId == categoryId)
+                         .Where(p => p.CategoryId == categoryId && p.Status == true)
                          .ToList();
 
                     return getCategoryProducts;
@@ -39,7 +39,7 @@ namespace DataAccess.Concrete.EntityFramework
                    .ToList();
 
                     var productsNotInProductionList = context.Products
-                        .Where(p => p.CategoryId == categoryId && !productIdsInProductionList.Contains(p.Id))
+                        .Where(p => p.CategoryId == categoryId && !productIdsInProductionList.Contains(p.Id) && p.Status == true)
                         .ToList();
 
                     return productsNotInProductionList;
