@@ -1,4 +1,5 @@
 ﻿using Entities.Concrete;
+using Entities.DTOs;
 
 namespace Business.Abstract
 {
@@ -6,7 +7,8 @@ namespace Business.Abstract
     {
         List<ProductsCounting> GetAll();
         List<ProductsCounting> GetProductsCountingByDate(DateTime date);
-        Dictionary<int, int> GetProductsCountingByDateAndCategory(DateTime date, int categoryId);
+        Dictionary<int, int> GetDictionaryProductsCountingByDateAndCategory(DateTime date, int categoryId);
+        List<ProductsCountingDto> GetProductsCountingByDateAndCategory(DateTime date, int categoryId);
         void Add(ProductsCounting productsCounting);
         void AddList(List<ProductsCounting> productsCounting);
         void DeleteById(int id);

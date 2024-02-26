@@ -86,6 +86,14 @@
                     <th class="th-sm">
                         Gelir
                     </th>
+
+                   @*  <th class="th-sm">
+                        Düzenle
+                    </th> *@
+
+                    
+
+
                 </tr>
             </thead>
             <tbody>
@@ -101,8 +109,20 @@
                         <td>@(@liste.RemainingYesterday + @liste.ProductedToday - @liste.StaleProductToday - @liste.RemainingToday)</td>
                         <td>@liste.Price</td>
                         <td>@(@liste.Price * (@liste.RemainingYesterday + @liste.ProductedToday - @liste.StaleProductToday - @liste.RemainingToday))</td>
+
+                   
+@* 
+                        <td>
+                           
+                            <button class="btn btn-primary guncelleBtn" data-bs-toggle="modal" data-bs-target="#guncelleModal" data-id="@liste.ProductId">Güncelle</button>
+                       
+                        </td> *@
+                       
                     </tr>
                 }
+
+
+
             </tbody>
         </table>
 
@@ -123,6 +143,31 @@
 
 
     </div>
+
+
+
+
+   @*  <!-- Güncelleme Modalı -->
+    <div class="modal fade" id="guncelleModal" tabindex="-1" aria-labelledby="guncelleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- İçeriği _GuncelleModal.cshtml partial view'e yükleyeceğiz -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Güncelleme butonlarına tıklandığında modalı açma işlemleri
+        $(".guncelleBtn").click(function () {
+            var id = $(this).data("id");
+            $("#guncelleModal").load("/Pastane/Guncelle/" + id, function () {
+                new bootstrap.Modal(document.getElementById('guncelleModal')).show();
+            });
+        });
+    </script> *@
+
+
+
 
     <!-- PDF önizleme için geniş modal -->
     <div class="modal fade" id="pdfPreviewModal" tabindex="-1" aria-labelledby="pdfPreviewModalLabel" aria-hidden="true">

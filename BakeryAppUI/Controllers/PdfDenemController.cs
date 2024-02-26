@@ -8,7 +8,8 @@ namespace BakeryAppUI.Controllers
         {
             using (var httpClient = new HttpClient())
             {
-                var response = await httpClient.GetAsync("https://localhost:7207/api/CreatePdf/create");
+                //var response = await httpClient.GetAsync("https://localhost:7207/api/CreatePdf/CreatePdfForHamurhane?date=2024-02-16");
+                var response = await httpClient.GetAsync("https://localhost:7207/api/CreatePdf/CreatePdf?date=2024-02-16&categoryId=1");
 
                 if (response.IsSuccessStatusCode)
                 {

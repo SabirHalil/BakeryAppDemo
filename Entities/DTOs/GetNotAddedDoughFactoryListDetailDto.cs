@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Entities.DTOs
 {
-    public class GetNotAddedDoughFactoryListDetailDto:IDto
+    public class GetNotAddedDoughFactoryListDetailDto : IDto
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public int DoughFactoryProductId { get; set; }
+        public string DoughFactoryProductName { get; set; }
     }
 }
