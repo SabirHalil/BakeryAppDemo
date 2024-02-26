@@ -45,7 +45,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("AddDoughFactoryListAndListDetail")]
-        public ActionResult AddDoughFactory(List<DoughFactoryListDetail> doughFactoryListDetail, int userId)
+        public ActionResult AddDoughFactory(List<DoughFactoryListDetail> doughFactoryListDetail, int userId, DateTime date)
         {
             if (userId <= 0)
             {
@@ -64,7 +64,7 @@ namespace WebAPI.Controllers
 
                 if (isNewList)
                 {
-                    doughFactoryListId = _doughFactoryListService.Add(new DoughFactoryList { UserId = userId, Date = DateTime.Now });
+                    doughFactoryListId = _doughFactoryListService.Add(new DoughFactoryList { UserId = userId, Date = date });
                 }
 
                 foreach (var detail in doughFactoryListDetail)

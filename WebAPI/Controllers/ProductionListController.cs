@@ -56,17 +56,19 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("AddProductionListAndDetail")]
-        public ActionResult AddProductionDetailList(List<ProductionListDetail> productionListDetail, int userId, int categoryId)
+        public ActionResult AddProductionDetailList(List<ProductionListDetail> productionListDetail, int userId, int categoryId, DateTime date)
         {
+
             if (productionListDetail == null || productionListDetail.Count == 0)
             {
                 return BadRequest("Product list is null or empty.");
             }
+
             var listId = _productionListService.GetByDateAndCategoryId(DateTime.Now, categoryId);
 
             if (listId == 0)
             {
-                listId = _productionListService.Add(new ProductionList { Id = listId, UserId = userId, Date = DateTime.Now , CategoryId= categoryId});
+                listId = _productionListService.Add(new ProductionList { Id = listId, UserId = userId, Date = date , CategoryId= categoryId});
                 
             }
 
