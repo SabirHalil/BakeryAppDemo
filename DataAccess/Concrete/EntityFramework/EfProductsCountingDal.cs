@@ -1,6 +1,7 @@
 ﻿using Core.DataAccess.EntityFramework;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Concrete.EntityFramework
@@ -27,7 +28,7 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
-        public Dictionary<int, int> GetProductsCountingByDateAndCategory(DateTime date, int categoryId)
+        public Dictionary<int, int> GetDictionaryProductsCountingByDateAndCategory(DateTime date, int categoryId)
         {
             using (BakeryAppContext context = new BakeryAppContext())
             {
@@ -41,6 +42,29 @@ namespace DataAccess.Concrete.EntityFramework
                     .ToDictionary(pair => pair.Counting.ProductId, pair => pair.Counting.Quantity);
 
                 return productsCountingQuantities;
+            }
+        }
+
+        public List<ProductsCountingDto> GetProductsCountingByDateAndCategory(DateTime date, int categoryId)
+        {
+            using (BakeryAppContext context = new BakeryAppContext())
+            {
+                var productsCountingList = context.ProductsCountings
+                    .Where(pc => pc.Date.Date == date.Date)
+                    .Join(context.Products,
+                          counting => counting.ProductId,
+                          product => product.Id,
+                          (counting, product) => new { Counting = counting, Product = product })
+                    .Where(pair => pair.Product != null && pair.Product.CategoryId == categoryId)
+                    .Select(pair => new ProductsCountingDto
+                    {
+                        Id = pair.Counting.Id,
+                        ProductId = pair.Counting.ProductId,
+                        Quantity = pair.Counting.Quantity
+                    })
+                    .ToList();
+
+                return productsCountingList;
             }
         }
     }

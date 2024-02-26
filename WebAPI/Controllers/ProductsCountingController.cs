@@ -1,8 +1,4 @@
-﻿
-
-
-
-using Business.Abstract;
+﻿using Business.Abstract;
 using Business.Constants;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Http;
@@ -27,6 +23,20 @@ namespace WebAPI.Controllers
         }
 
 
+        [HttpGet("GetDictionaryProductsCountingByDateAndCategory")]
+        public ActionResult GetDictionaryProductsCountingByDateAndCategory(DateTime date, int categoryId)
+        {
+            try
+            {               
+                var result = _productsCountingService.GetDictionaryProductsCountingByDateAndCategory(date,categoryId);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+        
         [HttpGet("GetProductsCountingByDateAndCategory")]
         public ActionResult GetProductsCountingByDateAndCategory(DateTime date, int categoryId)
         {

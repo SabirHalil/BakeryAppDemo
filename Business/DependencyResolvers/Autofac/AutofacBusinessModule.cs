@@ -19,6 +19,10 @@ namespace Business.DependencyResolvers.Autofac
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<CreatePdfManager>().As<ICreatePdfService>();
+
+            builder.RegisterType<EndOfDayAccountManager>().As<IEndOfDayAccountService>();
+
 
             builder.RegisterType<ReceivedMoneyFromServiceManager>().As<IReceivedMoneyFromServiceService>();
             builder.RegisterType<EfReceivedMoneyFromServiceDal>().As<IReceivedMoneyFromServiceDal>();

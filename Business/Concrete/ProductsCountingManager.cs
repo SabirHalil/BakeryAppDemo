@@ -2,6 +2,7 @@
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
+using Entities.DTOs;
 
 namespace Business.Concrete
 {
@@ -66,9 +67,14 @@ namespace Business.Concrete
             _productsCountingDal.AddList(productsCountings);
         }
 
-        public Dictionary<int, int> GetProductsCountingByDateAndCategory(DateTime date, int categoryId)
+        public Dictionary<int, int> GetDictionaryProductsCountingByDateAndCategory(DateTime date, int categoryId)
         {
-           return _productsCountingDal.GetProductsCountingByDateAndCategory(date,categoryId);
+           return _productsCountingDal.GetDictionaryProductsCountingByDateAndCategory(date,categoryId);
+        }
+
+        public List<ProductsCountingDto> GetProductsCountingByDateAndCategory(DateTime date, int categoryId)
+        {
+            return _productsCountingDal.GetProductsCountingByDateAndCategory(date, categoryId);
         }
     }
 }

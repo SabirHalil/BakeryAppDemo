@@ -11,4 +11,5 @@ namespace Business.Abstract
         void Update(AllService allService);
         AllService GetById(int id);
     }
+
 }

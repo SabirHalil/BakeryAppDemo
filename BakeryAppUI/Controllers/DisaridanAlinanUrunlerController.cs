@@ -21,8 +21,8 @@ namespace WebAppDemo.Controllers
             string yesterdayDate = _date.date.AddDays(-1).ToString(dateFormat);
 
             string productionListUrl = $"{ApiUrl.url}/api/ProductionList/GetAddedProductsByDateAndCategoryId?date={currentDate}&categoryId=3";
-            string productsCountingTodayUrl = $"{ApiUrl.url}/api/ProductsCounting/GetProductsCountingByDateAndCategory?date={currentDate}&categoryId=3";
-            string productsCountingYesterdayUrl = $"{ApiUrl.url}/api/ProductsCounting/GetProductsCountingByDateAndCategory?date={yesterdayDate}&categoryId=3";
+            string productsCountingTodayUrl = $"{ApiUrl.url}/api/ProductsCounting/GetDictionaryProductsCountingByDateAndCategory?date={currentDate}&categoryId=3";
+            string productsCountingYesterdayUrl = $"{ApiUrl.url}/api/ProductsCounting/GetDictionaryProductsCountingByDateAndCategory?date={yesterdayDate}&categoryId=3";
             string staleProductsUrl = $"{ApiUrl.url}/api/StaleProduct/GetStaleProductsByDateAndCategory?date={currentDate}&categoryId=3";
 
 

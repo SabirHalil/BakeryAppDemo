@@ -1,5 +1,6 @@
 ﻿using Core.DataAccess;
 using Entities.Concrete;
+using Entities.DTOs;
 
 namespace DataAccess.Abstract
 {
@@ -7,6 +8,7 @@ namespace DataAccess.Abstract
     {
         void DeleteById(int id);
         void AddList(List<ProductsCounting> productsCountings);
-        Dictionary<int, int> GetProductsCountingByDateAndCategory(DateTime date, int categoryId);
+        Dictionary<int, int> GetDictionaryProductsCountingByDateAndCategory(DateTime date, int categoryId);
+        List<ProductsCountingDto> GetProductsCountingByDateAndCategory(DateTime date, int categoryId);
     }
 }

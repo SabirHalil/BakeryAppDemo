@@ -56,7 +56,7 @@ namespace BakeryAppUI.Controllers
 
         private async Task<Dictionary<int, int>> GetProductsCounting(string date, int categoryId)
         {
-            string productsCountingUrl = $"{ApiUrl.url}/api/ProductsCounting/GetProductsCountingByDateAndCategory?date={date}&categoryId="+ categoryId.ToString();
+            string productsCountingUrl = $"{ApiUrl.url}/api/ProductsCounting/GetDictionaryProductsCountingByDateAndCategory?date={date}&categoryId="+ categoryId.ToString();
             return await _apiService.GetApiResponse<Dictionary<int, int>>(productsCountingUrl);
         }
 

@@ -1,0 +1,31 @@
+﻿@* @using static BakeryAppUI.Controllers.PastaneController
+@model VeriModel
+
+<!-- Modal içeriği -->
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="guncelleModalLabel">Veriyi Güncelle</h5>
+            <!-- Kapatma tuşunu kaldırdık -->
+        </div>
+        <div class="modal-body">
+            <!-- Veri güncelleme formu -->
+            @using (Html.BeginForm("Guncelle", "Pastane", FormMethod.Post))
+            {
+                @Html.HiddenFor(model => model.Id)
+                <div class="mb-3">
+                    <label for="Ad" class="form-label">Ad:</label>
+                    @Html.TextBoxFor(model => model.Ad, new { @class = "form-control" })
+                </div>
+                <div class="mb-3">
+                    <label for="Soyad" class="form-label">Soyad:</label>
+                    @Html.TextBoxFor(model => model.Soyad, new { @class = "form-control" })
+                </div>
+                <!-- Diğer özellikler -->
+                <button type="submit" class="btn btn-primary">Güncelle</button>
+            }
+        </div>
+    </div>
+</div>
+
+ *@
