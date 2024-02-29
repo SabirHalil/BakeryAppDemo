@@ -63,7 +63,7 @@ namespace DataAccess.Concrete.EntityFramework
             using (BakeryAppContext context = new())
             {
                 var doughFactoryProducts = context.DoughFactoryProducts
-                    .Where(df => !context.StaleBread.Any(sb => sb.DoughFactoryProductId == df.Id && sb.Date.Date == date.Date))
+                    .Where(df => !context.StaleBread.Any(sb => sb.DoughFactoryProductId == df.Id && sb.Date.Date == date.Date) && df.Status == true)
                     .ToList();
 
                 return doughFactoryProducts;

@@ -10,7 +10,7 @@ namespace DataAccess.Abstract
 
         Dictionary<int, int> GetStaleProductsByDateAndCategory(DateTime date, int categoryId);
         List<StaleProductDto> GetByDateAndCategory(DateTime date, int categoryId);
-        List<Product> GetProductsNotAddedToStale(DateTime date, int categoryId);
+        List<ProductNotAddedDto> GetProductsNotAddedToStale(DateTime date, int categoryId);
         bool IsExist(int productId, DateTime date);
     }
 }

@@ -1,7 +1,8 @@
 ﻿using Business.Abstract;
 using Business.Constants;
 using Entities.Concrete;
-using Microsoft.AspNetCore.Http;
+using Entities.DTOs;
+
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
@@ -57,15 +58,16 @@ namespace WebAPI.Controllers
             try
             {
                 List<ProductsCounting> productsCountings = _productsCountingService.GetProductsCountingByDate(date);
-                List<GetAddedProduct> getAddedProducts = new();
+                List<ProductsCountingDto> getAddedProducts = new();
 
                 for (int i = 0; i < productsCountings.Count; i++)
                 {
-                    GetAddedProduct getAddedProduct = new();
+                    ProductsCountingDto getAddedProduct = new();
                     getAddedProduct.ProductName = _productService.GetById(productsCountings[i].ProductId).Name;
                     getAddedProduct.ProductId = productsCountings[i].ProductId;
                     getAddedProduct.Quantity = productsCountings[i].Quantity;
                     getAddedProduct.Id = productsCountings[i].Id;
+                    getAddedProduct.Date = productsCountings[i].Date;
 
                     getAddedProducts.Add(getAddedProduct);
 
@@ -85,7 +87,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                List<ProductsCounting> productsCountings = _productsCountingService.GetProductsCountingByDate(date);
+                List<ProductsCountingDto> productsCountings = _productsCountingService.GetProductsCountingByDateAndCategory(date, categoryId);
                 List<int> AddedProductsIds = new();
 
                 for (int i = 0; i < productsCountings.Count; i++)
@@ -98,15 +100,15 @@ namespace WebAPI.Controllers
 
                 List<Product> products = _productService.GetAllByCategoryId(categoryId);
 
-                List<GetNotAddedProduct> getNotAddedProducts = new();
+                List<ProductNotAddedDto> getNotAddedProducts = new();
 
                 for (int i = 0; i < products.Count; i++)
                 {
                     if (!AddedProductsIds.Contains(products[i].Id))
                     {
-                        GetNotAddedProduct getNotAddedProduct = new();
-                        getNotAddedProduct.ProductId = products[i].Id;
-                        getNotAddedProduct.ProductName = products[i].Name;
+                        ProductNotAddedDto getNotAddedProduct = new();
+                        getNotAddedProduct.Id = products[i].Id;
+                        getNotAddedProduct.Name = products[i].Name;
                         getNotAddedProducts.Add(getNotAddedProduct);
 
                     }
@@ -170,6 +172,7 @@ namespace WebAPI.Controllers
         [HttpPut("UpdateProductsCounting")]
         public ActionResult UpdateProductsCounting(ProductsCounting productsCounting)
         {
+            Console.WriteLine(productsCounting);
             if (productsCounting == null || productsCounting.Quantity < 0)
             {
                 return BadRequest(Messages.WrongInput);
@@ -194,18 +197,8 @@ namespace WebAPI.Controllers
             }
 
         }
-        private class GetAddedProduct
-        {
-            public int Id { get; set; }
-            public int ProductId { get; set; }
-            public int Quantity { get; set; }
-            public string ProductName { get; set; }
-        }
-        private class GetNotAddedProduct
-        {
-            public int ProductId { get; set; }
-            public string ProductName { get; set; }
-        }
+ 
+       
 
     }
 }

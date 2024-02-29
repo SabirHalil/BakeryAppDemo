@@ -50,7 +50,7 @@ namespace Business.Concrete
             return _staleProductDal.GetByDateAndCategory(date, categoryId);
         }
 
-        public List<Product> GetProductsNotAddedToStale(DateTime date, int categoryId)
+        public List<ProductNotAddedDto> GetProductsNotAddedToStale(DateTime date, int categoryId)
         {
             return _staleProductDal.GetProductsNotAddedToStale(date, categoryId);
         }

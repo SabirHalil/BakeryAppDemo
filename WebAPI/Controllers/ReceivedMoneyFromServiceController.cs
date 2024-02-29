@@ -26,7 +26,13 @@ namespace WebAPI.Controllers
         public ActionResult GetAllReceivedMoneyFromServiceByDate(DateTime date,int serviceType)
         {
             var result = _receivedMoneyFromServiceService.GetByDate(date,serviceType);
-            return Ok(result);
+            Console.WriteLine("Result of receive money: "+result);
+            if (result != null)
+            {
+                return Ok(result);
+
+            }
+            return NoContent();
         }
 
 

@@ -2,6 +2,7 @@
 using Business.Constants;
 using Castle.Core.Internal;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -137,16 +138,16 @@ namespace WebAPI.Controllers
             {
                 List<DoughFactoryProduct> allDoughFactoryProduct = _doughFactoryProductService.GetAll();
 
-                List<GetNotAddedDoughFactoryListDetailDto> getNotAddedDoughFactoryListDetailDto = new();
+                List<ProductNotAddedDto> getNotAddedDoughFactoryListDetailDto = new();
 
                 if (doughFactoryListId == 0)
                 {                 
                     for (int i = 0; i < allDoughFactoryProduct.Count; i++)
                     {
-                        GetNotAddedDoughFactoryListDetailDto Dto = new ();
-                        Dto.DoughFactoryProductId = doughFactoryListId;
-                        Dto.DoughFactoryProductId = allDoughFactoryProduct[i].Id;
-                        Dto.DoughFactoryProductName = allDoughFactoryProduct[i].Name;
+                        ProductNotAddedDto Dto = new ();
+                       
+                        Dto.Id = allDoughFactoryProduct[i].Id;
+                        Dto.Name = allDoughFactoryProduct[i].Name;
 
                         getNotAddedDoughFactoryListDetailDto.Add(Dto);
                     }
@@ -169,10 +170,10 @@ namespace WebAPI.Controllers
 
                 for (int i = 0; i < filteredDoughFactoryProducts.Count; i++)
                 {
-                    GetNotAddedDoughFactoryListDetailDto Dto = new();
+                        ProductNotAddedDto Dto = new();
                     
-                    Dto.DoughFactoryProductId = filteredDoughFactoryProducts[i].Id;
-                    Dto.DoughFactoryProductName = filteredDoughFactoryProducts[i].Name;
+                    Dto.Id = filteredDoughFactoryProducts[i].Id;
+                    Dto.Name = filteredDoughFactoryProducts[i].Name;
 
                     getNotAddedDoughFactoryListDetailDto.Add(Dto);
                 }

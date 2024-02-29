@@ -60,7 +60,9 @@ namespace DataAccess.Concrete.EntityFramework
                     {
                         Id = pair.Counting.Id,
                         ProductId = pair.Counting.ProductId,
-                        Quantity = pair.Counting.Quantity
+                        Quantity = pair.Counting.Quantity,
+                        ProductName = pair.Product.Name,
+                        Date = pair.Counting.Date,
                     })
                     .ToList();
 

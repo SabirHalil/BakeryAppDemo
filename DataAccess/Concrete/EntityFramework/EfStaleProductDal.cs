@@ -46,13 +46,17 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
-        public List<Product> GetProductsNotAddedToStale(DateTime date, int categoryId)
+        public List<ProductNotAddedDto> GetProductsNotAddedToStale(DateTime date, int categoryId)
         {
             using (BakeryAppContext context = new())
             {
                 var productsNotAddedToStale = context.Products
                     .Where(p => p.CategoryId == categoryId)
-                    .Where(p => !context.StaleProducts.Any(sp => sp.Date.Date == date.Date && sp.ProductId == p.Id))
+                    .Where(p => !context.StaleProducts.Any(sp => sp.Date.Date == date.Date && sp.ProductId == p.Id)).Where(p=> p.Status == true).Select(p=>new ProductNotAddedDto
+                    {
+                        Id= p.Id,
+                        Name = p.Name,
+                    })
                     .ToList();
                 return productsNotAddedToStale;
             }

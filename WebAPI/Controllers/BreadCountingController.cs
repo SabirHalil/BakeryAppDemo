@@ -29,15 +29,11 @@ namespace WebAPI.Controllers
             try
             {
                 var result = _breadCountingService.GetBreadCountingByDate(date);
-                if(result == null)
+                if(result != null)
                 {
-                    BreadCounting b = new BreadCounting() { 
-                    Quantity=0
-                    };
-
-                    result = b;
+                    return Ok(result);
                 }
-                return Ok(result);
+                return NoContent();
             }
             catch (Exception e)
             {

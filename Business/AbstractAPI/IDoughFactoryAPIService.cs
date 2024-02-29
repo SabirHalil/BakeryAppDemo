@@ -9,7 +9,7 @@ namespace Business.AbstractAPI
         int AddDoughFactory(List<DoughFactoryListDetail> doughFactoryListDetail, int userId);
         List<GetAddedDoughFactoryListDetailDto> GetDoughFactoryListDetail(int doughFactoryListId);
 
-        List<GetNotAddedDoughFactoryListDetailDto> GetMarketByServiceListId(int doughFactoryListId);
+        List<ProductNotAddedDto> GetMarketByServiceListId(int doughFactoryListId);
 
         void DeleteDoughFactoryListDetail(int detailId);
 

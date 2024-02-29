@@ -27,7 +27,12 @@ namespace WebAPI.Controllers
             try
             {
                 var result = _cashCountingService.GetOneCashCountingByDate(date);
-                return Ok(result);
+                if(result != null)
+                {
+                    return Ok(result);
+                }
+                return NoContent();
+
             }
             catch (Exception e)
             {

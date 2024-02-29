@@ -34,7 +34,7 @@ namespace Business.Concrete
            return _receivedMoneyFromServiceDal.GetAll();
         }
 
-        public ReceivedMoneyFromService GetByDate(DateTime date, int serviceType)
+        public ReceivedMoneyFromService? GetByDate(DateTime date, int serviceType)
         {
             return _receivedMoneyFromServiceDal.Get(d => d.Date.Date == date.Date && d.ServiceTypeId == serviceType);
         }
