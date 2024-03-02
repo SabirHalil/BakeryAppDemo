@@ -98,7 +98,56 @@ namespace WebAppDemo.Controllers
             return View();
         }
 
-        
+
+        public async Task<IActionResult> CreatePdfAsync()
+        {
+            using (var httpClient = new HttpClient())
+            {
+                try
+                {
+                    string dateFormat = "yyyy-MM-dd";
+                    string currentDate = _date.date.ToString(dateFormat);
+
+                    string Url = $"{ApiUrl.url}/api/CreatePdf/CreatePdfForHamurhane?date={currentDate}";
+
+                    var response = await httpClient.GetAsync(Url);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var pdfData = await response.Content.ReadAsByteArrayAsync();
+                        var base64Pdf = Convert.ToBase64String(pdfData);
+
+                        return Json(base64Pdf);
+                    }
+                    else
+                    {
+                        // HTTP hata durumunu kontrol et
+                        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                        {
+                            // 404 Not Found durumunu ele al
+                            return Json("Error: 404 Not Found");
+                        }
+                        else
+                        {
+                            // Diğer hata durumlarını ele al
+                            return Json("Error: " + response.StatusCode);
+                        }
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    // HTTP isteği sırasında genel bir hata durumu
+                    return Json("Error: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    // Genel bir hata durumu
+                    return Json("Error: " + ex.Message);
+                }
+            }
+        }
+
+
 
 
         [HttpPost]

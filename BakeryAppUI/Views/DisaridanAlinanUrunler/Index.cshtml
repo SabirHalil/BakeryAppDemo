@@ -139,6 +139,40 @@
     </div>
 
 
+
+
+
+
+    <script>
+        function generatePDF() {
+            // Controller endpoint'i
+            var controllerEndpoint = '@Url.Action("CreatePdf", "DisaridanAlinanUrunler")';
+
+            // Ajax isteği
+            $.ajax({
+                url: controllerEndpoint,
+                type: 'GET',
+                dataType: 'json', // API'den JSON formatında bir yanıt beklediğimizi belirtiyoruz
+                success: function (data) {
+                    // API'den gelen PDF verisini modal içindeki iframe'e ekleyerek modal'ı aç
+                    var pdfViewer = document.getElementById("pdfViewer");
+                    pdfViewer.src = "data:application/pdf;base64," + data;
+
+                    var pdfPreviewModal = new bootstrap.Modal(document.getElementById("pdfPreviewModal"));
+                    pdfPreviewModal.show();
+
+                },
+                error: function (error) {
+                    console.error("API isteği başarısız: ", error);
+                }
+            });
+        }
+    </script>
+
+
+
+
+@* 
     <!-- pdfmake -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
@@ -264,7 +298,7 @@
                 $('#pdfPreviewModal').modal('show');
             });
         }
-    </script>
+    </script> *@
 }
 else
 {

@@ -24,17 +24,16 @@
                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">                    
                     <i class="fas fa-user fa-fw fs-5"></i>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">                   
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                     <li>
-                        <form method="post" action="@Url.Action("Logout", "Account")">
-                            <button type="submit" class="dropdown-item">Çıkış</button>
-                        </form>
+                        <button type="button" class="dropdown-item" onclick="logout()">Çıkış</button>
                     </li>
                 </ul>
             </li>
         </ul> 
     </nav>
 
+    
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
             <nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
@@ -42,47 +41,57 @@
                 <div class="sb-sidenav-menu">
                     <div class="nav">
                         <div class="sb-sidenav-menu-heading">     </div>
-                        <a class="nav-link" href="@Url.Action("Index", "PdfDenem")">
+                        <a class="nav-link" href="@Url.Action("Index", "Home")">
                             @*<a class="nav-link" href="@Url.Action("Index", "Login")" ">*@
                             <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
                             Ana Menu
                         </a>
+
+
+
 
                         <a class="nav-link" href="@Url.Action("Index", "EndOfDayAccount")">
                             <div class="sb-nav-link-icon"><i class="fas fa-calculator"></i></div>
                             Gün Sonu Hesabı
                         </a>
 
-                        <div class="sb-sidenav-menu-heading">Üretim İşlemleri</div>
+
+
+
+                        @*  <div class="sb-sidenav-menu-heading">Üretim İşlemleri</div> *@
 
                         <a class="nav-link" href="@Url.Action("Index", "Hamurhane")">
-                            <div class="sb-nav-link-icon"><i class="fas fa-calculator"></i></div>
-                           Hamurhane
+                            <div class="sb-nav-link-icon"><i class="fas fa-bread-slice"></i></div>
+                            Hamurhane
                         </a>
 
                         <a class="nav-link" href="@Url.Action("Index", "Pastane")">
-                            <div class="sb-nav-link-icon"><i class="fas fa-calculator"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fas fa-birthday-cake"></i></div>
                             Pastane
                         </a>
 
                         <a class="nav-link" href="@Url.Action("Index", "Borek")">
-                            <div class="sb-nav-link-icon"><i class="fas fa-calculator"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fas fa-pizza-slice"></i></div>
                             Börek
                         </a>
 
-
-                        <div class="sb-sidenav-menu-heading">Dışarıdan Alınan Ürünler</div>
                         <a class="nav-link" href="@Url.Action("Index", "DisaridanAlinanUrunler")">
-                            <div class="sb-nav-link-icon"><i class="fas fa-calculator"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fas fa-shopping-basket"></i></div>
                             Dışarıdan Alınan Ürünler
                         </a>
 
-
-                        <div class="sb-sidenav-menu-heading">Servis</div>
                         <a class="nav-link" href="@Url.Action("Index", "MarketService")">
-                            <div class="sb-nav-link-icon"><i class="fas fa-calculator"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fas fa-store-alt"></i></div>
                             Market Servis
-                        </a>  
+                        </a>
+
+                        <a class="nav-link" href="@Url.Action("Index", "Delivery")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                            Para Teslim
+                        </a>
+
+
+
                         
                     </div>
                 </div>
@@ -124,3 +133,13 @@
     <script src="js/datatables-simple-demo.js"></script>
 </body>
 </html>
+
+
+<script>
+    function logout() {
+        // Çıkış işlemi tamamlandığında giriş ekranına yönlendir.
+        window.location.href = "/Login/Index";
+        // Tarayıcı önbelleğini temizle (sayfa yenileme).
+        //window.location.reload(true);
+    }
+</script>

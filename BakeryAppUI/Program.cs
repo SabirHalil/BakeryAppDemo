@@ -6,10 +6,14 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddSingleton<ITakenCourseService, TakenCourseManager>();
 
 builder.Services.AddHttpClient<ApiService>();
+
+
+
 //builder.Services.AddHttpClient<EndOfDayAccountService>();
 //builder.Services.AddTransient<ApiService>();
 
 builder.Services.AddScoped<EndOfDayAccountService>();
+builder.Services.AddScoped<ProductionListDetailService>();
 
 
 // Add services to the container.

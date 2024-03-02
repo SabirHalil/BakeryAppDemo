@@ -19,6 +19,16 @@ namespace Business.DependencyResolvers.Autofac
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<DeliveryManager>().As<IDeliveryService>();
+            builder.RegisterType<EfDeliveryDal>().As<IDeliveryDal>();
+
+            builder.RegisterType<NetEldenAmountManager>().As<INetEldenAmountService>();
+            builder.RegisterType<EfNetEldenAmountDal>().As<INetEldenAmountDal>();
+
+            builder.RegisterType<CreditCardAmountManager>().As<ICreditCardAmountService>();
+            builder.RegisterType<EfCreditCardAmountDal>().As<ICreditCardAmountDal>();
+
+
             builder.RegisterType<CreatePdfManager>().As<ICreatePdfService>();
 
             builder.RegisterType<EndOfDayAccountManager>().As<IEndOfDayAccountService>();

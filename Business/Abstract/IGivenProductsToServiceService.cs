@@ -8,10 +8,10 @@ namespace Business.Abstract
         List<GivenProductsToService> GetAll();
         List<GivenProductsToService> GetAllByDateAndServisTypeId(DateTime date, int servisTypeId);
         List<GivenProductsToServiceTotalResultDto> GetTotalQuantityByDate(DateTime date);
-        void Add(GivenProductsToService KDeneme);
+        void Add(GivenProductsToService delivery);
         void DeleteById(int id);
-        void Delete(GivenProductsToService KDeneme);
-        void Update(GivenProductsToService KDeneme);
+        void Delete(GivenProductsToService delivery);
+        void Update(GivenProductsToService delivery);
         GivenProductsToService GetById(int id);
     }
 }

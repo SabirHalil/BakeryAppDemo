@@ -25,6 +25,13 @@ namespace WebAPI.Controllers
             var result = _productService.GetAllByCategoryId(categoryId);
             return Ok(result);
         }
+        
+        [HttpGet("GetProductById")]
+        public ActionResult GetProductById(int id)
+        {
+            var result = _productService.GetById(id);
+            return Ok(result);
+        }
 
         /*
         [HttpGet("GetByListIdProduct")]
