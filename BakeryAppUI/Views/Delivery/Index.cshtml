@@ -1,0 +1,229 @@
+﻿
+<div class="container mt-5">
+    <div class="row">
+
+        <!-- Para Teslimat Kartı -->
+        <div class="col-md-6 col-12 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="form-group">
+                        <h4 class="card-title">Para Teslimat</h4>
+                        <p> Şuan itibari ile biriken para miktarı: @ViewBag.paymentAmountDue</p>
+                        <!-- Button trigger for login form modal -->
+                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#inlineForm">
+                            Para Teslim Kayıt
+                        </button>
+
+                        
+                        <div class="modal fade text-left" id="inlineForm" tabindex="-1" aria-labelledby="myModalLabel33" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="myModalLabel33">Para Teslim</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="@Url.Action("SaveDelivery", "Delivery")" method="post" class="delivery-form" onsubmit="return validateAndSubmit()">
+                                        <div class="modal-body">
+                                            <label for="toDeliver" class="form-label">Teslim Edilmesi Gereken Para</label>
+                                            <div class="mb-3">
+                                                <input id="toDeliver" name="toDeliver" type="text" value="@ViewBag.paymentAmountDue" class="form-control" readonly>
+                                            </div>
+                                            <label for="delivered" class="form-label">Teslim Edilen Para</label>
+                                            <div class="mb-3">
+                                                <input id="delivered" name="delivered" type="number" min="0" max="@ViewBag.paymentAmountDue" placeholder="0" class="form-control" oninput="calculateRemainingAmount()" onkeydown="return validateMaxValue(event)">
+                                                <div id="warning-message" class="text-danger"></div>
+                                            </div>
+                                            <label for="remaining" class="form-label">Kalan Para</label>
+                                            <div class="mb-3">
+                                                <input id="remaining" type="text" placeholder="0 TL" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary ms-1">
+                                                Kayıt
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-6 col-12 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title">Tarih Seçimi</h4>
+
+                    <div class="row mb-3">
+                        <label for="startDate" class="col-sm-4 col-form-label font-weight-bold fs-5">Başlangıç Tarihi</label>
+                        <div class="col-sm-8">
+                            <div class="input-group input-group-lg">
+                                <input type="date" class="form-control font-weight-bold" id="startDate" max="@DateTime.Now.ToString("yyyy-MM-dd")" value="@DateTime.Now.ToString("yyyy-MM-dd")" >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="endDate" class="col-sm-4 col-form-label font-weight-bold fs-5">Bitiş Tarihi</label>
+                        <div class="col-sm-8">
+                            <div class="input-group input-group-lg">
+                                <input type="date" class="form-control font-weight-bold" id="endDate" max="@DateTime.Now.ToString("yyyy-MM-dd")" value="@DateTime.Now.ToString("yyyy-MM-dd")" >
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-outline-success" onclick="submitForm()">
+                        Para Teslim Detay
+                    </button>
+
+                    <div class="modal fade text-left" id="table" tabindex="-1" aria-labelledby="myModalLabel33" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="myModalLabel33">Para Teslim Eksi Kayıtlar</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Tablo burada oluşturulacak -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
+
+<script>
+    function submitForm() {
+        var startDate = $("#startDate").val();
+        var endDate = $("#endDate").val();
+
+        // jQuery AJAX kullanarak .NET MVC controller'a istek gönderme
+        $.ajax({
+            url: '/Delivery/DeliveryAll',  // Controller ve Action isimlerini uygun şekilde değiştirin
+            type: 'GET',
+            data: { startDate: startDate, endDate: endDate },
+            success: function (data) {
+                // API'dan gelen verilerle tabloyu oluşturma
+                createTable(data);
+
+                // Modalı açma
+                $('#table').modal('show');
+            },
+            error: function (error) {
+                console.error('API isteği başarısız: ', error);
+            }
+        });
+    }
+
+    function createTable(data) {
+        // Tabloyu oluşturma
+        var tableHtml = '<table id="myTable" class="table table-striped">' +
+            '<thead>' +
+            '<tr>' +
+            '<th class="th-sm">Tarih</th>' +
+            '<th class="th-sm">Toplam Para</th>' +
+            '<th class="th-sm">Ödenen</th>' +
+            '<th class="th-sm">Kalan</th>' +
+            '</tr>' +
+            '</thead>' +
+            '<tbody>';
+
+        // API'dan gelen verileri tabloya ekleme
+        for (var i = 0; i < data.length; i++) {
+
+            var tarihSadece = new Date(data[i].deliveryDate).toLocaleDateString();
+            tableHtml += '<tr>' +
+                '<td>' + tarihSadece + '</td>' +
+                '<td>' + data[i].totalAccumulatedAmount + '</td>' +
+                '<td>' + data[i].deliveredAmount + '</td>' +
+                '<td>' + (data[i].totalAccumulatedAmount - data[i].deliveredAmount) + '</td>' +
+                '</tr>';
+        }
+
+        tableHtml += '</tbody></table>';
+
+        // Tabloyu div içine ekleme
+        $('#table .modal-body').html(tableHtml);
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    function validateMaxValue(event) {
+        var input = document.getElementById('delivered');
+        var currentValue = parseFloat(input.value) || 0;
+        var maxValue = parseFloat('@ViewBag.paymentAmountDue');
+
+        // Check if the entered value + the currently pressed key is greater than the maximum value
+        if (currentValue * 10 + parseInt(event.key) > maxValue * 10) {
+            event.preventDefault();
+            document.getElementById('warning-message').innerText = 'Girilen miktar, teslim edilmesi gereken miktardan fazla olamaz.';
+        } else {
+            document.getElementById('warning-message').innerText = '';
+        }
+    }
+
+    function calculateRemainingAmount() {
+        var toDeliverAmount = parseFloat('@ViewBag.paymentAmountDue');
+        var deliveredInput = document.getElementById('delivered');
+        var deliveredAmount = parseFloat(deliveredInput.value) || 0;
+
+        // If the entered value exceeds the maximum, set it to the maximum
+        if (deliveredAmount > toDeliverAmount) {
+            deliveredInput.value = toDeliverAmount.toFixed(2);
+        }
+
+        var remainingAmount = Math.max(0, toDeliverAmount - deliveredAmount);
+
+        document.getElementById('remaining').value = remainingAmount.toFixed(2) + ' TL';
+        checkAmountValidity();
+    }
+
+    function checkAmountValidity() {
+        var toDeliverAmount = parseFloat('@ViewBag.paymentAmountDue');
+        var deliveredAmount = parseFloat(document.getElementById('delivered').value) || 0;
+
+        var warningMessage = document.getElementById('warning-message');
+
+        if (deliveredAmount > toDeliverAmount) {
+            warningMessage.innerText = 'Girilen miktar, teslim edilmesi gereken miktardan fazla olamaz.';
+        } else {
+            warningMessage.innerText = '';
+        }
+    }
+</script>
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#myTable').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json"
+            }
+        });
+    });
+</script>

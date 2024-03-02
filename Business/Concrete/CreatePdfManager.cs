@@ -256,15 +256,20 @@ namespace Business.Concrete
 
                         document.Add(title);
 
-                        //var data = RegularData(date, CategoryId);
-                        var Table = CreateTable(RegularData(date, CategoryId));
+                        List<ProductionListDetailDto> detail = RegularData(date, CategoryId);
+                        var Table = CreateTable(detail);
 
                         //Table.SetWidth(UnitValue.CreatePercentValue(33));
 
                         document.Add(Table);
 
+                        decimal TotalRevenueAmount = 0;
 
-                        var TotalRevenueAmount = 10000;
+                        foreach (var item in detail)
+                        {
+                           TotalRevenueAmount += (item.ProductedToday + item.RemainingYesterday - item.StaleProductToday - item.RemainingToday) * item.Price;
+                        }
+
 
                         var TotalRevenue = new Paragraph($"Toplam Gelir:  {TotalRevenueAmount}TL")
                             .SetTextAlignment(TextAlignment.RIGHT)
@@ -427,8 +432,8 @@ namespace Business.Concrete
                 table.AddCell(new Cell().Add(new Paragraph(item.StaleProductToday.ToString())));
                 table.AddCell(new Cell().Add(new Paragraph(Net.ToString())));
                 table.AddCell(new Cell().Add(new Paragraph(Satilan.ToString())));
-                table.AddCell(new Cell().Add(new Paragraph(item.Price.ToString()+ "TL")));
-                table.AddCell(new Cell().Add(new Paragraph((item.Price * Satilan).ToString()+ "TL")));
+                table.AddCell(new Cell().Add(new Paragraph(item.Price.ToString() + "TL")));
+                table.AddCell(new Cell().Add(new Paragraph((item.Price * Satilan).ToString() + "TL")));
             }
 
             return table;
@@ -467,7 +472,7 @@ namespace Business.Concrete
 
                 table.AddCell(new Cell().Add(new Paragraph(item.TotalQuantity.ToString())));
                 table.AddCell(new Cell().Add(new Paragraph(item.UnitPrice.ToString() + "TL")));
-                table.AddCell(new Cell().Add(new Paragraph(Gelir.ToString()+ "TL")));
+                table.AddCell(new Cell().Add(new Paragraph(Gelir.ToString() + "TL")));
             }
 
             return table;

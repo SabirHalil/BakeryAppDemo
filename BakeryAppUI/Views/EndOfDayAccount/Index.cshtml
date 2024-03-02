@@ -1,4 +1,50 @@
 ﻿@model BakeryAppUI.Models.Date
+
+
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+<script>
+    function devretClick() {
+        // Gönderilecek veri
+        var requestData = {
+            NetElden: 100,
+            KrediKard: 1000, // Kredi Kardı Yaz
+
+        };
+
+        // jQuery kullanarak AJAX isteği gönderme
+        $.ajax({
+            type: "POST",
+            url: "/EndOfDayAccount/DevretAction",
+            data: requestData,  // Veriyi isteğe ekle
+            success: function (data) {
+                if (data.success) {
+                    alert('Devret işlemi başarıyla gerçekleştirildi.');
+                } else {
+                    alert('Devret işlemi başarısız oldu.');
+                }
+            },
+            error: function () {
+                alert('Bir hata oluştu.');
+            }
+        });
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="container mt-5">
     <div class="row mb-3">
         <div class="col-md-4">
@@ -53,8 +99,8 @@
                     <table class="table" id="eksilenEkmekTable">
                         <tbody>
                             @* <tr>
-                                <th scope="row">Geri Atılan Hamur</th>
-                                <td>-</td>
+                            <th scope="row">Geri Atılan Hamur</th>
+                            <td>-</td>
                             </tr> *@
                             <tr>
                                 <th scope="row">Yarına Kalan Ekmek</th>
@@ -107,7 +153,7 @@
                     double tezgahatSatilanEkmek = total2 - total;
                 }
                 <div class="mb-4">
-                  @*   <h3 class="text-center">Mevcut Ekmek</h3> *@
+                    @*   <h3 class="text-center">Mevcut Ekmek</h3> *@
                     <table class="table" id="mevcutEkmekTable">
                         <tbody>
                             <tr>
@@ -218,21 +264,59 @@
                 </table>
             </div>
             @{
-            decimal NetElden =
+                decimal NetElden =
                 ((decimal)@Tezgah + ViewBag.Pastane + ViewBag.Account.ServisGelir + ViewBag.Account.KasaDevir)
                 - ViewBag.totalExpenseAmount - ViewBag.Account.Devir;
-                            
+
             }
 
-            <div class="col-md-3 offset-md-5">
-                <div style="background-color: #3498db; color: white; padding: 20px; text-align: center; font-size: 1.5em;">
-                    Net Elden: @NetElden ₺
+
+            <div class="col-md-3 offset-md-1">
+                <div class="text-center" style="background-color: #3498db; color: white; padding: 20px;">
+                    <h5>Kredi Kartı: YAP ₺</h5>
                 </div>
             </div>
+
+            <div class="col-md-3">
+                <div class="text-center" style="background-color: #3498db; color: white; padding: 20px;">
+                    <h5>Net Elden: @NetElden ₺</h5>
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                <button class="btn btn-primary btn-lg rounded-pill mt-3" onclick="devretClick()">Devret</button>
+            </div>
+
+
+
+
+            @* <div class="col-md-3 offset-md-5">
+            <div style="background-color: #3498db; color: white; padding: 20px; text-align: center; font-size: 1.5em;">
+            Kredi Kartı: YAP ₺
+            </div>
+
+
+            <div style="background-color: #3498db; color: white; padding: 20px; text-align: center; font-size: 1.5em;">
+            Net Elden: @NetElden ₺
+            </div>
+            </div>
+            *@
+
+
+            @*  <div class="col-md-3 offset-md-5">
+            <div style="background-color: #3498db; color: white; padding: 20px; text-align: center; font-size: 1.5em;">
+            Net Elden: @NetElden ₺
+            </div>
+            </div> *@
+
         </div>
     </div>
 
 </div>
+
+
+
+
 
 <style>
     .empty-row {
@@ -256,10 +340,41 @@
     </div>
 </div>
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-<!-- pdfmake -->
+
+
+<script>
+    function generatePDF() {
+        // Controller endpoint'i
+        var controllerEndpoint = '@Url.Action("CreatePdf", "EndOfDayAccount")';
+
+        // Ajax isteği
+        $.ajax({
+            url: controllerEndpoint,
+            type: 'GET',
+            dataType: 'json', // API'den JSON formatında bir yanıt beklediğimizi belirtiyoruz
+            success: function (data) {
+                // API'den gelen PDF verisini modal içindeki iframe'e ekleyerek modal'ı aç
+                var pdfViewer = document.getElementById("pdfViewer");
+                pdfViewer.src = "data:application/pdf;base64," + data;
+
+                var pdfPreviewModal = new bootstrap.Modal(document.getElementById("pdfPreviewModal"));
+                pdfPreviewModal.show();
+
+            },
+            error: function (error) {
+                console.error("API isteği başarısız: ", error);
+            }
+        });
+    }
+</script>
+
+
+
+
+
+
+@* <!-- pdfmake -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
 
@@ -280,7 +395,7 @@
 
         var companyName = 'ASLANOĞLU FIRIN';
 
-        
+
 
         // PDF oluşturma
         var docDefinition = {
@@ -298,7 +413,7 @@
                         {
                             width: '30%',
                             stack: [
-                                
+
                                 {
                                     style: 'table',
                                     table: {
@@ -318,7 +433,7 @@
                         {
                             width: '35%',
                             stack: [
-                                
+
                                 {
                                     style: 'table',
                                     table: {
@@ -336,7 +451,7 @@
                         {
                             width: '30%',
                             stack: [
-                                
+
                                 {
                                     style: 'table',
                                     table: {
@@ -425,7 +540,7 @@
 
 
             // Dosya ismi belirleme
-            var fileName = "GünSonuHesap_" + formattedDate+ ".pdf";    
+            var fileName = "GünSonuHesap_" + formattedDate + ".pdf";
 
             // Önceki indirme butonlarını temizle
             var existingButtons = document.querySelectorAll('.download-btn');
@@ -463,7 +578,7 @@
 
         return tableData;
     }
-</script>
+</script> *@
 
 @* <script>
     function generatePDF() {

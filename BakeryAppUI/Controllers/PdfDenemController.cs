@@ -15,7 +15,9 @@ namespace BakeryAppUI.Controllers
                 {
                     var pdfData = await response.Content.ReadAsByteArrayAsync();
                     var base64Pdf = Convert.ToBase64String(pdfData);
-                    ViewBag.PdfData = base64Pdf;
+
+                    return Json(base64Pdf);
+
                 }
                 else
                 {
