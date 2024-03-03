@@ -1,9 +1,14 @@
 ﻿using Entities.Concrete;
+using Entities.DTOs;
 
 namespace Business.Abstract
 {
     public interface IServiceListDetailService
     {
+        void UpdateQuantity(int entityId, int newQuantity);
+        List<MarketAddedToServiceDto> GetMarketAddedToServiceList(int serviceListId);
+        List<ProductsAddedToServiceListDetailDto> GetProductsAddedToServiceListDetail(int serviceListId, int marketId);
+        List<ProductsNotAddedToServiceListDetailDto> GetProductsNotAddedToServiceListDetail(int serviceListId, int marketId);
         List<ServiceListDetail> GetAll();
         List<ServiceListDetail> GetByListId(int id);
         ServiceListDetail GetByServiceListIdAndMarketContractId(int serviceListId, int marketContracId);
@@ -15,6 +20,7 @@ namespace Business.Abstract
         void Update(ServiceListDetail serviceListDetail);
         ServiceListDetail GetById(int id);
         //List<int> GetMarketContractById(int id);
-        bool IsExist(int serviceListId,int marketContractId);
+        bool IsExist(int serviceListId, int marketContractId);
+        bool IsExistByServiceListId(int serviceListId);
     }
 }

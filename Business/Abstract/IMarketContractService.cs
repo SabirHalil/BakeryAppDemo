@@ -12,6 +12,8 @@ namespace Business.Abstract
         MarketContract GetById(int id);
         int GetIdByMarketId(int id);
 
+        int GetIdByMarketIdAndServiceProductId(int marketId, int serviceProductId);
+
         int GetMarketIdById(int id);
         decimal GetPriceById(int id);
     }

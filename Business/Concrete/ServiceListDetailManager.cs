@@ -2,6 +2,7 @@
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
+using Entities.DTOs;
 
 namespace Business.Concrete
 {
@@ -68,6 +69,31 @@ namespace Business.Concrete
         public bool IsExist(int serviceListId, int marketContractId)
         {
             return _serviceListDetailDal.IsExist(serviceListId,marketContractId);
+        }
+
+        public List<MarketAddedToServiceDto> GetMarketAddedToServiceList(int serviceListId)
+        {
+            return _serviceListDetailDal.GetMarketAddedToServiceList(serviceListId);
+        }
+
+        public List<ProductsAddedToServiceListDetailDto> GetProductsAddedToServiceListDetail(int serviceListId, int marketId)
+        {
+            return _serviceListDetailDal.GetProductsAddedToServiceListDetail(serviceListId, marketId);
+        }
+
+        public List<ProductsNotAddedToServiceListDetailDto> GetProductsNotAddedToServiceListDetail(int serviceListId, int marketId)
+        {
+            return _serviceListDetailDal.GetProductsNotAddedToServiceListDetail(serviceListId, marketId);
+        }
+
+        public void UpdateQuantity(int entityId, int newQuantity)
+        {
+            _serviceListDetailDal.UpdateQuantity(entityId, newQuantity);
+        }
+
+        public bool IsExistByServiceListId(int serviceListId)
+        {
+            return _serviceListDetailDal.IsExistByServiceListId(serviceListId);
         }
     }
 }

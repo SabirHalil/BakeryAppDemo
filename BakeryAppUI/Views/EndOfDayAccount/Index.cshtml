@@ -7,11 +7,11 @@
 
 
 <script>
-    function devretClick() {
+    function devretClick(decimal creditCard, decimal netElden) {
         // Gönderilecek veri
         var requestData = {
-            NetElden: 100,
-            KrediKard: 1000, // Kredi Kardı Yaz
+            NetElden: netElden,
+            KrediKard: creditCard, // Kredi Kardı Yaz
 
         };
 
@@ -273,7 +273,7 @@
 
             <div class="col-md-3 offset-md-1">
                 <div class="text-center" style="background-color: #3498db; color: white; padding: 20px;">
-                    <h5>Kredi Kartı: YAP ₺</h5>
+                    <h5>Kredi Kartı: @ViewBag.Account.CreditCard ₺</h5>
                 </div>
             </div>
 
@@ -284,34 +284,10 @@
             </div>
 
             <div class="col-md-1">
-                <button class="btn btn-primary btn-lg rounded-pill mt-3" onclick="devretClick()">Devret</button>
+                <button class="btn btn-primary btn-lg rounded-pill mt-3" onclick="devretClick('@ViewBag.Account.CreditCard', @NetElden)">Devret</button>
             </div>
-
-
-
-
-            @* <div class="col-md-3 offset-md-5">
-            <div style="background-color: #3498db; color: white; padding: 20px; text-align: center; font-size: 1.5em;">
-            Kredi Kartı: YAP ₺
-            </div>
-
-
-            <div style="background-color: #3498db; color: white; padding: 20px; text-align: center; font-size: 1.5em;">
-            Net Elden: @NetElden ₺
-            </div>
-            </div>
-            *@
-
-
-            @*  <div class="col-md-3 offset-md-5">
-            <div style="background-color: #3498db; color: white; padding: 20px; text-align: center; font-size: 1.5em;">
-            Net Elden: @NetElden ₺
-            </div>
-            </div> *@
-
         </div>
     </div>
-
 </div>
 
 

@@ -70,7 +70,7 @@ namespace Business.Concrete
                 account.KasaDevir = _cashCountingService.GetOneCashCountingByDate(date.AddDays(-1))?.RemainedMoney ?? 0;
                 account.Devir = _cashCountingService.GetOneCashCountingByDate(date)?.RemainedMoney ?? 0;
                 account.KasaSayım = _cashCountingService.GetOneCashCountingByDate(date)?.TotalMoney ?? 0;
-
+                account.CreditCard = _cashCountingService.GetOneCashCountingByDate(date)?.CreditCard ?? 0;
                 //-------------------------------------
 
                 double AllBreadProduced = 0;
