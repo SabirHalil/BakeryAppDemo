@@ -18,44 +18,57 @@ namespace BakeryAppUI.Controllers
 
         public async Task<IActionResult> Index()
         {
-            decimal PastaneTotalRevenue = 0;
-
-            PastaneTotalRevenue += await _apiService.GetApiResponse<decimal>
-               (ApiUrl.url + "/api/EndOfDayAccount/GetProductsSoldInTheBakery?date=" + _date.date.ToString("yyyy-MM-dd"));
-
-            //ViewBag.Pastane = await _endOfDayAccountService.GetTotalRevenue(_date.date);
-            ViewBag.Pastane = PastaneTotalRevenue;
-
-
-            decimal breadPrice =
-               await _apiService.GetApiResponse<decimal>
-               (ApiUrl.url + "/api/BreadPrice/GetBreadPriceByDate?date=" + _date.date.ToString("yyyy-MM-dd"));
-            ViewBag.breadPrice = breadPrice;
-
-            decimal totalExpenseAmount = 0;
-            List<Expense> expense =
-            await _apiService.GetApiResponse<List<Expense>>
-            (ApiUrl.url + "/api/Expense/GetExpensesByDate?date=" + _date.date.ToString("yyyy-MM-dd"));
-            foreach (var item in expense)
+            try
             {
-                totalExpenseAmount += item.Amount;
+
+                decimal PastaneTotalRevenue = 0;
+
+                PastaneTotalRevenue += await _apiService.GetApiResponse<decimal>
+                   (ApiUrl.url + "/api/EndOfDayAccount/GetProductsSoldInTheBakery?date=" + _date.date.ToString("yyyy-MM-dd"));
+
+                //ViewBag.Pastane = await _endOfDayAccountService.GetTotalRevenue(_date.date);
+                ViewBag.Pastane = PastaneTotalRevenue;
+
+
+                decimal breadPrice =
+                   await _apiService.GetApiResponse<decimal>
+                   (ApiUrl.url + "/api/BreadPrice/GetBreadPriceByDate?date=" + _date.date.ToString("yyyy-MM-dd"));
+                ViewBag.breadPrice = breadPrice;
+
+                decimal totalExpenseAmount = 0;
+                List<Expense> expense =
+                await _apiService.GetApiResponse<List<Expense>>
+                (ApiUrl.url + "/api/Expense/GetExpensesByDate?date=" + _date.date.ToString("yyyy-MM-dd"));
+                foreach (var item in expense)
+                {
+                    totalExpenseAmount += item.Amount;
+                }
+
+                EndOfDayResult endOfDayResult =
+                            await _apiService.GetApiResponse<EndOfDayResult>
+                            (ApiUrl.url + "/api/EndOfDayAccount/GetEndOfDayAccountDetail?date=" + _date.date.ToString("yyyy-MM-dd"));
+
+                if (endOfDayResult == null)
+                {
+                    return View("Error");
+                }
+
+                ViewBag.EndOfDayAccount = endOfDayResult.EndOfDayAccount;
+                ViewBag.Account = endOfDayResult.Account;
+
+
+                ViewBag.expense = expense;
+                ViewBag.totalExpenseAmount = totalExpenseAmount;
+                ViewBag.date = _date.date;
+                return View();
+
+            }
+            catch (Exception)
+            {
+
+                return RedirectToAction("Index","Home");
             }
 
-            EndOfDayResult endOfDayResult =
-                        await _apiService.GetApiResponse<EndOfDayResult>
-                        (ApiUrl.url + "/api/EndOfDayAccount/GetEndOfDayAccountDetail?date=" + _date.date.ToString("yyyy-MM-dd"));
-
-
-
-            ViewBag.EndOfDayAccount = endOfDayResult.EndOfDayAccount;
-            ViewBag.Account = endOfDayResult.Account;
-
-
-
-            ViewBag.expense = expense;
-            ViewBag.totalExpenseAmount = totalExpenseAmount;
-            ViewBag.date = _date.date;
-            return View();
         }
 
         [HttpPost]
@@ -76,9 +89,6 @@ namespace BakeryAppUI.Controllers
 
                 await _apiService.PostApiResponse<CreditCardAmount>(endpointKrediKard, creditCardAmount);
 
-                
-
-               
 
 
                 return Json(new { success = true, message = "Devret işlemi başarıyla gerçekleştirildi." });
@@ -140,8 +150,6 @@ namespace BakeryAppUI.Controllers
                 }
             }
         }
-
-
 
 
         [HttpPost]

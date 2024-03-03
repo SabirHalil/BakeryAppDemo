@@ -6,6 +6,8 @@
         public decimal KasaDevir { get; set; }
         public decimal Devir { get; set; }
         public decimal KasaSayım { get; set; }
+        public decimal CreditCard { get; set; }
+
 
     }
 }

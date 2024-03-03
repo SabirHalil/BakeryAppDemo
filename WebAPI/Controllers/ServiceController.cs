@@ -46,18 +46,72 @@ namespace WebAPI.Controllers
 
         }
 
+        //[HttpPost("AddServiceListAndListDetail")]
+        //public ActionResult AddService(List<ServiceListDetailDto> serviceListDetailDto, int userId)
+        //{
+
+        //    if (serviceListDetailDto.IsNullOrEmpty())
+        //    {
+        //        return BadRequest(Messages.ListEmpty);
+        //    }
+
+        //    try
+        //    {
+        //        int id = serviceListDetailDto[0].ServiceListId;
+        //        bool IsNewList = false;
+        //        if (id == 0)
+        //        {
+        //            id = _serviceListService.Add(new ServiceList { Id = 0, UserId = userId, Date = DateTime.Now });
+        //            IsNewList = true;
+        //        }
+
+        //        for (int i = 0; i < serviceListDetailDto.Count; i++)
+        //        {
+        //            ServiceListDetail serviceListDetail = new ServiceListDetail();
+
+        //            if (IsNewList)
+        //            {
+        //                serviceListDetail.ServiceListId = id;
+        //            }
+        //            else
+        //            {
+        //                serviceListDetail.ServiceListId = serviceListDetailDto[i].ServiceListId;
+        //            }
+
+        //            serviceListDetail.MarketContractId = _marketContractService.GetIdByMarketIdAndServiceProductId(serviceListDetailDto[i].MarketId, serviceListDetailDto[i].ServiceProductId);
+
+        //            if (_serviceListDetailService.IsExist(serviceListDetail.ServiceListId, serviceListDetail.MarketContractId))
+        //            {
+        //                return Conflict(Messages.Conflict);
+        //            }
+
+        //            serviceListDetail.Price = _marketContractService.GetPriceById(serviceListDetail.MarketContractId);
+        //            serviceListDetail.Quantity = serviceListDetailDto[i].Quantity;
+        //            _serviceListDetailService.Add(serviceListDetail);
+        //        }
+        //        return Ok(id);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+
+        //        return StatusCode(500, e.Message);
+
+        //    }
+        //}
+
         [HttpPost("AddServiceListAndListDetail")]
-        public ActionResult AddService(List<ServiceListDetailDto> serviceListDetailDto, int userId)
+        public ActionResult AddService(ServiceListDetailDto serviceListDetailDto, int userId)
         {
 
-            if (serviceListDetailDto.IsNullOrEmpty())
+            if (serviceListDetailDto == null && userId <= 0)
             {
-                return BadRequest(Messages.ListEmpty);
+                return BadRequest(Messages.WrongInput);
             }
 
             try
             {
-                int id = serviceListDetailDto[0].ServiceListId;
+                int id = serviceListDetailDto.ServiceListId;
                 bool IsNewList = false;
                 if (id == 0)
                 {
@@ -65,33 +119,28 @@ namespace WebAPI.Controllers
                     IsNewList = true;
                 }
 
-                for (int i = 0; i < serviceListDetailDto.Count; i++)
+                ServiceListDetail serviceListDetail = new ServiceListDetail();
+
+                if (IsNewList)
                 {
-                    ServiceListDetail serviceListDetail = new ServiceListDetail();
-
-                    if (IsNewList)
-                    {
-                        serviceListDetail.ServiceListId = id;
-                    }
-                    else
-                    {
-                        serviceListDetail.ServiceListId = serviceListDetailDto[i].ServiceListId;
-                    }
-
-
-                    serviceListDetail.MarketContractId = _marketContractService.GetIdByMarketId(serviceListDetailDto[i].MarketId);
+                    serviceListDetail.ServiceListId = id;
+                }
+                else
+                {
+                    serviceListDetail.ServiceListId = serviceListDetailDto.ServiceListId;
 
                     if (_serviceListDetailService.IsExist(serviceListDetail.ServiceListId, serviceListDetail.MarketContractId))
                     {
                         return Conflict(Messages.Conflict);
                     }
-
-                    serviceListDetail.Price = _marketContractService.GetPriceById(serviceListDetail.MarketContractId);
-                    serviceListDetail.Quantity = serviceListDetailDto[i].Quantity;
-                    _serviceListDetailService.Add(serviceListDetail);
                 }
-                return Ok(id);
 
+                serviceListDetail.MarketContractId = serviceListDetailDto.MarketContractId;
+                serviceListDetail.Price = _marketContractService.GetPriceById(serviceListDetail.MarketContractId);
+                serviceListDetail.Quantity = serviceListDetailDto.Quantity;
+                _serviceListDetailService.Add(serviceListDetail);
+
+                return Ok(id);
             }
             catch (Exception e)
             {
@@ -101,59 +150,47 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("GetAddedMarketByServiceListId")]
-        public ActionResult GetAddedMarketByServiceListId(int listId)
+        [HttpGet("GetMarketAddedToServiceList")]
+        public ActionResult GetMarketAddedToServiceList(int listId)
         {
             try
             {
-                List<ServiceListDetail> serviceListDetail = _serviceListDetailService.GetByListId(listId);
-
-                List<GetAddedServiceListDetailDto> List = new List<GetAddedServiceListDetailDto>();
-
-                for (int i = 0; i < serviceListDetail.Count; i++)
-                {
-                    GetAddedServiceListDetailDto addedServiceListDetailDto = new();
-                    addedServiceListDetailDto.Id = serviceListDetail[i].Id;
-                    addedServiceListDetailDto.ServiceListId = serviceListDetail[i].ServiceListId;
-                    addedServiceListDetailDto.Quantity = serviceListDetail[i].Quantity;
-
-                    addedServiceListDetailDto.MarketId = _marketContractService.GetMarketIdById(serviceListDetail[i].MarketContractId);
-
-                    addedServiceListDetailDto.MarketName = _marketService.GetNameById(addedServiceListDetailDto.MarketId);
-
-                    List.Add(addedServiceListDetailDto);
-                }
-
-                return Ok(List);
+                return Ok(_serviceListDetailService.GetMarketAddedToServiceList(listId));
             }
             catch (Exception e)
             {
-
                 return StatusCode(500, e.Message);
             }
         }
 
-        [HttpGet("GetMarketByServiceListId")]
-        public ActionResult GetMarketByServiceListId(int listId)
+        [HttpGet("GetMarketNotAddedToServiceList")]
+        public ActionResult GetMarketNotAddedToServiceList(int listId)
         {
-
-
             try
             {
                 List<Market> allMarkets = _marketService.GetAll();
-
                 if (listId == 0)
                 {
                     return Ok(allMarkets);
                 }
 
-                List<ServiceListDetail> serviceListDetail = _serviceListDetailService.GetByListId(listId);
-                List<int> marketIds = serviceListDetail.Select(detail => _marketContractService.GetMarketIdById(detail.MarketContractId)).ToList();
+                List<MarketAddedToServiceDto> marketAddedToServiceDto = _serviceListDetailService.GetMarketAddedToServiceList(listId);
 
-                // Using LINQ to filter markets
-                List<Market> filteredMarkets = allMarkets.Where(m => !marketIds.Contains(m.Id)).ToList();
+                List<Market> filteredMarkets = allMarkets
+                                            .Where(market => !marketAddedToServiceDto.Select(dto => dto.MarketId).Contains(market.Id))
+                                            .ToList();
 
-                return Ok(filteredMarkets);
+
+                // Aynı tür olması için List<MarketAddedToServiceDto> e çevirdim. 
+                List<MarketAddedToServiceDto> filteredMarketsDto = filteredMarkets
+                    .Select(m => new MarketAddedToServiceDto
+                    {
+                        MarketId = m.Id,
+                        MarketName = m.Name
+                    })
+                    .ToList();
+
+                return Ok(filteredMarketsDto);
             }
             catch (Exception e)
             {
@@ -161,17 +198,49 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpDelete("DeleteServiceListDetail")]
-        public ActionResult DeleteServiceListDetail(int id)
+        [HttpGet("GetProductsAddedToServiceListDetail")]
+        public ActionResult GetProductsAddedToServiceListDetail(int listId, int marketId)
         {
-            if (id <= 0)
+            try
+            {
+                return Ok(_serviceListDetailService.GetProductsAddedToServiceListDetail(listId, marketId));
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("GetProductsNotAddedToServiceListDetail")]
+        public ActionResult GetProductsNotAddedToServiceListDetail(int listId, int marketId)
+        {
+            try
+            {
+                return Ok(_serviceListDetailService.GetProductsNotAddedToServiceListDetail(listId, marketId));
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete("DeleteServiceListDetail")]
+        public ActionResult DeleteServiceListDetail(int serviceListId, int serviceListDetailId)
+        {
+            if (serviceListDetailId <= 0 && serviceListId <=0)
             {
                 return BadRequest(Messages.WrongInput);
             }
 
             try
             {
-                _serviceListDetailService.DeleteById(id);
+                _serviceListDetailService.DeleteById(serviceListDetailId);
+                if (!_serviceListDetailService.IsExistByServiceListId(serviceListId))
+                {
+                    _serviceListService.DeleteById(serviceListId);
+                }
                 return Ok();
             }
             catch (Exception e)
@@ -182,27 +251,28 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("UpdateServiceListDetail")]
-        public ActionResult UpdateServiceListDetail(ServiceListDetailDto serviceListDetailDto)
+        public ActionResult UpdateServiceListDetail(int serviceListId,int serviceListDetailId, int quantity)
         {
-            if (serviceListDetailDto == null)
+
+            if (quantity < 0 && serviceListDetailId <= 0 && serviceListId <= 0)
             {
                 return BadRequest(Messages.WrongInput);
             }
             try
-            {    
-                ServiceListDetail serviceListDetail = new();
-                serviceListDetail.ServiceListId = serviceListDetailDto.ServiceListId;                
-                serviceListDetail.MarketContractId = _marketContractService.GetIdByMarketId(serviceListDetailDto.MarketId);
-
-                if (! _serviceListDetailService.IsExist(serviceListDetail.ServiceListId, serviceListDetail.MarketContractId))
+            {
+                if (quantity == 0)
                 {
-                    return Conflict(Messages.WrongInput);
+                    _serviceListDetailService.DeleteById(serviceListDetailId);
+
+                    if (! _serviceListDetailService.IsExistByServiceListId(serviceListId))
+                    {
+                        _serviceListService.DeleteById(serviceListId);
+                    }
+                    return Ok();
                 }
 
-                serviceListDetail.Quantity = serviceListDetailDto.Quantity;
-                serviceListDetail.Price = _marketContractService.GetPriceById(serviceListDetail.MarketContractId);
-                serviceListDetail.Id = _serviceListDetailService.GetIdByServiceListIdAndMarketContracId(serviceListDetail.ServiceListId, serviceListDetail.MarketContractId);
-                _serviceListDetailService.Update(serviceListDetail);
+
+                _serviceListDetailService.UpdateQuantity(serviceListDetailId, quantity);
                 return Ok();
             }
             catch (Exception e)
@@ -211,6 +281,38 @@ namespace WebAPI.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+
+        //[HttpPut("UpdateServiceListDetail")]
+        //public ActionResult UpdateServiceListDetail(ServiceListDetailDto serviceListDetailDto)
+        //{
+        //    if (serviceListDetailDto == null)
+        //    {
+        //        return BadRequest(Messages.WrongInput);
+        //    }
+        //    try
+        //    {
+        //        ServiceListDetail serviceListDetail = new();
+        //        serviceListDetail.ServiceListId = serviceListDetailDto.ServiceListId;
+        //        serviceListDetail.MarketContractId = _marketContractService.GetIdByMarketId(serviceListDetailDto.MarketId);
+
+        //        if (!_serviceListDetailService.IsExist(serviceListDetail.ServiceListId, serviceListDetail.MarketContractId))
+        //        {
+        //            return Conflict(Messages.WrongInput);
+        //        }
+
+        //        serviceListDetail.Quantity = serviceListDetailDto.Quantity;
+        //        serviceListDetail.Price = _marketContractService.GetPriceById(serviceListDetail.MarketContractId);
+        //        serviceListDetail.Id = _serviceListDetailService.GetIdByServiceListIdAndMarketContracId(serviceListDetail.ServiceListId, serviceListDetail.MarketContractId);
+        //        _serviceListDetailService.Update(serviceListDetail);
+        //        return Ok();
+        //    }
+        //    catch (Exception e)
+        //    {
+
+        //        return StatusCode(500, e.Message);
+        //    }
+        //}
 
         public class DataForDelete
         {
