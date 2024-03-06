@@ -79,7 +79,7 @@ namespace WebAPI
             }
 
 
-            httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
+            httpContext.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
             await httpContext.Response.WriteAsync("Backend is not available now!");
         }
     }

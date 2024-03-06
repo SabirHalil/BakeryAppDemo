@@ -45,5 +45,15 @@ namespace WebAPI.Controllers
         }
 
 
+        [HttpGet("GetAllUsers")]
+        public IActionResult GetAllUsers()
+
+        {
+
+            return Ok("Welcome guys");
+
+        }
+
+
     }
 }

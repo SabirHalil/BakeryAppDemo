@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Core.Entities.Concrete;
 using Entities.DTOs;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using System.Security.Claims;
@@ -26,6 +27,8 @@ namespace WebAPI.Controllers
             var userToLogin = _authService.Login(new UserForLoginDto { UserName= userName,Password= password });
             if (!userToLogin.Success)
             {
+                return BadRequest();
+                return NoContent();
                 return BadRequest(userToLogin.Message);
             }
 
@@ -40,7 +43,6 @@ namespace WebAPI.Controllers
                    OperationClaimId = userToLogin.Data.OperationClaimId,
                    Token = result.Data.Token};
                 return Ok(loginResponseDto);
-
                
             }
 

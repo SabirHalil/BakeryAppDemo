@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Core.Utilities.IoC;
 using Microsoft.AspNetCore.Hosting;
 using WebAPI;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,14 +22,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 
-
+//builder.Services.AddDbContext<BakeryAppContext>(options =>options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection")));
 
 
 // Autofac kullanmak için burda 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
-    .ConfigureContainer<ContainerBuilder>(builder =>
+    .ConfigureContainer<ContainerBuilder>(builderr =>
 {
-    builder.RegisterModule(new AutofacBusinessModule());
+    builderr.RegisterModule(new AutofacBusinessModule());
+   
 });
 
 
@@ -83,6 +85,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -101,10 +105,12 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseDeveloperExceptionPage();
+
 app.UseMiddleware<Middleware>();
 
 
-app.Urls.Add("https://localhost:7207");
-app.Urls.Add("https://192.168.12.54:7207");
+//app.Urls.Add("https://localhost:7207");
+//app.Urls.Add("https://192.168.12.54:7207");
 
 app.Run();

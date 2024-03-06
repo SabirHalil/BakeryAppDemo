@@ -1,6 +1,7 @@
 ﻿using Core.Entities.Concrete;
 using Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 
 namespace DataAccess.Concrete.EntityFramework
@@ -8,14 +9,23 @@ namespace DataAccess.Concrete.EntityFramework
     // Context : Db tabloları ile proje classlarını bağlamak.
     public class BakeryAppContext : DbContext
     {
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            ///////////////
-            //optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=BakeryApp;Trusted_Connection=true");
-            ///////
-            optionsBuilder.UseSqlServer(@"Server=.;Database=bakery2;Trusted_Connection=true");
+            if (!optionsBuilder.IsConfigured)
+            {
+                IConfigurationRoot configuration = new ConfigurationBuilder()
+                   .SetBasePath(Directory.GetCurrentDirectory())
+                   .AddJsonFile("appsettings.json")
+                   .Build();
+                var connectionString = configuration.GetConnectionString("sqlConnection");
+                optionsBuilder.UseSqlServer(connectionString);
+            }
 
         }
+  
+      //public  BakeryAppContext(DbContextOptions<BakeryAppContext> options):base(options) { }
+
 
         public DbSet<GivenProductsToService> GivenProductsToServices { get; set; }
         public DbSet<DebtMarket> DebtMarkets { get; set; }

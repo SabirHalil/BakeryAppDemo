@@ -33,7 +33,6 @@ namespace Business.DependencyResolvers.Autofac
 
             builder.RegisterType<EndOfDayAccountManager>().As<IEndOfDayAccountService>();
 
-
             builder.RegisterType<ReceivedMoneyFromServiceManager>().As<IReceivedMoneyFromServiceService>();
             builder.RegisterType<EfReceivedMoneyFromServiceDal>().As<IReceivedMoneyFromServiceDal>();
 
