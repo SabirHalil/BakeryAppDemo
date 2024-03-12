@@ -15,6 +15,7 @@ namespace Business.Abstract
 
         List<Product> GetNotAddedProductsByListAndCategoryId(int listId, int categoryId);
 
+        List<Product> GetAllProductsByCategoryId(int categoryId);
         decimal GetPriceById(int id);
     }
 }

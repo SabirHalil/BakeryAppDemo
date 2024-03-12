@@ -60,5 +60,10 @@ namespace Business.Concrete
         {
             return _productDal.GetAll(p => p.CategoryId == categoryId && p.Status == true);
         }
+
+        public List<Product> GetAllProductsByCategoryId(int categoryId)
+        {
+            return _productDal.GetAll(p => p.CategoryId == categoryId);
+        }
     }
 }

@@ -15,5 +15,6 @@ namespace Business.Abstract
         void Delete(DoughFactoryProduct doughFactoryProduct);
         void Update(DoughFactoryProduct doughFactoryProduct);
         DoughFactoryProduct GetById(int id);
+        List<DoughFactoryProduct> GetAllProducts();
     }
 }

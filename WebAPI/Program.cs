@@ -110,7 +110,7 @@ app.UseDeveloperExceptionPage();
 app.UseMiddleware<Middleware>();
 
 
-//app.Urls.Add("https://localhost:7207");
-//app.Urls.Add("https://192.168.12.54:7207");
+app.Urls.Add("https://localhost:7207");
+app.Urls.Add("https://192.168.1.3:7207");
 
 app.Run();

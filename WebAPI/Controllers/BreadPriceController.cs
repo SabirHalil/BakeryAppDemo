@@ -20,6 +20,22 @@ namespace WebAPI.Controllers
             _breadPriceService = breadPriceService; ;
         }
 
+        [HttpGet("GetAllBreadPrices")]
+        public ActionResult GetAllBreadPrices()
+        {
+            try
+            {
+                List<BreadPrice> price = _breadPriceService.GetAll();
+                return Ok(price);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+
+        }
+
         [HttpGet("GetBreadPriceByDate")]
         public ActionResult GetBreadPriceByDate(DateTime date)
         {

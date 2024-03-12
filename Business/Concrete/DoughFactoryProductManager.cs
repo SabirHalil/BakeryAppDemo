@@ -35,6 +35,11 @@ namespace Business.Concrete
             return _doughFactoryProductDal.GetAll(d=> d.Status == true);
         }
 
+        public List<DoughFactoryProduct> GetAllProducts()
+        {
+            return _doughFactoryProductDal.GetAll();
+        }
+
         public DoughFactoryProduct GetById(int id)
         {
             return _doughFactoryProductDal.Get(d=>d.Id == id);

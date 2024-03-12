@@ -31,7 +31,7 @@ namespace Business.Concrete
         }
         public List<BreadPrice> GetAll()
         {
-            return _breadPriceDal.GetAll();
+            return _breadPriceDal.GetAll().OrderByDescending(p => p.Date.Date).ToList();
         }
 
         public BreadPrice GetById(int id)
