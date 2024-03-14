@@ -10,6 +10,29 @@ namespace DataAccess.Concrete.EntityFramework
     public class EfServiceListDetailDal : EfEntityRepositoryBase<ServiceListDetail, BakeryAppContext>, IServiceListDetailDal
     {
 
+        public List<ServiceProductInfo> GetServiceProductInfoList(int serviceListId, int marketId)
+        {
+            using (BakeryAppContext context = new())
+            {
+                var result = (from serviceDetail in context.ServiceListDetails
+                              join marketContract in context.MarketContracts
+                                  on serviceDetail.MarketContractId equals marketContract.Id
+                              join serviceProduct in context.ServiceProducts
+                                  on marketContract.ServiceProductId equals serviceProduct.Id
+                              where serviceDetail.ServiceListId == serviceListId && marketContract.MarketId == marketId
+                              select new ServiceProductInfo
+                              {
+                                  ServiceProductId = serviceProduct.Id,
+                                  ServiceProductName = serviceProduct.Name,
+                                  Quantity = serviceDetail.Quantity,
+                                  Price = marketContract.Price
+                              }).ToList();
+
+                return result;
+            }
+        }
+
+
         public List<MarketAddedToServiceDto> GetMarketAddedToServiceList(int serviceListId)
         {
             using (BakeryAppContext context = new())
@@ -43,6 +66,7 @@ namespace DataAccess.Concrete.EntityFramework
                               where serviceDetail.ServiceListId == serviceListId && marketContract.MarketId == marketId
                               select new ProductsAddedToServiceListDetailDto
                               {
+                                  ServiceProductId = serviceProduct.Id,
                                   ServiceListDetailId = serviceDetail.Id,
                                   ServiceProductName = serviceProduct.Name,
                                   Quantity = serviceDetail.Quantity

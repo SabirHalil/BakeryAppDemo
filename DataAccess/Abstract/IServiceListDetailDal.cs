@@ -13,6 +13,8 @@ namespace DataAccess.Abstract
         void DeleteByServiceListIdAndMarketContracId(int serviceListId, int marketContracId);
 
         void UpdateQuantity(int entityId, int newQuantity);
+
+        List<ServiceProductInfo> GetServiceProductInfoList(int serviceListId, int marketId);
         List<MarketAddedToServiceDto> GetMarketAddedToServiceList(int serviceListId);
 
         List<ProductsAddedToServiceListDetailDto> GetProductsAddedToServiceListDetail(int serviceListId, int marketId);

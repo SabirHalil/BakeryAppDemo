@@ -1,5 +1,6 @@
 ﻿using Core.DataAccess;
 using Entities.Concrete;
+using Entities.DTOs;
 
 namespace DataAccess.Abstract
 {
@@ -7,5 +8,8 @@ namespace DataAccess.Abstract
     {
         void DeleteById(int id);
         bool IsExist(int marketId, DateTime date);
+        List<MoneyReceivedMarket> MoneyReceivedMarkets(DateTime date);
+        List<Market> ServiceProductsDeliveredMarkets(DateTime date);
+
     }
 }

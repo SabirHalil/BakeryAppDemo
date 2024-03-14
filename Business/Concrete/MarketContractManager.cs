@@ -64,5 +64,10 @@ namespace Business.Concrete
         {
             return _marketContractDal.Get(p => p.MarketId == marketId && p.ServiceProductId == serviceProductId).Id;
         }
+
+        public List<int> ServiceProductsIdsByMarketId(int marketId)
+        {
+            return _marketContractDal.ServiceProductsIdsByMarketId(marketId);
+        }
     }
 }

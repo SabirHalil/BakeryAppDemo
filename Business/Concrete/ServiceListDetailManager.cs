@@ -95,5 +95,10 @@ namespace Business.Concrete
         {
             return _serviceListDetailDal.IsExistByServiceListId(serviceListId);
         }
+
+        public List<ServiceProductInfo> GetServiceProductInfoList(int serviceListId, int marketId)
+        {
+            return _serviceListDetailDal.GetServiceProductInfoList(serviceListId, marketId);
+        }
     }
 }

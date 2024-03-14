@@ -46,14 +46,32 @@
 </script>
 
 
-@if (ViewBag.MarketBreadDetails.Count != 0)
+@if (ViewBag.MarketProductDetails.Count != 0)
 {
     <div class="container">
         <div class="text-center">
             <h3>Market Servis</h3>
         </div>
 
-        <button type="button" class="btn btn-primary" onclick="generatePDF()">PDF Oluştur</button>
+        <div class="row">
+            <div class="col-2">
+                <button type="button" class="btn btn-primary" onclick="generatePDF()">PDF Oluştur</button>
+            </div>
+            <div class="col-3">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Ürün Seç
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/MarketService/GoToIndex?serviceProductId=1">Ekmek</a>
+                        <a class="dropdown-item" href="/MarketService/GoToIndex?serviceProductId=2">Ramazan Pidesi</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-4"></div> <!-- Butonlarla tablo arasında boşluk bırakmak için -->
+
 
 
         <table id="myTable" class="table table-striped">
@@ -63,7 +81,7 @@
                         Market Adı
                     </th>
 
-                    @foreach (var column in ViewBag.MarketBreadDetails[0].BreadGivenByEachService.Keys)
+                    @foreach (var column in ViewBag.MarketProductDetails[0].ProductGivenByEachService.Keys)
                     {
                         <th class="th-sm">
                             @column
@@ -94,19 +112,19 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var liste in ViewBag.MarketBreadDetails)
+                @foreach (var liste in ViewBag.MarketProductDetails)
                 {
                     <tr>
                         <td>@liste.MarketName</td>
-                        @foreach (var value in liste.BreadGivenByEachService.Values)
+                        @foreach (var value in liste.ProductGivenByEachService.Values)
                         {
                             <td>
                                 @(value == 0 ? "-" : value.ToString())
                             </td>
                         }
-                        <td>@liste.GivenBread</td>
-                        <td>@liste.StaleBread</td>
-                        <td>@(@liste.GivenBread - @liste.StaleBread)</td>
+                        <td>@liste.GivenProduct</td>
+                        <td>@liste.StaleProduct</td>
+                        <td>@(@liste.GivenProduct - @liste.StaleProduct)</td>
 
                         <td>@liste.TotalAmount</td>
                         <td>@liste.Amount</td>

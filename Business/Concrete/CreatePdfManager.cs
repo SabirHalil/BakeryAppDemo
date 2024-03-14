@@ -9,6 +9,7 @@ using iText.Layout.Borders;
 using iText.Kernel.Font;
 using Entities.Concrete;
 using Business.AbstractAPI;
+using System.Globalization;
 
 
 namespace Business.Concrete
@@ -24,11 +25,16 @@ namespace Business.Concrete
         private IDoughFactoryProductService _doughFactoryProductService;
 
         private IBreadPriceService _breadPriceService;
-        public CreatePdfManager(IBreadPriceService breadPriceService,
+
+        private IMarketEndOfDayService _marketEndOfDayService;
+        public CreatePdfManager(IMarketEndOfDayService marketEndOfDayService,
+            IBreadPriceService breadPriceService,
             IDoughFactoryProductService doughFactoryProductService, IDoughFactoryAPIService doughFactoryAPIService,
             IStaleProductService staleProductService,
             IProductsCountingService productsCountingService, IProductionListService productionListService, IProductionListDetailService productionListDetailService)
         {
+            _marketEndOfDayService = marketEndOfDayService;
+
             _breadPriceService = breadPriceService;
 
             _doughFactoryProductService = doughFactoryProductService;
@@ -58,8 +64,8 @@ namespace Business.Concrete
 
 
 
-                        formattedDate = date.ToString("dd.MM.yyyy");
-                        var dayOfWeek = date.ToString("dddd");
+                        formattedDate = date.ToString("dd.MM.yyyy", new CultureInfo("tr-TR"));
+                        var dayOfWeek = date.ToString("dddd", new CultureInfo("tr-TR"));
 
                         var date2 = new Paragraph($"Tarih: {formattedDate} - {dayOfWeek}")
                             .SetTextAlignment(TextAlignment.RIGHT)
@@ -147,8 +153,6 @@ namespace Business.Concrete
             }
         }
 
-
-
         public byte[] CreatePdfForHamurhane(DateTime date)
         {
             using (var stream = new MemoryStream())
@@ -165,8 +169,8 @@ namespace Business.Concrete
                         document.SetFont(font);
 
 
-                        formattedDate = date.ToString("dd.MM.yyyy");
-                        var dayOfWeek = date.ToString("dddd");
+                        formattedDate = date.ToString("dd.MM.yyyy", new CultureInfo("tr-TR"));
+                        var dayOfWeek = date.ToString("dddd", new CultureInfo("tr-TR"));
 
                         var date2 = new Paragraph($"Tarih: {formattedDate} - {dayOfWeek}")
                             .SetTextAlignment(TextAlignment.RIGHT);
@@ -209,18 +213,7 @@ namespace Business.Concrete
                 return stream.ToArray();
             }
         }
-
-
-
-        private static Dictionary<int, string> CategoryNameByCategoryId = new Dictionary<int, string>()
-        {
-            { 1, "Pastane" },
-            { 2, "Börek" },
-            { 3, "Dışarıda Alınan Ürünler" },
-        };
-
-
-        public byte[] CreatePdf(DateTime date, int CategoryId)
+        public byte[] CreatePdfForMarketService(DateTime date)
         {
             using (var stream = new MemoryStream())
             {
@@ -236,8 +229,8 @@ namespace Business.Concrete
                         document.SetFont(font);
 
 
-                        formattedDate = date.ToString("dd.MM.yyyy");
-                        var dayOfWeek = date.ToString("dddd");
+                        formattedDate = date.ToString("dd.MM.yyyy", new CultureInfo("tr-TR"));
+                        var dayOfWeek = date.ToString("dddd", new CultureInfo("tr-TR"));
 
                         var date2 = new Paragraph($"Tarih: {formattedDate} - {dayOfWeek}")
                             .SetTextAlignment(TextAlignment.RIGHT);
@@ -250,31 +243,129 @@ namespace Business.Concrete
                         document.Add(company);
 
 
-                        var title = new Paragraph($"{CategoryNameByCategoryId[CategoryId]}")
+                        var title = new Paragraph("Market Servis")
                             .SetTextAlignment(TextAlignment.CENTER)
                             .SetFontSize(16);
 
                         document.Add(title);
 
-                        List<ProductionListDetailDto> detail = RegularData(date, CategoryId);
-                        var Table = CreateTable(detail);
+                        var data = RegularDataForHamurhane(date);
+
+                        var Table = CreateTableForHamurhane(data.Item1);
+
+
+
 
                         //Table.SetWidth(UnitValue.CreatePercentValue(33));
 
                         document.Add(Table);
 
-                        decimal TotalRevenueAmount = 0;
 
-                        foreach (var item in detail)
-                        {
-                           TotalRevenueAmount += (item.ProductedToday + item.RemainingYesterday - item.StaleProductToday - item.RemainingToday) * item.Price;
-                        }
 
+                        var TotalRevenueAmount = data.Item2;
 
                         var TotalRevenue = new Paragraph($"Toplam Gelir:  {TotalRevenueAmount}TL")
                             .SetTextAlignment(TextAlignment.RIGHT)
                             .SetFontSize(16);
                         document.Add(TotalRevenue);
+
+                        document.Close();
+                    }
+                }
+
+                return stream.ToArray();
+            }
+        }
+
+        private static Dictionary<int, string> CategoryNameByCategoryId = new Dictionary<int, string>()
+        {
+            { 1, "Pastane" },
+            { 2, "Börek" },
+            { 3, "Dışarıda Alınan Ürünler" },
+        };
+
+        public byte[] CreatePdf(DateTime date)
+        {
+            using (var stream = new MemoryStream())
+            {
+                string formattedDate;
+                using (var writer = new PdfWriter(stream))
+                {
+                    using (var pdf = new PdfDocument(writer))
+                    {
+                        int CategoryId = 0;
+
+                        PdfFont font = PdfFontFactory.CreateFont("Helvetica", "CP1254", PdfFontFactory.EmbeddingStrategy.FORCE_NOT_EMBEDDED);
+
+                        var document = new Document(pdf);
+                        document.SetFont(font);
+
+
+                        formattedDate = date.ToString("dd.MM.yyyy", new CultureInfo("tr-TR"));
+                        var dayOfWeek = date.ToString("dddd", new CultureInfo("tr-TR"));
+
+                        var date2 = new Paragraph($"Tarih: {formattedDate} - {dayOfWeek}")
+                            .SetTextAlignment(TextAlignment.RIGHT);
+                        document.Add(date2);
+
+                        var companyName = "ASLANOĞLU Fırın";
+                        var company = new Paragraph(companyName)
+                            .SetTextAlignment(TextAlignment.LEFT)
+                            .SetFontSize(16);
+                        document.Add(company);
+
+                        decimal AllProductTotalRevenue = 0;
+
+                        for (int i = 0; i < 3; i++)
+                        {
+                            CategoryId = i + 1;
+
+                            var title = new Paragraph($"{CategoryNameByCategoryId[CategoryId]}")
+                                .SetTextAlignment(TextAlignment.LEFT)
+                                .SetFontSize(16);
+
+                            document.Add(title);
+
+                            List<ProductionListDetailDto> detail = RegularData(date, CategoryId);
+
+                            if (detail.Count > 0)
+                            {
+                                var Table = CreateTable(detail);
+
+                                //Table.SetWidth(UnitValue.CreatePercentValue(33));
+
+                                document.Add(Table);
+
+                                decimal TotalRevenueAmount = 0;
+
+                                foreach (var item in detail)
+                                {
+                                    TotalRevenueAmount += (item.ProductedToday + item.RemainingYesterday - item.StaleProductToday - item.RemainingToday) * item.Price;
+                                }
+
+
+                                AllProductTotalRevenue += TotalRevenueAmount;
+
+                                var TotalRevenue = new Paragraph($"Toplam Gelir:  {TotalRevenueAmount}TL")
+                                    .SetTextAlignment(TextAlignment.RIGHT)
+                                    .SetFontSize(16);
+
+                                document.Add(TotalRevenue);
+                            }
+                            else
+                            {
+                                document.Add(new Paragraph("Bugün eklenen ürün yok maalesef."));
+                            }
+
+
+
+                        }
+
+                        var AllProductTotalRevenueText = new Paragraph($"Tüm Ürünlerin Toplam Geliri:  {AllProductTotalRevenue}TL")
+                                   .SetTextAlignment(TextAlignment.RIGHT)
+                                   .SetFontSize(16);
+
+                        document.Add(AllProductTotalRevenueText);
 
                         document.Close();
                     }
@@ -385,6 +476,10 @@ namespace Business.Concrete
 
             return (doughFactoryListAndDetailDto, TotalRevenue);
         }
+        public void RegularDataForMarketService(DateTime date)
+        {
+            //_marketEndOfDayService.MarketEndOfDayDetail(date);
+        }
 
         public class DoughFactoryListAndDetailDto
         {
@@ -469,6 +564,51 @@ namespace Business.Concrete
                 {
                     table.AddCell(new Cell().Add(new Paragraph(value == 0 ? "-" : value.ToString())));
                 }
+
+                table.AddCell(new Cell().Add(new Paragraph(item.TotalQuantity.ToString())));
+                table.AddCell(new Cell().Add(new Paragraph(item.UnitPrice.ToString() + "TL")));
+                table.AddCell(new Cell().Add(new Paragraph(Gelir.ToString() + "TL")));
+            }
+
+            return table;
+        }
+        public Table CreateTableForMarketService(List<DoughFactoryListAndDetailDto> data)
+        {
+            var table = new Table(data[0].DoughFactoryProductQuantity.Count + 4)
+                .UseAllAvailableWidth()
+                .SetHorizontalAlignment(HorizontalAlignment.LEFT);
+
+
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Market Adı")));
+
+            foreach (var item in data[0].DoughFactoryProductQuantity.Keys)
+            {
+                table.AddHeaderCell(new Cell().Add(new Paragraph($"{item}")));
+            }
+
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Toplam Verilen")));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Bayat")));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Toplam Satış")));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Toplam Para")));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Alınan Para")));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Kalan Para")));
+
+
+
+            foreach (var item in data)
+            {
+                var Gelir = item.UnitPrice * item.TotalQuantity;
+
+                table.AddCell(new Cell().Add(new Paragraph(item.Name)));
+
+                foreach (var value in item.DoughFactoryProductQuantity.Values)
+                {
+                    table.AddCell(new Cell().Add(new Paragraph(value == 0 ? "-" : value.ToString())));
+                }
+
+                table.AddCell(new Cell().Add(new Paragraph(item.TotalQuantity.ToString())));
+                table.AddCell(new Cell().Add(new Paragraph(item.UnitPrice.ToString() + "TL")));
+                table.AddCell(new Cell().Add(new Paragraph(Gelir.ToString() + "TL")));
 
                 table.AddCell(new Cell().Add(new Paragraph(item.TotalQuantity.ToString())));
                 table.AddCell(new Cell().Add(new Paragraph(item.UnitPrice.ToString() + "TL")));
