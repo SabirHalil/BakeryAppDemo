@@ -7,23 +7,37 @@ namespace BakeryAppUI.Controllers
     {
         private readonly ApiService _apiService;
         private static Date _date = new Date { date = DateTime.Now };
+        private static int _serviceProductId = 1;
         public MarketServiceController(ApiService apiService)
         {
             _apiService = apiService;
         }
 
+        public ActionResult GoToIndex(int serviceProductId)
+        {
+            _serviceProductId = serviceProductId;
+            return RedirectToAction("Index");
+        }
+
+
         public async Task<IActionResult> Index()
         {          
-            string marketBreadDetailsUrl = $"{ApiUrl.url}/api/MoneyReceivedFromMarket/GetMarketsEndOfDayCalculationWithDetail?date={_date.date.ToString("yyyy-MM-dd")}";
-        
-            List<MarketBreadDetails> marketBreadDetails =
-                await _apiService.GetApiResponse<List<MarketBreadDetails>>
-                (marketBreadDetailsUrl);
+            //string marketBreadDetailsUrl = $"{ApiUrl.url}/api/MoneyReceivedFromMarket/GetMarketsEndOfDayCalculationWithDetail?date={_date.date.ToString("yyyy-MM-dd")}";
+            string marketBreadDetailsUrl = $"{ApiUrl.url}/api/MoneyReceivedFromMarket/GetMarketsEndOfDayCalculationWithDetailByServiceId?date={_date.date.ToString("yyyy-MM-dd")}&serviceProductId={_serviceProductId}";
+
+            //List<MarketBreadDetails> marketBreadDetails =
+            //    await _apiService.GetApiResponse<List<MarketBreadDetails>>
+            //    (marketBreadDetailsUrl);
+            List<MarketProductDetails> marketProductDetails =
+             await _apiService.GetApiResponse<List<MarketProductDetails>>
+             (marketBreadDetailsUrl);
+
+
 
             decimal TotalAmount =0;
             decimal TotalReceivedMoney = 0;
 
-            foreach (var item in marketBreadDetails)
+            foreach (var item in marketProductDetails)
             {
                 TotalAmount += item.TotalAmount;
                 TotalReceivedMoney += item.Amount;
@@ -32,7 +46,7 @@ namespace BakeryAppUI.Controllers
             ViewBag.TotalAmount = TotalAmount;
             ViewBag.TotalReceivedMoney = TotalReceivedMoney;
             
-            ViewBag.MarketBreadDetails = marketBreadDetails;
+            ViewBag.MarketProductDetails = marketProductDetails;
             ViewBag.date = _date.date;
 
             return View();

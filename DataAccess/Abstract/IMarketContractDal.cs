@@ -6,5 +6,6 @@ namespace DataAccess.Abstract
     public interface IMarketContractDal : IEntityRepository<MarketContract>
     {
         void DeleteById(int id);
+        List<int> ServiceProductsIdsByMarketId(int marketId);
     }
 }

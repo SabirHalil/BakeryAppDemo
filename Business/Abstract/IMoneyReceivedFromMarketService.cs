@@ -1,9 +1,12 @@
 ﻿using Entities.Concrete;
+using Entities.DTOs;
 
 namespace Business.Abstract
 {
     public interface IMoneyReceivedFromMarketService
     {
+        List<Market> GetNotMoneyReceivedMarketListByDate(DateTime date);
+        List<MoneyReceivedMarket> GetMoneyReceivedMarketListByDate(DateTime date);
         List<MoneyReceivedFromMarket> GetAll();
         List<MoneyReceivedFromMarket> GetByMarketId(int id);
         MoneyReceivedFromMarket GetByMarketIdAndDate(int id, DateTime date);

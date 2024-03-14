@@ -5,6 +5,7 @@ namespace Business.Abstract
     public interface IMarketContractService
     {
         List<MarketContract> GetAll();
+        List<int> ServiceProductsIdsByMarketId(int marketId);
         void Add(MarketContract marketContract);
         void DeleteById(int id);
         void Delete(MarketContract marketContract);

@@ -19,6 +19,9 @@ namespace Business.DependencyResolvers.Autofac
     {
         protected override void Load(ContainerBuilder builder)
         {
+
+            builder.RegisterType<MarketEndOfDayService>().As<IMarketEndOfDayService>();
+
             builder.RegisterType<DeliveryManager>().As<IDeliveryService>();
             builder.RegisterType<EfDeliveryDal>().As<IDeliveryDal>();
 
@@ -74,6 +77,9 @@ namespace Business.DependencyResolvers.Autofac
             
             builder.RegisterType<StaleBreadReceivedFromMarketManager>().As<IStaleBreadReceivedFromMarketService>();
             builder.RegisterType<EfStaleBreadReceivedFromMarketDal>().As<IStaleBreadReceivedFromMarketDal>();
+            
+            builder.RegisterType<StaleProductsReceivedFromMarketManager>().As<IStaleProductsReceivedFromMarketService>();
+            builder.RegisterType<EfStaleProductsReceivedFromMarketDal>().As<IStaleProductsReceivedFromMarketDal>();
             
             builder.RegisterType<ServiceListManager>().As<IServiceListService>();
             builder.RegisterType<EfServiceListDal>().As<IServiceListDal>();

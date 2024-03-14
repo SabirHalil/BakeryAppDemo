@@ -9,5 +9,5 @@
         public decimal TotalAmount { get; set; }
         public int StaleBread { get; set; }
         public int GivenBread { get; set; }
-    }
+    } 
 }

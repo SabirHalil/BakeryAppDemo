@@ -19,5 +19,18 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
+        public List<int> ServiceProductsIdsByMarketId(int marketId)
+        {
+            using (BakeryAppContext context = new())
+            {
+
+                List<int> serviceProductIds = context.MarketContracts
+                    .Where(mc => mc.MarketId == marketId)
+                    .Select(mc => mc.ServiceProductId)
+                    .ToList();
+
+                return serviceProductIds;
+            }
+        }
     }
 }

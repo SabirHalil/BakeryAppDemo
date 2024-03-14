@@ -2,6 +2,7 @@
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
+using Entities.DTOs;
 
 namespace Business.Concrete
 {
@@ -9,15 +10,18 @@ namespace Business.Concrete
     {
 
 
-        IMoneyReceivedFromMarketDal _moneyReceivedFromMarketDal;
+        private readonly IMoneyReceivedFromMarketDal _moneyReceivedFromMarketDal;
         
+
+
         public MoneyReceivedFromMarketManager(IMoneyReceivedFromMarketDal moneyReceivedFromMarketDal)
-        {
-            _moneyReceivedFromMarketDal = moneyReceivedFromMarketDal;  
+        {           
+            _moneyReceivedFromMarketDal = moneyReceivedFromMarketDal;
         }
 
         public void Add(MoneyReceivedFromMarket moneyReceivedFromMarket)
         {
+
             _moneyReceivedFromMarketDal.Add(moneyReceivedFromMarket);
         }
 
@@ -32,7 +36,7 @@ namespace Business.Concrete
         }
         public List<MoneyReceivedFromMarket> GetAll()
         {
-           return _moneyReceivedFromMarketDal.GetAll();
+            return _moneyReceivedFromMarketDal.GetAll();
         }
 
         public MoneyReceivedFromMarket GetById(int id)
@@ -57,12 +61,23 @@ namespace Business.Concrete
 
         public MoneyReceivedFromMarket GetByMarketIdAndDate(int id, DateTime date)
         {
-            return _moneyReceivedFromMarketDal.Get(s => s.MarketId == id &&s.Date.Date == date.Date);
+            return _moneyReceivedFromMarketDal.Get(s => s.MarketId == id && s.Date.Date == date.Date);
         }
 
         public bool IsExist(int marketId, DateTime date)
         {
-            return _moneyReceivedFromMarketDal.IsExist(marketId, date); 
+            return _moneyReceivedFromMarketDal.IsExist(marketId, date);
+        }
+
+        public List<Market> GetNotMoneyReceivedMarketListByDate(DateTime date)
+        {
+
+            return _moneyReceivedFromMarketDal.ServiceProductsDeliveredMarkets(date);    
+        }
+
+        public List<MoneyReceivedMarket> GetMoneyReceivedMarketListByDate(DateTime date)
+        {
+            return _moneyReceivedFromMarketDal.MoneyReceivedMarkets(date);
         }
     }
 }

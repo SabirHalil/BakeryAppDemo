@@ -6,6 +6,7 @@ namespace Business.Abstract
     public interface IServiceListDetailService
     {
         void UpdateQuantity(int entityId, int newQuantity);
+        List<ServiceProductInfo> GetServiceProductInfoList(int serviceListId, int marketId);
         List<MarketAddedToServiceDto> GetMarketAddedToServiceList(int serviceListId);
         List<ProductsAddedToServiceListDetailDto> GetProductsAddedToServiceListDetail(int serviceListId, int marketId);
         List<ProductsNotAddedToServiceListDetailDto> GetProductsNotAddedToServiceListDetail(int serviceListId, int marketId);

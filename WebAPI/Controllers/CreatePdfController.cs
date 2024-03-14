@@ -9,6 +9,7 @@ using iText.Layout.Borders;
 using iText.Kernel.Font;
 using iText.IO.Font;
 using Business.Abstract;
+using System.Globalization;
 
 namespace WebAPI.Controllers
 {
@@ -22,26 +23,19 @@ namespace WebAPI.Controllers
         {
             _createPdfService = createPdfService;
         }
-
-        private static Dictionary<int, string> CategoryNameByCategoryId = new Dictionary<int, string>()
-        {
-            { 1, "Pastane" },
-            { 2, "Börek" },
-            { 3, "Dışarıda Alınan Ürünler" },
-        };
-
+     
 
         [HttpGet("CreatePdf")]
-        public IActionResult CreatePdf(DateTime date, int categoryId)
+        public IActionResult CreatePdf(DateTime date)
         {
 
             try
             {              
 
-                byte[] pdfContent = _createPdfService.CreatePdf(date, categoryId);
-                string formattedDate = date.ToString("dd.MM.yyyy");
+                byte[] pdfContent = _createPdfService.CreatePdf(date);
+                string formattedDate = date.ToString("dd.MM.yyyy", new CultureInfo("tr-TR"));
 
-                string fileName = $"{CategoryNameByCategoryId[categoryId]}_{formattedDate}.pdf";
+                string fileName = $"PASTANE_İMALAT_VE_SATIŞ_TAKİP_ENVANTERİ_{formattedDate}.pdf";
                 string contentType = "application/pdf";
 
 
@@ -67,7 +61,7 @@ namespace WebAPI.Controllers
             {              
 
                 byte[] pdfContent = _createPdfService.CreatePdfForHamurhane(date);
-                string formattedDate = date.ToString("dd.MM.yyyy");
+                string formattedDate = date.ToString("dd.MM.yyyy", new CultureInfo("tr-TR"));
 
                 string fileName = $"Hamurhane_{formattedDate}.pdf";
                 string contentType = "application/pdf";
